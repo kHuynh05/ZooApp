@@ -1,0 +1,1 @@
+These files are scripts that are ran in the backend whenever some process happens and we have to interact with a table.
