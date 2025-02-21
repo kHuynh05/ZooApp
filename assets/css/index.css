@@ -1,0 +1,85 @@
+@font-face {
+    font-family: 'Gotham';
+    src: url('../css/GothamCondSSm-Book.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+body{
+    margin:0px;
+    padding:0px;
+}
+.container{
+    width: 100vw;
+    height: 300vh;
+    margin:0px;
+    padding:0px;
+    font-family:'Gotham';
+}
+.homePageInfo{
+    height:100%;
+    background-color: green;
+}
+
+.featured{
+    height:15%;
+    padding: 40px 50px;
+    background-color: seagreen;
+    display:flex;
+    justify-content: space-between;
+}
+.featureIntro{
+    color:white;
+    font-size: 60px;
+}
+.feature{
+    background-color:white;
+    height:100%;
+    width:20%;
+    display:flex;
+    flex-direction: column;
+    border: 10px inset black;
+}
+.featureimage{
+    height:40%
+}
+.featuretitle{
+    margin: 0px;
+}
+.featureDescription{
+    
+}
+.frontPage {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/frontPage.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 650px;
+    display:flex;
+    color: white;
+}
+.frontPage-text{
+    padding:100px 50px 20px 100px;
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    align-items:end;
+    justify-content:end;
+}
+.frontPage-intro{
+    font-size:50px;
+}
+.frontPage-motto{
+    font-size: 110px;
+}
+.frontPageButton{
+    padding:20px;
+    font-weight: bold;
+    border-radius: 50px;
+    border:none;
+    color:white;
+    background-color:seagreen;
+    cursor:pointer;
+}
+.frontPageButton:hover{
+    background-color: rgb(46,170,100);
+}
