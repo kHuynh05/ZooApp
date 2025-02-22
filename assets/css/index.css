@@ -15,6 +15,9 @@ img {
     height: auto;
 }
 
+button{
+    cursor: pointer;
+}
 .container {
     width: 100vw;
     height: 300vh;
@@ -57,7 +60,6 @@ img {
     border: none;
     color: white;
     background-color: seagreen;
-    cursor: pointer;
 }
 
 .frontPageButton:hover {
@@ -100,27 +102,30 @@ img {
 .featuretitle {
     margin: 0px;
 }
-.supportways{
+
+.supportways {
     height: 30%;
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/support-img.avif');
-    background-size:cover;
+    background-size: cover;
     background-position: center;
     background-repeat: repeat;
-    display:flex;
+    display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: left;
     padding: 0px 50px;
 }
+
 .support-title {
-    height:10%;
-    color:white;
+    height: 10%;
+    color: white;
     margin: 0px;
     text-align: left;
+    font-size: 60px;
 }
 
 .support {
-    height:80%;
+    height: 80%;
     display: flex;
 }
 
@@ -129,22 +134,25 @@ img {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    margin:0px;
-    padding:0px;
+    margin: 0px;
+    padding: 0px;
 }
+
 .donate-homepage {
-    background: linear-gradient(to right,rgba(0, 0, 0, 0) 60%, black 100%), 
-                url('../img/donate-homepage.jpg');
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 60%, black 100%),
+        url('../img/donate-homepage.jpg');
 }
-.member-homepage{
+
+.member-homepage {
     text-align: right;
     display: flex;
     justify-content: flex-end;
-    align-items: flex-end; /* Aligns content inside to the bottom-right */
+    align-items: flex-end;
+    /* Aligns content inside to the bottom-right */
     margin-left: auto;
     margin-top: 20px;
-    background: linear-gradient(to left,rgba(0, 0, 0, 0) 60%, black 100%), 
-                    url('../img/donate-homepage.jpg');
+    background: linear-gradient(to left, rgba(0, 0, 0, 0) 60%, black 100%),
+        url('../img/donate-homepage.jpg');
 }
 
 .donate-homepage,
@@ -155,15 +163,66 @@ img {
     width: 70%;
     display: flex;
     flex-direction: column;
-    border-radius: 20px; /* Soft rounded corners */
-    box-shadow: 
-        5px 5px 10px rgba(0, 0, 0, 0.2),  /* Darker bottom-right shadow */
-        -5px -5px 10px rgba(255, 255, 255, 0.8); /* Lighter top-left highlight */
-    padding: 20px; 
+    border-radius: 20px;
+    /* Soft rounded corners */
+    box-shadow:
+        5px 5px 10px rgba(0, 0, 0, 0.2),
+        /* Darker bottom-right shadow */
+        -5px -5px 10px rgba(255, 255, 255, 0.8);
+    /* Lighter top-left highlight */
+    padding: 20px;
     margin-bottom: 20px;
     justify-content: space-between;
     background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        color:white;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+.upcoming-events-homepage {
+    height: 33%;
+    display: flex;
+    flex-direction: column;
+    padding :0px 70px;
+    background-color: white;
+}
+
+.eventhome-title {
+    padding-left: 30px;
+    font-size:60px;
+    color:black;
+}
+
+.events-home {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+    
+}
+.event-home{
+    width:30%;
+    height:100%;
+    padding:10px;
+    color:white;
+    text-decoration: none;
+    transform: skew(-5deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/eventHome.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+.event-home:hover{
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/eventHome.jpg');
+    background-size: cover;
+    background-position: center;
+}
+.event-home-name, .event-home-date{
+    margin:0px;
+}
+.event-home-desc{
+    text-align: right;
 }

@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="supportways">
-            <h1 class="support-title">How you can support!</h1>
+            <h1 class="support-title">HOW YOU CAN SUPPORT</h1>
             <div class="support">
                 <div class="support-1">
                     <div class="donate-homepage">
@@ -52,17 +52,43 @@
                         <h1>Be part of our community</h1>
                         <span>Join us in our mission to protect, preserve, and celebrate wildlife! As a member of Zootopia, you'll gain exclusive benefits while directly supporting the care and conservation of animals from around the world.</span>
                         <a href="/ZooApp/public/community.php">
-                            <button class="frontPageButton">Discover Benefits</button>
+                            <button class="frontPageButton">Join us</button>
                         </a>
                     </div>
                     <div class="member-homepage">
                         <h1>Adopt an animal</h1>
                         <span>Join us in our mission to protect, preserve, and celebrate wildlife! As a member of Zootopia, you'll gain exclusive benefits while directly supporting the care and conservation of animals from around the world.</span>
                         <a href="/ZooApp/public/adopt.php">
-                            <button class="frontPageButton">Discover Benefits</button>
+                            <button class="frontPageButton">Adopt today</button>
                         </a>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="upcoming-events-homepage">
+            <h1 class="eventhome-title">UPCOMING EVENTS</h1>
+            <div class="events-home">
+                <a href="/ZooApp/public/event.php" class="event-home">
+                    <div>
+                        <h1 class="event-home-name">RUN FOR THE ZOO</h1>
+                        <h2 class="event-home-date">Sunday, June 8</h2>
+                    </div>
+                    <h2 class="event-home-desc">Don't miss the 47th Run for the Zoo</h2>
+                </a>
+                <a href="/ZooApp/public/event.php" class="event-home">
+                    <div>
+                        <h1 class="event-home-name">RUN FOR THE ZOO</h1>
+                        <h2 class="event-home-date">Sunday, June 8</h2>
+                    </div>
+                    <h2 class="event-home-desc">Don't miss the 47th Run for the Zoo</h2>
+                </a>
+                <a href="/ZooApp/public/event.php" class="event-home">
+                    <div>
+                        <h1 class="event-home-name">RUN FOR THE ZOO</h1>
+                        <h2 class="event-home-date">Sunday, June 8</h2>
+                    </div>
+                    <h2 class="event-home-desc">Don't miss the 47th Run for the Zoo</h2>
+                </a>
             </div>
         </div>
     </div>
