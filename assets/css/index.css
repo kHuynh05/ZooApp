@@ -4,82 +4,166 @@
     font-weight: normal;
     font-style: normal;
 }
-body{
-    margin:0px;
-    padding:0px;
-}
-.container{
-    width: 100vw;
-    height: 300vh;
-    margin:0px;
-    padding:0px;
-    font-family:'Gotham';
-}
-.homePageInfo{
-    height:100%;
-    background-color: green;
+
+body {
+    margin: 0px;
+    padding: 0px;
 }
 
-.featured{
-    height:15%;
-    padding: 40px 50px;
-    background-color: seagreen;
-    display:flex;
-    justify-content: space-between;
+img {
+    max-width: 100%;
+    height: auto;
 }
-.featureIntro{
-    color:white;
-    font-size: 60px;
-}
-.feature{
-    background-color:white;
-    height:100%;
-    width:20%;
-    display:flex;
-    flex-direction: column;
-    border: 10px inset black;
-}
-.featureimage{
-    height:40%
-}
-.featuretitle{
+
+.container {
+    width: 100vw;
+    height: 300vh;
     margin: 0px;
+    padding: 0px;
+    font-family: 'Gotham';
 }
-.featureDescription{
-    
-}
+
 .frontPage {
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/frontPage.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     height: 650px;
-    display:flex;
+    display: flex;
     color: white;
 }
-.frontPage-text{
-    padding:100px 50px 20px 100px;
+
+.frontPage-text {
+    padding: 100px 50px 20px 100px;
     display: flex;
-    flex:1;
+    flex: 1;
     flex-direction: column;
-    align-items:end;
-    justify-content:end;
+    align-items: end;
+    justify-content: end;
 }
-.frontPage-intro{
-    font-size:50px;
+
+.frontPage-intro {
+    font-size: 50px;
 }
-.frontPage-motto{
+
+.frontPage-motto {
     font-size: 110px;
 }
-.frontPageButton{
-    padding:20px;
+
+.frontPageButton {
+    padding: 20px;
     font-weight: bold;
     border-radius: 50px;
-    border:none;
-    color:white;
-    background-color:seagreen;
-    cursor:pointer;
+    border: none;
+    color: white;
+    background-color: seagreen;
+    cursor: pointer;
 }
-.frontPageButton:hover{
-    background-color: rgb(46,170,100);
+
+.frontPageButton:hover {
+    background-color: rgb(46, 170, 100);
+}
+
+.homePageInfo {
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+.featured {
+    height: 15%;
+    padding: 40px 50px;
+    margin: 0px;
+    background-color: seagreen;
+    display: flex;
+    justify-content: space-between;
+}
+
+.featureIntro {
+    color: white;
+    font-size: 60px;
+}
+
+.feature {
+    background-color: white;
+    height: 100%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    border: 10px inset black;
+}
+
+.featureimage {
+    height: 40%
+}
+
+.featuretitle {
+    margin: 0px;
+}
+.supportways{
+    height: 30%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/support-img.avif');
+    background-size:cover;
+    background-position: center;
+    background-repeat: repeat;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    padding: 0px 50px;
+}
+.support-title {
+    height:10%;
+    color:white;
+    margin: 0px;
+    text-align: left;
+}
+
+.support {
+    height:80%;
+    display: flex;
+}
+
+.support-1,
+.support-2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin:0px;
+    padding:0px;
+}
+.donate-homepage {
+    background: linear-gradient(to right,rgba(0, 0, 0, 0) 60%, black 100%), 
+                url('../img/donate-homepage.jpg');
+}
+.member-homepage{
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end; /* Aligns content inside to the bottom-right */
+    margin-left: auto;
+    margin-top: 20px;
+    background: linear-gradient(to left,rgba(0, 0, 0, 0) 60%, black 100%), 
+                    url('../img/donate-homepage.jpg');
+}
+
+.donate-homepage,
+.member-homepage,
+.community-homepage,
+.adopt-homepage {
+    height: 70%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px; /* Soft rounded corners */
+    box-shadow: 
+        5px 5px 10px rgba(0, 0, 0, 0.2),  /* Darker bottom-right shadow */
+        -5px -5px 10px rgba(255, 255, 255, 0.8); /* Lighter top-left highlight */
+    padding: 20px; 
+    margin-bottom: 20px;
+    justify-content: space-between;
+    background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        color:white;
 }
