@@ -1,0 +1,281 @@
+@font-face {
+    font-family: 'Gotham';
+    src: url('../css/GothamCondSSm-Book.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+button{
+    cursor: pointer;
+}
+span{
+    font-size: 20px;
+}
+.container {
+    width: 100vw;
+    height: 300vh;
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Gotham';
+}
+.homePage{
+    padding:30px 0px;
+}
+.frontPage {
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/frontPage.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 650px;
+    display: flex;
+    color: white;
+}
+
+.frontPage-text {
+    padding: 100px 50px 20px 100px;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: end;
+    justify-content: end;
+}
+
+.frontPage-intro {
+    font-size: 50px;
+}
+
+.frontPage-motto {
+    font-size: 110px;
+}
+
+.frontPageButton {
+    padding: 20px;
+    font-weight: bold;
+    border-radius: 50px;
+    border: none;
+    color: white;
+    background-color: seagreen;
+}
+
+.frontPageButton:hover {
+    background-color: rgb(46, 170, 100);
+}
+
+.homePageInfo {
+    height: 100%;
+    padding: 0px;
+    margin: 0px;
+}
+
+.featured {
+    height: 15%;
+    padding: 40px 50px;
+    margin: 0px;
+    background-color: seagreen;
+    display: flex;
+    justify-content: space-between;
+}
+
+.featureIntro {
+    color: white;
+    font-size: 60px;
+}
+
+.feature {
+    background-color: white;
+    height: 100%;
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    border: 10px inset black;
+}
+
+.featureimage {
+    height: 40%
+}
+
+.featuretitle {
+    margin: 0px;
+}
+
+.supportways {
+    height: 30%;
+    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/support-img.avif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: left;
+    padding: 0px 50px;
+}
+
+.support-title {
+    height: 10%;
+    color: white;
+    margin: 0px;
+    text-align: left;
+    font-size: 60px;
+}
+
+.support {
+    height: 80%;
+    width:100%;
+    display: flex;
+}
+
+.support-1,
+.support-2 {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 0px;
+    padding: 0px;
+    width:50%;
+}
+
+.donate-homepage {
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 60%, black 100%),
+        url('../img/donate-homepage.jpg');
+}
+
+.member-homepage, .adopt-homepage{
+    text-align: right;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    /* Aligns content inside to the bottom-right */
+    margin-left: auto;
+    margin-top: 20px;
+    background: linear-gradient(to left, rgba(0, 0, 0, 0) 60%, black 100%),
+        url('../img/lion_donate.jpg');
+}
+.community-homepage{
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 60%, black 100%),
+        url('../img/giraffe-donate.jpg');
+}
+.adopt-homepage{
+    background: linear-gradient(to left, rgba(0, 0, 0, 0) 60%, black 100%),
+        url('../img/monkey-donate.jpg');
+}
+.donate-homepage,
+.member-homepage,
+.community-homepage,
+.adopt-homepage {
+    height: 70%;
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    border-radius: 20px;
+    /* Soft rounded corners */
+    box-shadow:
+        5px 5px 10px rgba(0, 0, 0, 0.2),
+        /* Darker bottom-right shadow */
+        -5px -5px 10px rgba(255, 255, 255, 0.8);
+    /* Lighter top-left highlight */
+    padding: 20px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    color: white;
+}
+
+.upcoming-events-homepage {
+    height: 33%;
+    display: flex;
+    flex-direction: column;
+    padding :0px 70px;
+    background-color: white;
+}
+
+.eventhome-title {
+    padding-left: 30px;
+    font-size:60px;
+    color:black;
+}
+
+.events-home {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    justify-content: space-between;
+    
+}
+.event-home{
+    width:30%;
+    height:100%;
+    padding:10px;
+    color:white;
+    text-decoration: none;
+    transform: skew(-5deg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.3);
+    background-blend-mode: overlay;
+}
+.event-home:hover{
+    background-color: rgba(0, 0, 0, 0.5);
+}
+.event-home-name, .event-home-date{
+    margin:0px;
+}
+.event-home-desc{
+    text-align: right;
+}
+
+.contact-container {
+    height: 18%;
+    background: darkseagreen;
+    margin: 30px 100px 30px 40px;
+    padding:0px 20px;
+    border-radius: 10px;
+    border: 10px solid darkseagreen;
+}
+.form-contact{
+    height:auto;
+    display: flex;
+}
+.contactinfo{
+    width: 30%;
+    height: 100%;
+    margin:0px 20px 0px 0px;
+}
+.contactMessage{
+    width:100%;
+    height: auto;
+}
+label {
+    font-weight: bold;
+    display: block;
+    margin: 10px 0 5px;
+}
+.messageArea{
+    height: 67%;
+}
+.messageButton{
+    width:100%
+}
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
