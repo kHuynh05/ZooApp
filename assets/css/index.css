@@ -18,6 +18,9 @@ img {
 button{
     cursor: pointer;
 }
+span{
+    font-size: 20px;
+}
 .container {
     width: 100vw;
     height: 300vh;
@@ -128,6 +131,7 @@ button{
 
 .support {
     height: 80%;
+    width:100%;
     display: flex;
 }
 
@@ -138,6 +142,7 @@ button{
     justify-content: space-between;
     margin: 0px;
     padding: 0px;
+    width:50%;
 }
 
 .donate-homepage {
@@ -145,7 +150,7 @@ button{
         url('../img/donate-homepage.jpg');
 }
 
-.member-homepage {
+.member-homepage, .adopt-homepage{
     text-align: right;
     display: flex;
     justify-content: flex-end;
@@ -154,9 +159,16 @@ button{
     margin-left: auto;
     margin-top: 20px;
     background: linear-gradient(to left, rgba(0, 0, 0, 0) 60%, black 100%),
-        url('../img/donate-homepage.jpg');
+        url('../img/lion_donate.jpg');
 }
-
+.community-homepage{
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 60%, black 100%),
+        url('../img/giraffe-donate.jpg');
+}
+.adopt-homepage{
+    background: linear-gradient(to left, rgba(0, 0, 0, 0) 60%, black 100%),
+        url('../img/monkey-donate.jpg');
+}
 .donate-homepage,
 .member-homepage,
 .community-homepage,
@@ -208,19 +220,18 @@ button{
     padding:10px;
     color:white;
     text-decoration: none;
-    
+    transform: skew(-5deg);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/eventHome.jpg');
     background-size: cover;
     background-position: center;
-    background-repeat: no-repeat;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0.3);
+    background-blend-mode: overlay;
 }
 .event-home:hover{
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('../img/eventHome.jpg');
-    background-size: cover;
-    background-position: center;
+    background-color: rgba(0, 0, 0, 0.5);
 }
 .event-home-name, .event-home-date{
     margin:0px;
@@ -231,11 +242,11 @@ button{
 
 .contact-container {
     height: 18%;
-    background: white;
+    background: darkseagreen;
     margin: 30px 100px 30px 40px;
-    padding:0px 10px;
+    padding:0px 20px;
     border-radius: 10px;
-    border: 5px double black;
+    border: 10px solid darkseagreen;
 }
 .form-contact{
     height:auto;

@@ -1,5 +1,7 @@
 <?php
+// Include database connection
 include '../config/database.php';
+
 $event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 1;
 
 // Clean any output buffers
