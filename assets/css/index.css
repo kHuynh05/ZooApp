@@ -25,7 +25,9 @@ button{
     padding: 0px;
     font-family: 'Gotham';
 }
-
+.homePage{
+    padding:30px 0px;
+}
 .frontPage {
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/frontPage.jpg');
     background-size: cover;
@@ -206,7 +208,7 @@ button{
     padding:10px;
     color:white;
     text-decoration: none;
-    transform: skew(-5deg);
+    
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -225,4 +227,44 @@ button{
 }
 .event-home-desc{
     text-align: right;
+}
+
+.contact-container {
+    height: 18%;
+    background: white;
+    margin: 30px 100px 30px 40px;
+    padding:0px 10px;
+    border-radius: 10px;
+    border: 5px double black;
+}
+.form-contact{
+    height:auto;
+    display: flex;
+}
+.contactinfo{
+    width: 30%;
+    height: 100%;
+    margin:0px 20px 0px 0px;
+}
+.contactMessage{
+    width:100%;
+    height: auto;
+}
+label {
+    font-weight: bold;
+    display: block;
+    margin: 10px 0 5px;
+}
+.messageArea{
+    height: 67%;
+}
+.messageButton{
+    width:100%
+}
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
 }

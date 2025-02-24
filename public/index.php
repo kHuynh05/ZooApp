@@ -1,5 +1,6 @@
 <div class='container'>
     <?php include('../includes/navbar.php'); ?>
+    <div class='homePage'>
     <div class='frontPage'>
         <div class='frontPage-text'>
             <span class='frontPage-intro'>WELCOME TO ZOOTOPIA</span>
@@ -91,6 +92,34 @@
                 </a>
             </div>
         </div>
+        <div class="contact-container">
+            <h2>Contact Us</h2>
+            <form class="form-contact" action="contact.php" method="POST">
+                <div class="contactinfo">
+                    <div>
+                        <label for="firstname">first name:</label>
+                        <input type="text" id="firstname" name="firstname" required>
+
+                        <label for="lastname">last name:</label>
+                        <input type="text" id="lastname" name="lastname" required>
+                    </div>
+                    <div>
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" required>
+
+                        <label for="phone">Phone</label>
+                        <input type="tel" id="phone" name="phone" required>
+                    </div>
+                </div>
+                <div class="contactMessage">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="4" class="messageArea" required></textarea>
+
+                    <button class='frontPageButton messageButton' type="submit">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </div>
     </div>
     <?php include('../includes/footer.php'); ?>
 </div>
