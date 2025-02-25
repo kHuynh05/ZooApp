@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="../assets/css/homepage.css">
+</head>
 <?php
 // Include database connection
 include '../config/database.php';  // Make sure the path is correct
@@ -102,7 +105,7 @@ $conn->close();
                         $event_description = $event['description'];
 
                         // Fetch the image URL from get_image.php dynamically using event_id
-                        $imageUrl = "/ZooApp/scripts/get_image.php?event_id=" . $event_id;
+                        $imageUrl = "/ZooApp/scripts/get_event_image.php?event_id=" . $event_id;
 
                         // Display event with dynamic background image
                         echo "
@@ -123,23 +126,23 @@ $conn->close();
                 <form class="form-contact" action="../scripts/contact.php" method="POST">
                     <div class="contactinfo">
                         <div>
-                            <label for="firstname">first name:</label>
-                            <input type="text" id="firstname" name="firstname" required>
+                            <label for="firstname" class="starlabel">first name:</label>
+                            <input type="text" id="firstname" name="firstname" class="starlabel" required>
 
-                            <label for="lastname">last name:</label>
-                            <input type="text" id="lastname" name="lastname" required>
+                            <label for="lastname" >last name:</label>
+                            <input type="text" id="lastname" name="lastname" class="starlabel" required>
                         </div>
                         <div>
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
+                            <label for="email" class="starlabel">Email</label>
+                            <input type="email" id="email" name="email" class="starlabel" required>
 
                             <label for="phone">Phone</label>
-                            <input type="tel" id="phone" name="phone" required>
+                            <input type="tel" id="phone" name="phone" class="starlabel">
                         </div>
                     </div>
                     <div class="contactMessage">
                         <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="4" class="messageArea" required></textarea>
+                        <textarea id="message" name="message" rows="4" class="messageArea starlabel" required></textarea>
 
                         <button class='frontPageButton messageButton' type="submit">Send Message</button>
                     </div>

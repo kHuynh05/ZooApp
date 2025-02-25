@@ -1,0 +1,36 @@
+@font-face {
+    font-family: 'Gotham';
+    src: url('../css/GothamCondSSm-Book.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 'Gotham';
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+button{
+    cursor: pointer;
+}
+span{
+    font-size: 20px;
+}
+input, textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+label {
+    font-weight: bold;
+    display: block;
+    margin: 10px 0 5px;
+}

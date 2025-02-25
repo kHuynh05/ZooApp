@@ -1,7 +1,7 @@
 <?php
 include '../config/database.php';
-$event_id = 3; // Target event ID
-$image_path = "../assets/img/eventHome.jpg"; // Change to your image path
+$event_id = 1; // Target event ID
+$image_path = "../assets/img/donate-homepage.jpg"; // Change to your image path
 
 // Read the image as binary data
 $imageData = file_get_contents($image_path);

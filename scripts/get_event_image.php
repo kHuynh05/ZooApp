@@ -2,7 +2,13 @@
 // Include database connection
 include '../config/database.php';
 
-$event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 1;
+if (isset($_GET['event_id'])) {
+    echo "Event ID received: " . htmlspecialchars($_GET['event_id']);
+} else {
+    echo "No event ID received.";
+}
+
+$event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 2;
 
 // Clean any output buffers
 while (ob_get_level()) {
