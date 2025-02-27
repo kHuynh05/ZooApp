@@ -1,0 +1,97 @@
+/* Tab container */
+.container{
+    margin: 0px 40px;
+}
+.tabs {
+    display: flex;
+    justify-content: start;
+}
+
+.tab {
+    padding: 10px 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-bottom: 0px;
+    border-radius: 3px;
+    text-align: center;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.tab.active {
+    background-color: #4CAF50;  
+    color: white;
+}
+
+.tab:hover {
+    background-color: #ddd;
+}
+
+.tab-content {
+    display: none; 
+    padding: 20px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.form-container {
+    padding: 20px;
+    border: 2px solid #ccc;
+    border-top: 0px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Add spacing between tabs and form elements */
+.form-address {
+    margin-top: 20px;
+}
+
+.form-address input, .form-address select {
+    width: 48%;
+    margin-right: 4%;
+}
+
+.form-address input:last-child, .form-address select:last-child {
+    margin-right: 0;
+}
+
+/* Style for the submit button (optional) */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}

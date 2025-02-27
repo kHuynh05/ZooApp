@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="../assets/css/homepage.css">
+</head>
 <?php
 // Include database connection
 include '../config/database.php';  // Make sure the path is correct
@@ -29,7 +32,7 @@ $conn->close();
             <div class='frontPage-text'>
                 <span class='frontPage-intro'>WELCOME TO ZOOTOPIA</span>
                 <span class='frontPage-motto'>WHERE WILDLIFE COMES TO LIFE</span>
-                <a href="/ZooApp/public/ticket.php">
+                <a href="../public/ticket.php">
                     <button class='frontPagebutton'>Explore Zootopia</button>
                 </a>
             </div>
@@ -60,14 +63,14 @@ $conn->close();
                         <div class="donate-homepage">
                             <h1>Donate Today</h1>
                             <span>Your donation provides vital care and conservation for animals in need. Give today!</span>
-                            <a href="/ZooApp/public/donation.php">
+                            <a href="../public/donation.php">
                                 <button class="frontPageButton">Donate Now</button>
                             </a>
                         </div>
                         <div class="member-homepage">
                             <h1>Become a member</h1>
                             <span>Join Zootopia and enjoy exclusive benefits while supporting wildlife conservation.</span>
-                            <a href="/ZooApp/public/membership.php">
+                            <a href="../public/membership.php">
                                 <button class="frontPageButton">Discover Benefits</button>
                             </a>
                         </div>
@@ -76,14 +79,14 @@ $conn->close();
                         <div class="community-homepage">
                             <h1>Be part of our community</h1>
                             <span>Together, we can protect wildlife and create a better future for animals everywhere.</span>
-                            <a href="/ZooApp/public/community.php">
+                            <a href="../public/community.php">
                                 <button class="frontPageButton">Join us</button>
                             </a>
                         </div>
                         <div class="adopt-homepage">
                             <h1>Adopt an animal</h1>
                             <span>Adopt an animal and help provide essential care and support for species in need.</span>
-                            <a href="/ZooApp/public/adopt.php">
+                            <a href="../public/adopt.php">
                                 <button class="frontPageButton">Adopt today</button>
                             </a>
                         </div>
@@ -102,11 +105,11 @@ $conn->close();
                         $event_description = $event['description'];
 
                         // Fetch the image URL from get_image.php dynamically using event_id
-                        $imageUrl = "/ZooApp/scripts/get_image.php?event_id=" . $event_id;
+                        $imageUrl = "../../scripts/get_event_image.php?event_id=" . $event_id;
 
                         // Display event with dynamic background image
                         echo "
-                            <a href='/ZooApp/public/event.php?event_id={$event_id}' class='event-home' style='background-image: url({$imageUrl});'>
+                            <a href='/public/event.php?event_id={$event_id}' class='event-home' style='background-image: url({$imageUrl});'>
                                 <div>
                                     <h1 class='event-home-name'>{$event_name}</h1>
                                     <h2 class='event-home-date'>{$event_date}</h2>
@@ -123,23 +126,23 @@ $conn->close();
                 <form class="form-contact" action="../scripts/contact.php" method="POST">
                     <div class="contactinfo">
                         <div>
-                            <label for="firstname">first name:</label>
-                            <input type="text" id="firstname" name="firstname" required>
+                            <label for="firstname" class="starlabel">first name:</label>
+                            <input type="text" id="firstname" name="firstname" class="starlabel" required>
 
-                            <label for="lastname">last name:</label>
-                            <input type="text" id="lastname" name="lastname" required>
+                            <label for="lastname" >last name:</label>
+                            <input type="text" id="lastname" name="lastname" class="starlabel" required>
                         </div>
                         <div>
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
+                            <label for="email" class="starlabel">Email</label>
+                            <input type="email" id="email" name="email" class="starlabel" required>
 
                             <label for="phone">Phone</label>
-                            <input type="tel" id="phone" name="phone" required>
+                            <input type="tel" id="phone" name="phone" class="starlabel">
                         </div>
                     </div>
                     <div class="contactMessage">
                         <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="4" class="messageArea" required></textarea>
+                        <textarea id="message" name="message" rows="4" class="messageArea starlabel" required></textarea>
 
                         <button class='frontPageButton messageButton' type="submit">Send Message</button>
                     </div>

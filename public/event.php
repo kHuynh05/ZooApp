@@ -1,40 +1,48 @@
-<?php
-include '../config/database.php';
-$event_id = isset($_GET['event_id']) ? (int)$_GET['event_id'] : 1;
+<head>
+    <link rel="stylesheet" href="../assets/css/event.css">
+</head>
+<div>
+    <?php include('../includes/navbar.php'); ?>
+    <?php
+    include '../config/database.php';
 
-// Clean any output buffers
-while (ob_get_level()) {
-    ob_end_clean();
-}
+    if (isset($_GET['event_id'])) {
+        $event_id = intval($_GET['event_id']); // Convert to integer for security
 
-// Get image
-$sql = "SELECT picture FROM events WHERE event_id = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $event_id);
-$stmt->bind_result($image_data);
-$stmt->execute();
-$stmt->store_result();
-$stmt->fetch();
+        $query = "SELECT event_name, event_date, location, description, picture FROM events WHERE event_id = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("i", $event_id);
+        $stmt->execute();
+        $stmt->bind_result($event_name, $event_date, $location, $description, $picture);
+        $stmt->fetch();
 
-if ($stmt->num_rows > 0 && !empty($image_data)) {
-    // Disable compression
-    if (function_exists('apache_setenv')) {
-        apache_setenv('no-gzip', '1');
+        if ($event_name) {
+            echo '<div class="container">';
+
+            // Display the event image if available
+            if (!empty($picture)) {
+                echo '<img class="event-img" src="data:image/jpeg;base64,' . base64_encode($picture) . '" alt="Event Image">';
+            } else {
+                echo "<p>No image available for this event.</p>";
+            }
+
+            // Display event details
+            echo '<div class="event-info">';
+            echo "<h1>Event: " . htmlspecialchars($event_name) . "</h1>";
+            echo "<p><strong>Time:</strong> " . htmlspecialchars($event_date) . "</p>";
+            echo "<p><strong>Location:</strong> " . htmlspecialchars($location) . "</p>";
+            echo "<p>" . htmlspecialchars($description) . "</p>";
+            echo '</div>';
+            echo '</div>';
+        } else {
+            echo "<p>Event not found.</p>";
+        }
+
+        $stmt->close();
+        $conn->close();
+    } else {
+        echo "<p>No event ID provided.</p>";
     }
-    @ini_set('zlib.output_compression', '0');
-    
-    // Set proper headers for JPEG
-    header("Content-Type: image/jpeg");
-    header("Content-Length: " . strlen($image_data));
-    header("Cache-Control: no-cache");
-    
-    // Output the image data
-    echo $image_data;
-} else {
-    header("Content-Type: text/plain");
-    echo "No image found for event_id = $event_id";
-}
-
-$stmt->close();
-$conn->close();
-?>
+    ?>
+    <?php include('../includes/footer.php'); ?>
+</div>

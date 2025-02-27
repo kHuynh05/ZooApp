@@ -1,6 +1,6 @@
 <?php
 // Include the database configuration file
-include '../config/database.php';  // Or use require 'db_config.php';
+include '../config/database.php';
 
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

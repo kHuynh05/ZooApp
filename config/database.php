@@ -10,7 +10,8 @@ $dotenv->required([
     'DB_HOST',
     'DB_NAME',
     'DB_USER',
-    'DB_PASS'
+    'DB_PASS',
+    'SECRET_KEY'
 ])->notEmpty();
 
 // Get database credentials using $_ENV
@@ -18,6 +19,7 @@ $dbHost = $_ENV['DB_HOST'];
 $dbName = $_ENV['DB_NAME'];
 $dbUser = $_ENV['DB_USER'];
 $dbPass = $_ENV['DB_PASS'];
+$secretKey = $_ENV['SECRET_KEY'];
 
 $conn = mysqli_init();
 mysqli_ssl_set($conn,NULL,NULL, __DIR__ . "/../assets/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
