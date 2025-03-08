@@ -1,74 +1,83 @@
+<!DOCTYPE html>
+<html>
+
 <head>
     <link rel="stylesheet" href="../assets/css/homepage.css">
 </head>
-<?php
-// Include database connection
-include '../config/database.php';
 
-if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST["enclosureType"]) && $_POST["enclosureType"] != "") {
-    $selectedEnclosureID = $_POST["enclosureType"];
+<body>
+    <?php
+    // Include database connection
+    include '../config/database.php';
 
-    $sqlForAnimals = "SELECT animal_id, animal_name, enclosure_id, FROM animals WHERE enclosure_id = $selectedEnclosureID";
+    if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST["enclosureType"]) && $_POST["enclosureType"] != "") {
+        $selectedEnclosureID = $_POST["enclosureType"];
+
+        $sqlForAnimals = "SELECT animal_id, animal_name, FROM animals WHERE enclosure_id = $selectedEnclosureID";
+
+        $result = $conn->query($sqlForAnimals);
+    } else {
+        $sqlForAnimals = "SELECT animal_id, animal_name, FROM animals";
+    }
+
 
     $result = $conn->query($sqlForAnimals);
-} else {
-    $sqlForAnimals = "SELECT animal_id, animal_name, enclosure_id, FROM animals";
-}
-
-
-$result = $conn->query($sqlForAnimals);
-// Check if there are any events in the result
-if ($result->num_rows > 0) {
-    // Loop through the results and display each event
-    $animals = [];
-    while ($row = $result->fetch_assoc()) {
-        $animals[] = $row;
+    // Check if there are any animals in the result
+    if ($result->num_rows > 0) {
+        // Loop through the results and display each animal
+        $animals = [];
+        while ($row = $result->fetch_assoc()) {
+            $animals[] = $row;
+        }
+    } else {
+        // Handle the case if no animals are found
+        $animals = ['No animals found'];
     }
-} else {
-    // Handle the case if no events are found
-    $animals = [];
-}
 
-$sqlForEnclosures = "SELECT enclosure_id, enclosure_name FROM enclosures";
+    $sqlForEnclosures = "SELECT enclosure_id, enclosure_name FROM enclosures";
 
-$result = $conn->query($sqlForEnclosures);
-// Check if there are any events in the result
-if ($result->num_rows > 0) {
-    // Loop through the results and display each event
-    $enclosures = [];
-    while ($row = $result->fetch_assoc()) {
-        $enclosures[] = $row;
+    $result = $conn->query($sqlForEnclosures);
+    // Check if there are any enclosures in the result
+    if ($result->num_rows > 0) {
+        // Loop through the results and display each enclosure
+        $enclosures = [];
+        while ($row = $result->fetch_assoc()) {
+            $enclosures[] = $row;
+        }
+    } else {
+        // Handle the case if no enclosures are found
+        $enclosures = ['No enclosures found'];
     }
-} else {
-    // Handle the case if no events are found
-    $enclosures = [];
-}
 
-// Close the connection
-$conn->close();
-?>
+    // Close the connection
+    $conn->close();
+    ?>
 
-<div class="container">
-    <?php include('../includes/navbar.php'); ?>
-    <h1>Our Animals</h1>
+    <div class="container">
+        <?php include('../includes/navbar.php'); ?>
 
-    <div class="filter-container">
-        <form method="POST">
-            <select name="enclosureType" onchange="this.form.submit()">
-                <option value="">All Enclosures</option>
-                <?php foreach ($enclosures as $enclosure): ?>
-                    <option value="<?php echo $enclosure['enclosure_id']; ?>"><?php echo $enclosure['enclosure_name']; ?></option>
-                <?php endforeach; ?>
-            </select>
-        </form>
+        <h1>Our Animals</h1>
+
+        <div class="filter-container">
+            <form method="POST">
+                <select name="enclosureType" onchange="this.form.submit()">
+                    <option value="">All Enclosures</option>
+                    <?php foreach ($enclosures as $enclosure): ?>
+                        <option value="<?php echo $enclosure['enclosure_id']; ?>"><?php echo $enclosure['enclosure_name']; ?></option>
+                    <?php endforeach; ?>
+                </select>
+            </form>
+        </div>
+
+        <div class="animal-grid">
+            <?php foreach ($animals as $animal): ?>
+                <div class="animal-item">
+                    <!-- <img src="<?php echo $animal['animal_image']; ?>" alt="<?php echo $animal['animal_name']; ?>"> -->
+                    <h3><?php echo $animal['animal_name']; ?></h3>
+                </div>
+            <?php endforeach; ?>
+        </div>
     </div>
+</body>
 
-    <div class="animal-grid">
-        <?php foreach ($animals as $animal): ?>
-            <div class="animal-item">
-                <!-- <img src="<?php echo $animal['animal_image']; ?>" alt="<?php echo $animal['animal_name']; ?>"> -->
-                <h3><?php echo $animal['animal_name']; ?></h3>
-            </div>
-        <?php endforeach; ?>
-    </div>
-</div>
+</html>
