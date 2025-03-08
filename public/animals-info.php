@@ -13,11 +13,11 @@
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST["enclosureType"]) && $_POST["enclosureType"] != "") {
         $selectedEnclosureID = $_POST["enclosureType"];
 
-        $sqlForAnimals = "SELECT animal_id, animal_name, FROM animals WHERE enclosure_id = $selectedEnclosureID";
+        $sqlForAnimals = "SELECT animal_id, animal_name FROM animals WHERE enclosure_id = $selectedEnclosureID";
 
         $result = $conn->query($sqlForAnimals);
     } else {
-        $sqlForAnimals = "SELECT animal_id, animal_name, FROM animals";
+        $sqlForAnimals = "SELECT animal_id, animal_name FROM animals";
     }
 
 
@@ -31,7 +31,7 @@
         }
     } else {
         // Handle the case if no animals are found
-        $animals = ['No animals found'];
+        $animals = ['row' => ['animal_id' => null, 'animal_name' => null]];
     }
 
     $sqlForEnclosures = "SELECT enclosure_id, enclosure_name FROM enclosures";
@@ -46,7 +46,7 @@
         }
     } else {
         // Handle the case if no enclosures are found
-        $enclosures = ['No enclosures found'];
+        $enclosures = ['row' => ['enclosure_id' => null, 'enclosure_name' => null]];
     }
 
     // Close the connection
@@ -62,20 +62,28 @@
             <form method="POST">
                 <select name="enclosureType" onchange="this.form.submit()">
                     <option value="">All Enclosures</option>
-                    <?php foreach ($enclosures as $enclosure): ?>
-                        <option value="<?php echo $enclosure['enclosure_id']; ?>"><?php echo $enclosure['enclosure_name']; ?></option>
-                    <?php endforeach; ?>
+                    <?php foreach ($enclosures as $enclosure):
+                        if ($enclosure['enclosure_id'] != null): ?>
+
+                            <option value="<?php echo $enclosure['enclosure_id']; ?>"><?php echo $enclosure['enclosure_name']; ?></option>
+
+                    <?php endif;
+                    endforeach; ?>
                 </select>
             </form>
         </div>
 
         <div class="animal-grid">
-            <?php foreach ($animals as $animal): ?>
-                <div class="animal-item">
-                    <!-- <img src="<?php echo $animal['animal_image']; ?>" alt="<?php echo $animal['animal_name']; ?>"> -->
-                    <h3><?php echo $animal['animal_name']; ?></h3>
-                </div>
-            <?php endforeach; ?>
+            <?php foreach ($animals as $animal):
+                if ($animal['animal_id'] != null): ?>
+
+                    <div class="animal-item">
+                        <!-- <img src="<?php echo $animal['animal_image']; ?>" alt="<?php echo $animal['animal_name']; ?>"> -->
+                        <h3><?php echo $animal['animal_name']; ?></h3>
+                    </div>
+
+            <?php endif;
+            endforeach; ?>
         </div>
     </div>
 </body>
