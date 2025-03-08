@@ -8,15 +8,15 @@ include '../config/database.php';
 if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST["enclosureType"]) && $_POST["enclosureType"] != "") {
     $selectedEnclosureID = $_POST["enclosureType"];
 
-    $sql = "SELECT animal_id, animal_name, enclosure_id, FROM animals WHERE enclosure_id = $selectedEnclosureID";
+    $sqlForAnimals = "SELECT animal_id, animal_name, enclosure_id, FROM animals WHERE enclosure_id = $selectedEnclosureID";
 
-    $result = $conn->query($sql);
+    $result = $conn->query($sqlForAnimals);
 } else {
-    $sql = "SELECT animal_id, animal_name, enclosure_id, FROM animals";
+    $sqlForAnimals = "SELECT animal_id, animal_name, enclosure_id, FROM animals";
 }
 
 
-$result = $conn->query($sql);
+$result = $conn->query($sqlForAnimals);
 // Check if there are any events in the result
 if ($result->num_rows > 0) {
     // Loop through the results and display each event
@@ -27,6 +27,21 @@ if ($result->num_rows > 0) {
 } else {
     // Handle the case if no events are found
     $animals = [];
+}
+
+$sqlForEnclosures = "SELECT enclosure_id, enclosure_name FROM enclosures";
+
+$result = $conn->query($sqlForEnclosures);
+// Check if there are any events in the result
+if ($result->num_rows > 0) {
+    // Loop through the results and display each event
+    $enclosures = [];
+    while ($row = $result->fetch_assoc()) {
+        $enclosures[] = $row;
+    }
+} else {
+    // Handle the case if no events are found
+    $enclosures = [];
 }
 
 // Close the connection
