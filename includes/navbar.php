@@ -8,7 +8,7 @@
 </head>
 <nav class="navbar">
     <div class="navbar-logo">
-        <a href="index.php">
+        <a href="homepage.php">
             <img src="/assets/img/zoo-logo.jpg" alt="Houston Zoo Logo">
         </a>
     </div>
