@@ -1,3 +1,6 @@
+<head>
+    <link rel="stylesheet" href="../assets/css/login.css">
+</head>
 <?php
 // Include the necessary files for JWT (use Composer's autoload)
 require_once '../vendor/autoload.php';
@@ -17,7 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $password = $_POST['password'];
 
     // Query to check the email and get the hashed password
-    $query = "SELECT member_id, password FROM members WHERE email = ?";
+    $query = "SELECT member_id, password FROM members, customers WHERE customers.cust_id = members.member_id AND customers.cust_email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
     $stmt->execute();
@@ -25,7 +28,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->fetch();
 
     // Verify password
-    if ($user_id && $password === $stored_password) {
+    if ($user_id && password_verify($password, $stored_password)) {
 
         // Create the payload for the JWT token
         $payload = [
@@ -55,17 +58,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
+<div class="container">
+    <?php include('../includes/navbar.php'); ?>
+    <div class="login-container">
+        <h2>Login</h2>
 
-<h2>Login</h2>
+        <!-- Show error message if invalid credentials -->
+        <?php if ($message): ?>
+            <p class="error"><?php echo $message; ?></p>
+        <?php endif; ?>
 
-<!-- Show error message if invalid credentials -->
-<?php if ($message): ?>
-    <p class="error"><?php echo $message; ?></p>
-<?php endif; ?>
-
-<!-- Login form -->
-<form method="POST" action="login.php">
-    <input type="text" name="email" placeholder="Email" value="<?php echo htmlspecialchars($email); ?>" required>
-    <input type="password" name="password" placeholder="Password" required>
-    <button type="submit">Login</button>
-</form>
+        <!-- Login form -->
+        <form method="POST" action="login.php">
+            <div class="form-group">
+                <input type="text" name="email" placeholder="Email" value="<?php echo htmlspecialchars($email); ?>" required>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+            <div class="form-actions">
+                <button type="submit">Login</button>
+                <span class="register-link">New user? <a href="register.php">Register here</a></span>
+            </div>
+        </form>
+    </div>
+    <?php include('../includes/footer.php'); ?>
+</div>
