@@ -27,7 +27,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_result($user_id, $stored_password);
     $stmt->fetch();
 
-    echo($stored_password);
     // Verify password
     if ($user_id && password_verify($password, $stored_password)) {
 
