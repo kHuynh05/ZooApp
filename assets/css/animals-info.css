@@ -16,6 +16,8 @@
     cursor: pointer;
     transition: all 0.3s ease;
     position: relative;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
+                -5px -5px 10px rgba(255, 255, 255, 0.8);
 }
 
 /* Image handling */
@@ -31,18 +33,19 @@
     bottom: 0;
     left: 0;
     right: 0;
-    padding: 15px;
+    padding: 20px 15px;
     margin: 0;
     color: white;
     text-align: center;
-    background: rgba(0,0,0,0.5); /* Semi-transparent background for readability */
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.3));
     z-index: 2;
+    font-size: 1.3rem;
 }
 
 /* Hover effects */
 .animal-item:hover {
     transform: skew(-5deg);
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .animal-item::before {
@@ -60,4 +63,107 @@
 
 .animal-item:hover::before {
     opacity: 1;
+}
+
+/* Base page styling */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+/* Container styling to match homepage */
+.container {
+    width: 100vw;
+    margin: 0px;
+    padding: 0px;
+    background-color: #f5f6fa;
+}
+
+/* Page title styling to match homepage large text */
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin: 30px 0;
+    font-size: 60px;
+    font-weight: bold;
+}
+
+/* Filter container styling with homepage theme */
+.filter-container {
+    background-color: seagreen;
+    padding: 40px 50px;
+    margin: 0px;
+    text-align: center;
+}
+
+.filter-container form {
+    display: inline-block;
+}
+
+.filter-container select {
+    padding: 20px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 50px;
+    border: none;
+    min-width: 300px;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 20px center;
+    background-size: 1em;
+}
+
+.filter-container select:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.filter-container select:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+}
+
+.filter-container select option {
+    background-color: seagreen;
+    color: white;
+    padding: 15px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .container {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 40px;
+    }
+
+    .filter-container {
+        padding: 20px;
+    }
+
+    .filter-container select {
+        min-width: 250px;
+        width: 90%;
+        max-width: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    h1 {
+        font-size: 32px;
+    }
+
+    .filter-container {
+        padding: 15px;
+    }
 }
