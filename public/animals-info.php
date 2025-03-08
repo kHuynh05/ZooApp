@@ -79,7 +79,7 @@
                 if ($animal['animal_id'] != null): ?>
 
                     <div class="animal-item">
-                        <!-- <img src="data:image/jpeg;base64,<?php echo base64_encode($animal['image']); ?>" alt="<?php echo $animal['animal_name']; ?>"> -->
+                        <img src="<?php echo $animal['image']; ?>" alt="<?php echo $animal['animal_name']; ?>">
                         <h3><?php echo $animal['animal_name']; ?></h3>
                     </div>
 
