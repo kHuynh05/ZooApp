@@ -13,9 +13,11 @@
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST["enclosureType"]) && $_POST["enclosureType"] != "") {
         $selectedEnclosureID = $_POST["enclosureType"];
 
-        $sqlForAnimals = "SELECT animal_id, animal_name FROM animals WHERE enclosure_id = $selectedEnclosureID";
-
-        $result = $conn->query($sqlForAnimals);
+        $sqlForAnimals = "SELECT animal_id, animal_name FROM animals WHERE enclosure_id = ?";
+        $stmt = $conn->prepare($sqlForAnimals);
+        $stmt->bind_param("i", $selectedEnclosureID); // "i" for integer
+        $stmt->execute();
+        $result = $stmt->get_result();
     } else {
         $sqlForAnimals = "SELECT animal_id, animal_name FROM animals";
     }
