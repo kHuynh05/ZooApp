@@ -13,17 +13,16 @@
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST["enclosureType"]) && $_POST["enclosureType"] != "") {
         $selectedEnclosureID = $_POST["enclosureType"];
 
-        $sqlForAnimals = "SELECT animal_id, animal_name FROM animals WHERE enclosure_id = ?";
+        $sqlForAnimals = "SELECT animal_id, animal_name, image FROM animals WHERE enclosure_id = ?;";
         $stmt = $conn->prepare($sqlForAnimals);
         $stmt->bind_param("i", $selectedEnclosureID); // "i" for integer
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
         $sqlForAnimals = "SELECT animal_id, animal_name FROM animals";
+        $result = $conn->query($sqlForAnimals);
     }
 
-
-    $result = $conn->query($sqlForAnimals);
     // Check if there are any animals in the result
     if ($result->num_rows > 0) {
         // Loop through the results and display each animal
@@ -63,7 +62,7 @@
         <div class="filter-container">
             <form method="POST">
                 <select name="enclosureType" onchange="this.form.submit()">
-                    <option value="">All Enclosures</option>
+                    <label><?php echo $_POST["enclosureType"] != "" ? $_POST["enclosureType"] : "All Enclosures"; ?></label>
                     <?php foreach ($enclosures as $enclosure):
                         if ($enclosure['enclosure_id'] != null): ?>
 
@@ -80,7 +79,7 @@
                 if ($animal['animal_id'] != null): ?>
 
                     <div class="animal-item">
-                        <!-- <img src="<?php echo $animal['animal_image']; ?>" alt="<?php echo $animal['animal_name']; ?>"> -->
+                        <!-- <img src="data:image/jpeg;base64,<?php echo base64_encode($animal['image']); ?>" alt="<?php echo $animal['animal_name']; ?>"> -->
                         <h3><?php echo $animal['animal_name']; ?></h3>
                     </div>
 
