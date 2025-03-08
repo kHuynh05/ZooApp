@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <link rel="stylesheet" href="../assets/css/homepage.css">
+    <link rel="stylesheet" href="../assets/css/animals-info.css">
 </head>
 
 <body>
@@ -19,7 +19,7 @@
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
-        $sqlForAnimals = "SELECT animal_id, animal_name FROM animals";
+        $sqlForAnimals = "SELECT animal_id, animal_name, image FROM animals";
         $result = $conn->query($sqlForAnimals);
     }
 
@@ -62,11 +62,11 @@
         <div class="filter-container">
             <form method="POST">
                 <select name="enclosureType" onchange="this.form.submit()">
-                    <label><?php echo $_POST["enclosureType"] != "" ? $_POST["enclosureType"] : "All Enclosures"; ?></label>
+                    <option value="">All Enclosures</option>
                     <?php foreach ($enclosures as $enclosure):
                         if ($enclosure['enclosure_id'] != null): ?>
 
-                            <option value="<?php echo $enclosure['enclosure_id']; ?>"><?php echo $enclosure['enclosure_name']; ?></option>
+                            <option value="<?php echo $enclosure['enclosure_id']; ?>" <?php echo isset($_POST["enclosureType"]) && $_POST["enclosureType"] == $enclosure['enclosure_id'] ? 'selected' : ''; ?>><?php echo $enclosure['enclosure_name']; ?></option>
 
                     <?php endif;
                     endforeach; ?>
