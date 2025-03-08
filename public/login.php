@@ -27,6 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->bind_result($user_id, $stored_password);
     $stmt->fetch();
 
+    echo($stored_password);
     // Verify password
     if ($user_id && password_verify($password, $stored_password)) {
 
@@ -43,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $jwt = JWT::encode($payload, $secretKey, 'HS256');
 
         // Set JWT token as a cookie (HttpOnly, Secure)
-        setcookie("jwt", $jwt, time() + 3600, "/", "", true, true); // 1 hour expiration
+        setcookie("jwt_token", $jwt, time() + 3600, "/", "", true, true); // 1 hour expiration
 
         // Redirect to dashboard
         header("Location: memberPortal.php");
