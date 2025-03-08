@@ -32,7 +32,7 @@
         }
     } else {
         // Handle the case if no animals are found
-        $animals = ['row' => ['animal_id' => null, 'animal_name' => null]];
+        $animals = ['row' => ['animal_id' => null, 'animal_name' => null, 'image' => null]];
     }
 
     $sqlForEnclosures = "SELECT enclosure_id, enclosure_name FROM enclosures";
