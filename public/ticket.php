@@ -3,7 +3,6 @@
 include '../config/database.php'; // Or however you connect to your database
 
 // Include the authorization file
-
 include '../scripts/authorize.php';
 echo($is_member);
 // Check if user is a member and redirect accordingly
