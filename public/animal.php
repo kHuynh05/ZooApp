@@ -55,22 +55,10 @@
 
             echo '<section class="facts-section">';
             echo '<h2>Animal Facts</h2>';
-            echo '<p>';
-            echo '<strong>Scientific Name</strong><br />';
-            echo $species_name;
-            echo '</p>';
-            echo '<p>';
-            echo '<strong>Location in the Zoo</strong><br />';
-            echo $enclosure_name;
-            echo '</p>';
-            echo '<p>';
-            echo '<strong>Habitat</strong><br />';
-            echo $habitat;
-            echo '</p>';
-            echo '<p>';
-            echo '<strong>Cool Animal Fact</strong><br />';
-            echo $fact;
-            echo '</p>';
+            echo '<p><strong>Scientific Name</strong><br />' . $species_name . '</p>';
+            echo '<p><strong>Location in the Zoo</strong><br />' . $enclosure_name . '</p>';
+            echo '<p><strong>Habitat</strong><br />' . $habitat . '</p>';
+            echo '<p><strong>Cool Animal Fact</strong><br />' . $fact . '</p>';
             echo '</section>';
         } else {
             echo "<p>Animal not found.</p>";
