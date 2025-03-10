@@ -3,7 +3,6 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Bald Eagle</title>
     <!-- Link to your CSS file -->
     <link rel="stylesheet" href="../assets/css/animal.css" />
 </head>
@@ -16,7 +15,7 @@
     include '../config/database.php';
 
     if (isset($_GET['animal_id'])) {
-        $event_id = intval($_GET['animal_id']); // Convert to integer for security
+        $animal_id = intval($_GET['animal_id']); // Convert to integer for security
 
         $query = "SELECT animal_name, animal_description, fact, image, species_id, animal_range, enclosure_id FROM animals WHERE animal_id = ?";
         $stmt = $conn->prepare($query);
