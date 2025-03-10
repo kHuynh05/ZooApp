@@ -1,4 +1,7 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start(); // Ensure session is started only once
+}
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Initialize dotenv
@@ -27,6 +30,6 @@ mysqli_real_connect($conn, $dbHost, $dbUser, $dbPass, $dbName, 3306);
 if (mysqli_connect_errno()) {
     die('Failed to connect to MySQL: ' . mysqli_connect_error());
 }else{
-    echo("Connected!");
+    error_log("Connected!");
 }
 ?>
