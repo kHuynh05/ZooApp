@@ -1,4 +1,7 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start(); // Ensure session is started only once
+}
 require_once __DIR__ . '/../vendor/autoload.php';
 
 // Initialize dotenv
