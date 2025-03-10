@@ -16,7 +16,7 @@
         </a>
     </div>
     <div class="navbar-links">
-            <a href="animals.php">Animals</a>
+            <a href="animals-info.php">Animals</a>
             <a href="tickets.php">Tickets</a>
             <a href="about.php">About</a>
             <a href="contact.php">Contact</a> 
@@ -128,3 +128,4 @@
         display: block;
     }
 </style>
+

@@ -6,15 +6,14 @@
 include '../config/database.php';  // Make sure the path is correct
 
 // Fetch the upcoming events (you can adjust the query based on your database)
-$sql = "SELECT event_id, event_name, event_date, description, picture FROM events ORDER BY event_date LIMIT 3";
-
-$result = $conn->query($sql);
+$sqlForEvents = "SELECT event_id, event_name, event_date, description, picture FROM events ORDER BY event_date LIMIT 3";
+$resultForEvents = $conn->query($sqlForEvents);
 
 // Check if there are any events in the result
-if ($result->num_rows > 0) {
+if ($resultForEvents->num_rows > 0) {
     // Loop through the results and display each event
     $events = [];
-    while ($row = $result->fetch_assoc()) {
+    while ($row = $resultForEvents->fetch_assoc()) {
         $events[] = $row;
     }
 } else {
@@ -22,9 +21,25 @@ if ($result->num_rows > 0) {
     $events = [];
 }
 
+$sqlForAnimals = "SELECT animal_id, animal_name, animal_description, image FROM animals ORDER BY animal_id LIMIT 3";
+$resultForAnimals = $conn->query($sqlForAnimals);
+
+// Check if there are any animals in the result
+if ($resultForAnimals->num_rows > 0) {
+    // Loop through the results and display each animal
+    $animals = [];
+    while ($row = $resultForAnimals->fetch_assoc()) {
+        $animals[] = $row;
+    }
+} else {
+    // Handle the case if no animals are found
+    $animals = [];
+}
+
 // Close the connection
 $conn->close();
 ?>
+
 <div class='container'>
     <?php include('../includes/navbar.php'); ?>
     <div class='homePage'>
@@ -38,24 +53,30 @@ $conn->close();
             </div>
         </div>
         <div class='homePageInfo'>
+
             <div class='featured'>
                 <h1 class='featureIntro'>MEET <br> OUR <br>FEATURED <br>ANIMALS</h1>
-                <div class='feature'>
-                    <img class="featureimage" />
-                    <h1 class="featuretitle">Red Panda</h1>
-                    <span class="featuredescription">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.</span>
-                </div>
-                <div class='feature'>
-                    <img class="featureimage" />
-                    <h1 class="featuretitle">Red Panda</h1>
-                    <span class="featuredescription">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.</span>
-                </div>
-                <div class='feature'>
-                    <img class="featureimage" />
-                    <h1 class="featuretitle">Red Panda</h1>
-                    <span class="featuredescription">Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor.</span>
-                </div>
+                <?php
+                // Loop through animals and display them
+                foreach ($animals as $animal) {
+                    $animal_id = $animal['animal_id'];
+                    $animal_name = $animal['animal_name'];
+                    $animal_description = $animal['animal_description'];
+                    $animal_image = $animal['image'];
+
+                    // Display 3 animals
+                    echo "
+                            <div class='feature'>
+                                <img class='featureimage' src='{$animal_image}' />
+                                <h1 class='featuretitle'>{$animal_name}</h1>
+                                <span class='featuredescription'>{$animal_description}</span>
+                            </div>
+                        ";
+                }
+                ?>
+
             </div>
+
             <div class="supportways">
                 <h1 class="support-title">HOW YOU CAN SUPPORT</h1>
                 <div class="support">
@@ -129,7 +150,7 @@ $conn->close();
                             <label for="firstname" class="starlabel">first name:</label>
                             <input type="text" id="firstname" name="firstname" class="starlabel" required>
 
-                            <label for="lastname" >last name:</label>
+                            <label for="lastname">last name:</label>
                             <input type="text" id="lastname" name="lastname" class="starlabel" required>
                         </div>
                         <div>
