@@ -1,0 +1,99 @@
+/* General reset or basic styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+  }
+  
+  /* Breadcrumb Styles */
+  .breadcrumb {
+    margin: 1rem;
+    font-size: 0.9rem;
+  }
+  
+  .breadcrumb a {
+    text-decoration: none;
+    color: #333;
+  }
+  
+  /* Hero Section */
+  .hero-section {
+    display: flex;
+    background-color: #2f5d3f; /* a dark green tone */
+    color: white;
+    padding: 2rem;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .hero-text {
+    max-width: 50%;
+  }
+  
+  .hero-text h1 {
+    margin-bottom: 0.5rem;
+  }
+  
+  .subtitle {
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+  
+  .status-tabs {
+    margin-top: 1rem;
+  }
+  
+  .status-tabs button {
+    border: 2px solid white;
+    background: transparent;
+    color: white;
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .status-tabs button:hover,
+  .status-tabs button.active {
+    background-color: white;
+    color: #2f5d3f; /* match hero background */
+  }
+  
+  /* Hero Image */
+  .hero-image {
+    max-width: 40%;
+    text-align: right;
+  }
+  
+  .hero-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 4px;
+  }
+  
+  /* Facts Section */
+  .facts-section {
+    background-color: #fff;
+    margin: 2rem;
+    padding: 1.5rem;
+    border-radius: 4px;
+  }
+  
+  .facts-section h2 {
+    margin-bottom: 1rem;
+  }
+  
+  .facts-section p {
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+  
+  .facts-section strong {
+    font-weight: bold;
+  }
+  
