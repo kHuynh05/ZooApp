@@ -17,11 +17,11 @@
     if (isset($_GET['animal_id'])) {
         $animal_id = intval($_GET['animal_id']); // Convert to integer for security
 
-        $query = "SELECT animal_name, animal_description, fact, image, species_id, animal_range, enclosure_id FROM animals WHERE animal_id = ?";
+        $query = "SELECT animal_name, species_id, enclosure_id, animal_description, fact, image FROM animals WHERE animal_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $animal_id);
         $stmt->execute();
-        $stmt->bind_result($animal_name, $animal_description, $fact, $image, $species_id, $animal_range, $enclosure_id);
+        $stmt->bind_result($animal_name, $species_id, $enclosure_id, $animal_description, $fact, $image);
         $stmt->fetch();
 
         $query = "SELECT enclosure_name FROM enclosures WHERE enclosure_id = ?";

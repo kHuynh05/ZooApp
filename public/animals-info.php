@@ -78,7 +78,7 @@
             <?php foreach ($animals as $animal):
                 if ($animal['animal_id'] != null): ?>
 
-                    <a href='./animal.php?animal_id=<?php echo $animal['animal_id']; ?>' class="animal-item">
+                    <a href='animal.php?animal_id=<?php echo $animal['animal_id']; ?>' class="animal-item">
                         <img src="<?php echo $animal['image']; ?>" alt="<?php echo $animal['animal_name']; ?>">
                         <h3><?php echo $animal['animal_name']; ?></h3>
                     </a>
