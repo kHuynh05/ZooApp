@@ -12,7 +12,7 @@
 
 <style>
     .footer {
-        background-color: #2c5f2d;
+        background-color: seagreen;
         color: white;
         padding: 2rem;
         width: 100%;

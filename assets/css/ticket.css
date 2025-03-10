@@ -1,0 +1,42 @@
+.ticket-section {
+    padding: 2rem;
+    min-height: calc(100vh - 200px); /* Account for navbar and footer */
+}
+
+.ticket-header {
+    text-align: center;
+    background-color: seagreen; /* Green background */
+    color: white;
+    padding: 2rem;
+    margin-bottom: 3rem;
+}
+
+.ticket-options {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    padding: 0 2rem;
+}
+
+.ticket-box {
+    flex: 1;
+    max-width: 400px;
+    background-color: white;
+    border: 2px solid #cccccc; /* Grey frame */
+    border-radius: 8px;
+    padding: 2rem;
+    text-align: center;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.ticket-box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.ticket-box h2 {
+    color: #333333;
+    margin: 0;
+    font-size: 1.5rem;
+}
