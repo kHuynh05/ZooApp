@@ -1,99 +1,185 @@
-/* General reset or basic styles */
+/* General reset and base styles */
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-  }
-  
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-  }
-  
-  /* Breadcrumb Styles */
-  .breadcrumb {
-    margin: 1rem;
-    font-size: 0.9rem;
-  }
-  
-  .breadcrumb a {
-    text-decoration: none;
-    color: #333;
-  }
-  
-  /* Hero Section */
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f5f6fa;
+  line-height: 1.6;
+}
+
+/* Breadcrumb Styles */
+.breadcrumb {
+  margin: 1rem;
+  font-size: 0.9rem;
+}
+
+.breadcrumb a {
+  text-decoration: none;
+  color: #333;
+}
+
+/* Hero Section */
+.hero-section {
+  display: flex;
+  background-color: seagreen;
+  color: white;
+  padding: 40px 50px;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.hero-text {
+  max-width: 50%;
+  z-index: 2;
+}
+
+.hero-text h1 {
+  font-size: 60px;
+  margin-bottom: 1rem;
+}
+
+.subtitle {
+  margin-bottom: 1.5rem;
+  line-height: 1.4;
+  font-size: 1.2rem;
+}
+
+.status-tabs {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 10px;
+}
+
+.status-tabs button {
+  padding: 15px 25px;
+  font-weight: bold;
+  border-radius: 50px;
+  border: 2px solid white;
+  color: white;
+  background-color: transparent;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+/* Specific styles for each status */
+.status-tabs button.stable {
+  border-color: #4CAF50;
+}
+
+.status-tabs button.vulnerable {
+  border-color: #FFC107;
+}
+
+.status-tabs button.endangered {
+  border-color: #F44336;
+}
+
+/* Active state styles */
+.status-tabs button.active {
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.status-tabs button.stable.active {
+  background-color: #4CAF50;
+}
+
+.status-tabs button.vulnerable.active {
+  background-color: #FFC107;
+}
+
+.status-tabs button.endangered.active {
+  background-color: #F44336;
+}
+
+/* Hero Image */
+.hero-image {
+  max-width: 40%;
+  position: relative;
+}
+
+.hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 20px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
+              -5px -5px 10px rgba(255, 255, 255, 0.8);
+}
+
+/* Facts Section */
+.facts-section {
+  background-color: white;
+  margin: 30px 100px;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
+              -5px -5px 10px rgba(255, 255, 255, 0.8);
+}
+
+.facts-section h2 {
+  font-size: 60px;
+  color: seagreen;
+  margin-bottom: 2rem;
+  border-bottom: 3px solid darkseagreen;
+  padding-bottom: 10px;
+}
+
+.facts-section p {
+  margin-bottom: 1.5rem;
+  line-height: 1.6;
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(46, 139, 87, 0.1);
+}
+
+.facts-section strong {
+  color: seagreen;
+  font-size: 1.2rem;
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
   .hero-section {
-    display: flex;
-    background-color: #2f5d3f; /* a dark green tone */
-    color: white;
-    padding: 2rem;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column;
+    padding: 20px;
   }
-  
+
   .hero-text {
-    max-width: 50%;
+    max-width: 100%;
+    text-align: center;
+    margin-bottom: 2rem;
   }
-  
+
   .hero-text h1 {
-    margin-bottom: 0.5rem;
+    font-size: 40px;
   }
-  
-  .subtitle {
-    margin-bottom: 1rem;
-    line-height: 1.4;
-  }
-  
-  .status-tabs {
-    margin-top: 1rem;
-  }
-  
-  .status-tabs button {
-    border: 2px solid white;
-    background: transparent;
-    color: white;
-    padding: 0.5rem 1rem;
-    margin-right: 0.5rem;
-    cursor: pointer;
-    transition: background-color 0.3s, color 0.3s;
-  }
-  
-  .status-tabs button:hover,
-  .status-tabs button.active {
-    background-color: white;
-    color: #2f5d3f; /* match hero background */
-  }
-  
-  /* Hero Image */
+
   .hero-image {
-    max-width: 40%;
-    text-align: right;
+    max-width: 100%;
   }
-  
-  .hero-image img {
-    width: 100%;
-    height: auto;
-    border-radius: 4px;
-  }
-  
-  /* Facts Section */
+
   .facts-section {
-    background-color: #fff;
-    margin: 2rem;
-    padding: 1.5rem;
-    border-radius: 4px;
+    margin: 20px;
+    padding: 20px;
   }
-  
+
   .facts-section h2 {
-    margin-bottom: 1rem;
+    font-size: 40px;
   }
-  
-  .facts-section p {
-    margin-bottom: 1rem;
-    line-height: 1.4;
+}
+
+@media (max-width: 480px) {
+  .hero-text h1 {
+    font-size: 32px;
   }
-  
-  .facts-section strong {
-    font-weight: bold;
+
+  .status-tabs button {
+    padding: 15px;
   }
-  
+}

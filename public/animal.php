@@ -45,7 +45,9 @@
             echo '<h1>' . $animal_name . '</h1>';
             echo '<p class="subtitle">' . $animal_description . '</p>';
             echo '<div class="status-tabs">';
-            echo '<button class="active">' . $conservation_status . '</button>';
+            echo '<button class="' . (strtolower($conservation_status) === 'stable' ? 'active' : '') . ' stable">Stable</button>';
+            echo '<button class="' . (strtolower($conservation_status) === 'vulnerable' ? 'active' : '') . ' vulnerable">Vulnerable</button>';
+            echo '<button class="' . (strtolower($conservation_status) === 'endangered' ? 'active' : '') . ' endangered">Endangered</button>';
             echo '</div>';
             echo '</div>';
             echo '<div class="hero-image">';
