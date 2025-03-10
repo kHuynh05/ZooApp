@@ -15,68 +15,73 @@
     include '../config/database.php';
 
     if (isset($_GET['animal_id'])) {
-        $animal_id = intval($_GET['animal_id']); // Convert to integer for security
+        $animal_id = intval($_GET['animal_id']);
 
-        $query = "SELECT animal_name, species_id, enclosure_id, animal_description, fact, image FROM animals WHERE animal_id = ?";
+        $query = "SELECT a.animal_name, a.image, a.animal_description, a.fact,
+                         e.enclosure_name,
+                         s.species_name, s.conservation_status, s.habitat
+                  FROM animals AS a, enclosures AS e, species AS s
+                  WHERE a.enclosure_id = e.enclosure_id AND a.species_id = s.species_id AND a.animal_id = ?";
+
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $animal_id);
         $stmt->execute();
-        $stmt->bind_result($animal_name, $species_id, $enclosure_id, $animal_description, $fact, $image);
+        $stmt->bind_result(
+            $animal_name,
+            $image,
+            $animal_description,
+            $fact,
+            $enclosure_name,
+            $species_name,
+            $conservation_status,
+            $habitat
+        );
         $stmt->fetch();
+        $stmt->close();
 
-        $query = "SELECT enclosure_name FROM enclosures WHERE enclosure_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $enclosure_id);
-        $stmt->execute();
-        $stmt->bind_result($enclosure_name);
-        $stmt->fetch();
+        if ($animal_name) {
+            echo '<section class="hero-section">';
+            echo '<div class="hero-text">';
+            echo '<h1>' . $animal_name . '</h1>';
+            echo '<p class="subtitle">' . $animal_description . '</p>';
+            echo '<div class="status-tabs">';
+            echo '<button class="active">' . $conservation_status . '</button>';
+            echo '</div>';
+            echo '</div>';
+            echo '<div class="hero-image">';
+            echo '<img src="' . $image . '" alt="' . $animal_name . '" />';
+            echo '</div>';
+            echo '</section>';
 
-        $query = "SELECT species_name, conservation_status, habitat FROM species WHERE species_id = ?";
-        $stmt = $conn->prepare($query);
-        $stmt->bind_param("i", $species_id);
-        $stmt->execute();
-        $stmt->bind_result($species_name, $conservation_status, $habitat);
-        $stmt->fetch();
+            echo '<section class="facts-section">';
+            echo '<h2>Animal Facts</h2>';
+            echo '<p>';
+            echo '<strong>Scientific Name</strong><br />';
+            echo $species_name;
+            echo '</p>';
+            echo '<p>';
+            echo '<strong>Location in the Zoo</strong><br />';
+            echo $enclosure_name;
+            echo '</p>';
+            echo '<p>';
+            echo '<strong>Habitat</strong><br />';
+            echo $habitat;
+            echo '</p>';
+            echo '<p>';
+            echo '<strong>Cool Animal Fact</strong><br />';
+            echo $fact;
+            echo '</p>';
+            echo '</section>';
+        } else {
+            echo "<p>Animal not found.</p>";
+        }
+        $conn->close();
+    } else {
+        echo "<p>No animal ID provided.</p>";
     }
-
     ?>
+    <?php include('../includes/footer.php'); ?>
 
-    <!-- Hero section: large title, short description, status tabs, image -->
-    <section class="hero-section">
-        <div class="hero-text">
-            <h1><?php echo $animal_name; ?></h1>
-            <p class="subtitle">
-                <?php echo $animal_description; ?>
-            </p>
-            <div class="status-tabs">
-                <button class="active"><?php echo $conservation_status; ?></button>
-            </div>
-        </div>
-        <div class="hero-image">
-            <img src="<?php echo $image; ?>" alt="<?php echo $animal_name; ?>" />
-        </div>
-    </section>
-
-    <!-- Facts section: white background, extra info -->
-    <section class="facts-section">
-        <h2>Animal Facts</h2>
-        <p>
-            <strong>Scientific Name</strong><br />
-            <?php echo $species_name; ?>
-        </p>
-        <p>
-            <strong>Location in the Zoo</strong><br />
-            <?php echo $enclosure_name; ?>
-        </p>
-        <p>
-            <strong>Habitat</strong><br />
-            <?php echo $habitat; ?>
-        </p>
-        <p>
-            <strong>Cool Animal Fact</strong><br />
-            <?php echo $fact; ?>
-        </p>
-    </section>
 
 </body>
 
