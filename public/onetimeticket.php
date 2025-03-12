@@ -1,10 +1,13 @@
 <?php
 // Include database connection
 include '../config/database.php';
-
-session_start();
-
+include '../scripts/authorize.php';
 // Initialize variables for form data
+
+if($is_member){
+    header("Location: memberPortal.php");
+    exit();
+}
 $first_name = $last_name = $email = $dob = $sex = '';
 $ticket_counts = [
     'Adult' => 0,
@@ -43,9 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 
+<?php include('../includes/navbar.php'); ?>
 <div class="container">
-    <?php include('../includes/navbar.php'); ?>
-    
     <div class="ticket-section">
         <h1 class="page-title">General Admission</h1>
         
@@ -136,9 +138,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-actions">
                 <button type="submit" class="buy-button">Buy Tickets</button>
             </div>
-    
-    <?php include('../includes/footer.php'); ?>
 </div>
+<?php include('../includes/footer.php'); ?>
 
 <script>
 function updateQuantity(type, change) {
