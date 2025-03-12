@@ -1,11 +1,7 @@
-<head>
-    <link rel="stylesheet" href="../assets/css/register.css">
-</head>
-
 <?php
 // Include database connection
 include '../config/database.php';
-
+include '../scripts/authorize.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get form data
     $first_name = $_POST['first_name'];
@@ -26,6 +22,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $country = $_POST['country'];
 
     // Check if password and confirm password match
+    $query = "SELECT COUNT(*) FROM customers JOIN members ON customers.cust_id = members.member_id WHERE customers.cust_email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email); // Bind the email parameter as a string
+    $stmt->execute();
+    $stmt->bind_result($email_count); // Get the count result
+    $stmt->fetch();
+    $stmt->close();
+
+    // If the email exists in the database, alert the user
+    if ($email_count > 0) {
+        echo "<script>
+        alert('This email is already associated with an existing membership or account.');
+        // Optionally, redirect the user or do something else
+        setTimeout(function() {
+            location.href = 'login.php'; // Redirect to login page (adjust this to your needs)
+        }, 2000);  // Delay before redirecting
+    </script>";
+    } else {
+        // If the email doesn't exist, proceed with the registration or other actions
+        echo "Email is available for registration.";
+    }
     if ($password !== $confirm_password) {
         echo "<script>alert('Password and confirm password do not match. Please try again.');</script>";
     } else {
@@ -123,6 +140,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 ?>
+
+<head>
+    <link rel="stylesheet" href="../assets/css/register.css">
+</head>
 
 <?php include('../includes/navbar.php'); ?>
 <h1>REGISTER FOR ZOO MEMBERSHIP</h1>
@@ -235,11 +256,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Change div content based on the selected option
         if (selectedOption === "standard") {
-            div.innerHTML = "You selected Standard Membership!";
+            div.innerHTML = "Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a discounted price.";
         } else if (selectedOption === "family") {
-            div.innerHTML = "You selected Family Membership!";
+            div.innerHTML = " Perfect for families! This membership includes two adults and up to three children, offering a cost-effective way to enjoy the zoo together.";
         } else if (selectedOption === "vip") {
-            div.innerHTML = "You selected VIP Membership!";
+            div.innerHTML = "Experience the zoo like never before! VIP members get unlimited entry, access to exclusive events, behind-the-scenes tours, and discounts on tickets, food, and gift shop purchases.";
         }
     }
 
