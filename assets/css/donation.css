@@ -1,5 +1,7 @@
 .homepage{
     background-color: rgb(234, 233, 233);
+    padding: 2rem;
+    min-height: calc(100vh - 200px);
 }
 
 .frontpage-header {
@@ -90,13 +92,6 @@
     align-items: first baseline;
 }
 
-.radio-group{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 15px; 
-    margin-left: 20px;
-}
 
 .form-name{
     display: flex;

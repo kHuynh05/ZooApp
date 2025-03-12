@@ -172,13 +172,6 @@ include '../config/database.php';
                         <textarea id="user-message" name="user-message" rows="4" placeholder="Enter your message here..."></textarea>
                     </div>
                     <div class = "form-group">
-                        <label for = "amount">Payment Methods</label>
-                        <div class = "radio-group">
-                            <label>Credit Card<input type = "radio" name = "user_payment" value = "credit-card" required></label>
-                            <label>PayPal<input type = "radio" name = "user_payment" value = "paypal" required></label>
-                        </div>
-                    </div>
-                    <div class = "form-group">
                         <label for = "amount">Payment Amount</label>
                         <div class = "form-amount">
                             <input type = "number" id = "user-amount" name = "user-money" placeholder = "Enter an amount USD" required>
