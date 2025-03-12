@@ -1,0 +1,163 @@
+.homepage{
+    background-color: rgb(234, 233, 233);
+}
+
+.frontpage-header {
+    padding: 20px;
+    height: 100px;
+    border-style: solid;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    background-color: seagreen;
+}
+
+.image-container{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    height: auto;
+}
+
+.image-container img{
+    margin-top: 50px;
+    width: auto;
+    max-width: 1500px;
+    height: auto;
+    display: inline-block;
+}
+
+.donate-title{
+    color: white;
+    font-size: 50px;
+    text-align: center;
+}
+
+.donate-container{
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+    margin: 100px;
+    justify-content: center;
+}
+
+.donate-boxes{
+    border: 2px solid black;
+    padding: 25px;
+    width: 100%;
+    max-width: 500px; 
+    background-color: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); 
+}
+
+.donate-text{
+    text-align: left;
+    align-items: left;
+}
+
+.form-container{
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap;
+    margin: 100px;
+    justify-content: center;
+}
+
+.form-box{
+    border: 2px solid black;
+    padding: 25px;
+    width: 100%;
+    max-width: 1100px; 
+    background-color: white;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); 
+}
+
+.form-header{
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+.form-group{
+    text-align: left;
+    align-items: left;
+}
+
+.form-thing{
+    align-items: first baseline;
+}
+
+.radio-group{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px; 
+    margin-left: 20px;
+}
+
+.form-name{
+    display: flex;
+    gap: 15px;
+}
+
+.form-address, .form-address1, .form-address2{
+    display: flex;
+    gap: 15px;
+}
+
+.form-address2{
+    margin-bottom: 10px;
+    width: 350px;
+}
+
+select {
+    width: 100%;
+    border: 1px, solid, #ccc;
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+}
+
+option {
+    background-color: white;
+    color: black;
+    font-size: 16px;
+}
+
+.warning{
+    color: gray;
+    opacity: 0.4;
+    font-size: 15px;
+}
+
+.input-group{
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.form-amount{
+    max-width: 350px;
+}
+
+button{
+    padding: 20px;
+    font-weight: bold;
+    border-radius: 50px;
+    border: none;
+    color: white;
+    background-color: seagreen;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+button:hover{
+    background-color: darkgreen;
+}
