@@ -1,8 +1,13 @@
 <?php
 // Include database connection
 include '../config/database.php';
-
+include '../scripts/authorize.php';
 // Initialize variables for form data
+
+if($is_member){
+    header("Location: memberPortal.php");
+    exit();
+}
 $first_name = $last_name = $email = $dob = $sex = '';
 $ticket_counts = [
     'Adult' => 0,
@@ -45,6 +50,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <body>
     <div class="page-wrapper">
         <?php include('../includes/navbar.php'); ?>
+<div class="container">
+    <div class="ticket-section">
+        <h1 class="page-title">General Admission</h1>
         
         <div class="content-wrapper">
             <div class="ticket-section">
@@ -139,6 +147,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </form>
             </div>
         </div>
+</div>
 
         <?php include('../includes/footer.php'); ?>
     </div>

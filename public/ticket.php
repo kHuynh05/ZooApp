@@ -1,7 +1,6 @@
 <?php
 // Include the database connection
 include '../config/database.php'; // Or however you connect to your database
-include '../scripts/authorize.php';
 // Check if user is a member and redirect accordingly
 ?>
 <head>
@@ -18,7 +17,6 @@ include '../scripts/authorize.php';
             <a href="onetimeticket.php" class="ticket-box">
                 <h2>General Admission</h2>
             </a>
-            
             <a href="<?php echo $is_member ? 'memberPortal.php' : 'login.php'; ?>" class="ticket-box">
                 <h2>Members Ticket</h2>
             </a>
