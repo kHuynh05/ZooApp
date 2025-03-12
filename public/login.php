@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['user_id'] = $user_id;
 
         // Redirect to member portal
-        header("Location: homepage.php");
+        header("Location: memberPortal.php");
         exit();
     } else {
         $message = "Invalid email or password.";
