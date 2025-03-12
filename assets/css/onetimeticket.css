@@ -155,3 +155,26 @@ select {
     border-radius: 4px;
     font-size: 1rem;
 }
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
+.page-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content-wrapper {
+    flex: 1;
+    padding: 2rem;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.ticket-section {
+    margin-bottom: 2rem;
+}
