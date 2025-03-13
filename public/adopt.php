@@ -9,5 +9,6 @@ include '../config/database.php';
 
 <div class = "container">
     <?php include('../includes/navbar.php');?>
+    
     <?php include('../includes/footer.php'); ?>
 </div>
