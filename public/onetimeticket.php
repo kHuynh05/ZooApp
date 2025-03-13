@@ -3,30 +3,6 @@
 include '../config/database.php';
 include '../scripts/authorize.php';
 // Initialize variables for form data
-
-if ($is_member) {
-    // Apply member discount (e.g., 25% discount)
-    $member_discount = 0.25;
-} else {
-    $member_discount = 0;  // No discount for non-members
-}
-
-if ($is_member) {
-    $query = "SELECT first_name, last_name, cust_email, date_of_birth, sex FROM customers WHERE customers.cust_id = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($row = $result->fetch_assoc()) {
-        $first_name = $row['first_name'];
-        $last_name = $row['last_name'];
-        $email = $row['cust_email'];
-        $dob = $row['date_of_birth'];
-        $sex = $row['sex'];
-    }
-    $stmt->close();
-} 
 $ticket_counts = [
     'Adult' => 0,
     'Child' => 0,
@@ -75,98 +51,104 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="ticket-section">
                         <form method="POST" id="ticketForm" class="ticket-form">
                             <div class="personal-info">
-                                <?php if (!$is_member){ ?>
+                                <?php if (!$is_member) { ?>
                                     <h2>Personal Information</h2>
                                     <div class="form-group">
                                         <label for="first_name">First Name</label>
-                                        <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>" required>
+                                        <input type="text" id="first_name" name="first_name" value="" required>
                                     </div>
-    
+
                                     <div class="form-group">
                                         <label for="last_name">Last Name</label>
-                                        <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>" required>
+                                        <input type="text" id="last_name" name="last_name" value="" required>
                                     </div>
-    
+
                                     <div class="form-group">
                                         <label for="email">Email Address</label>
-                                        <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required>
+                                        <input type="email" id="email" name="email" value="" required>
                                     </div>
-    
+
                                     <div class="form-group">
                                         <label for="sex">Gender</label>
                                         <select id="sex" name="sex" required>
                                             <option value="">Select Gender</option>
-                                            <option value="M" <?php echo $sex === 'M' ? 'selected' : ''; ?>>Male</option>
-                                            <option value="F" <?php echo $sex === 'F' ? 'selected' : ''; ?>>Female</option>
+                                            <option value="M">Male</option>
+                                            <option value="F">Female</option>
                                         </select>
                                     </div>
-    
+
                                     <div class="form-group">
                                         <label for="dob">Date of Birth</label>
                                         <input type="date" id="dob" name="dob" value="<?php echo htmlspecialchars($dob); ?>" required
                                             max="<?php echo date('Y-m-d', strtotime('-1 day')); ?>">
                                     </div>
-                                </div>
-                                <?php } else { ?>
-                                    <!-- Hidden fields for members -->
-                                    <input type="hidden" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>">
-                                    <input type="hidden" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>">
-                                    <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
-                                    <input type="hidden" name="sex" value="<?php echo htmlspecialchars($sex); ?>">
-                                    <input type="hidden" name="dob" value="<?php echo htmlspecialchars($dob); ?>">
-                                <?php } ?>
-                            <div class="ticket-transaction">
-                                <h2>Select Tickets</h2>
-                                <div class="ticket-categories">
-                                    <?php
-                                    $tickets_info = [
-                                        'Adult' => ['price' => 30.50, 'age_range' => 'Ages 12-64'],
-                                        'Child' => ['price' => 25.50, 'age_range' => 'Ages 3-12'],
-                                        'Senior' => ['price' => 25.50, 'age_range' => 'Ages 65+'],
-                                        'Infant' => ['price' => 0.00, 'age_range' => 'Ages 2 & Under']
-                                    ];
+                            </div>
+                        <?php } else { ?>
+                            <!-- Hidden fields for members -->
+                            <input type="hidden" name="first_name" value="<?php echo htmlspecialchars($first_name); ?>">
+                            <input type="hidden" name="last_name" value="<?php echo htmlspecialchars($last_name); ?>">
+                            <input type="hidden" name="email" value="<?php echo htmlspecialchars($email); ?>">
+                            <input type="hidden" name="sex" value="<?php echo htmlspecialchars($sex); ?>">
+                            <input type="hidden" name="dob" value="<?php echo htmlspecialchars($dob); ?>">
+                        <?php } ?>
+                        <div class="ticket-transaction">
+                            <h2>Select Tickets</h2>
+                            <div class="ticket-categories">
+                                <?php
+                                $tickets_info = [
+                                    'Adult' => ['price' => 30.50, 'age_range' => 'Ages 12-64'],
+                                    'Child' => ['price' => 25.50, 'age_range' => 'Ages 3-12'],
+                                    'Senior' => ['price' => 25.50, 'age_range' => 'Ages 65+'],
+                                    'Infant' => ['price' => 0.00, 'age_range' => 'Ages 2 & Under']
+                                ];
 
-                                    foreach ($tickets_info as $type => $info) {
-                                        $discounted_price = $info['price'] * (1 - $member_discount);
-                                        $current_count = isset($ticket_counts[$type]) ? $ticket_counts[$type] : 0;
-                                        echo "
-                                <div class='ticket-type'>
-                                    <div class='ticket-info'>
-                                        <div class='ticket-details'>
-                                            <span class='ticket-label'>$type</span>
-                                            <span class='age-range'>({$info['age_range']})</span>
+                                foreach ($tickets_info as $type => $info):
+                                    $discounted_price = $is_member ? $info['price'] * (1 - $member_discount) : $info['price'];
+                                    $current_count = isset($ticket_counts[$type]) ? $ticket_counts[$type] : 0;
+                                ?>
+                                    <div class='ticket-type'>
+                                        <div class='ticket-info'>
+                                            <div class='ticket-details'>
+                                                <span class='ticket-label'><?php echo htmlspecialchars($type); ?></span>
+                                                <span class='age-range'>(<?php echo htmlspecialchars($info['age_range']); ?>)</span>
+                                            </div>
+                                            <span class='ticket-price'>
+                                                $<?php echo number_format($info['price'], 2); ?>
+                                                <?php if ($is_member && $info['price'] > 0): ?>
+                                                    => $<?php echo number_format($discounted_price, 2); ?>
+                                                    <span class='member-discount'>(Member Discount)</span>
+                                                <?php endif; ?>
+                                            </span>
                                         </div>
-                                        <span class='ticket-price'>$" . number_format($info['price'],2) . " => $" . number_format($discounted_price, 2) . "(Member discount)</span>
+                                        <div class='quantity-control'>
+                                            <button type='button' class='quantity-btn minus' onclick='updateQuantity("<?php echo $type; ?>", -1)'>
+                                                <i class='fas fa-minus'></i>
+                                            </button>
+                                            <span class='quantity' id='<?php echo $type; ?>_quantity'><?php echo $current_count; ?></span>
+                                            <input type='hidden' name='tickets[<?php echo $type; ?>]' id='<?php echo $type; ?>_input' value='<?php echo $current_count; ?>'>
+                                            <button type='button' class='quantity-btn plus' onclick='updateQuantity("<?php echo $type; ?>", 1)'>
+                                                <i class='fas fa-plus'></i>
+                                            </button>
+                                        </div>
                                     </div>
-                                    <div class='quantity-control'>
-                                        <button type='button' class='quantity-btn minus' onclick='updateQuantity(\"$type\", -1)'>
-                                            <i class='fas fa-minus'></i>
-                                        </button>
-                                        <span class='quantity' id='" . $type . "_quantity'>" . $current_count . "</span>
-                                        <input type='hidden' name='tickets[" . $type . "]' id='" . $type . "_input' value='" . $current_count . "'>
-                                        <button type='button' class='quantity-btn plus' onclick='updateQuantity(\"$type\", 1)'>
-                                            <i class='fas fa-plus'></i>
-                                        </button>
-                                    </div>
-                                </div>";
-                                    }
-                                    ?>
-                                </div>
+                                <?php endforeach; ?>
 
-                                <div class="reservation-date">
-                                    <h2>Select Visit Date</h2>
-                                    <div class="form-group">
-                                        <label for="reservation_date">Reservation Date</label>
-                                        <input type="date" id="reservation_date" name="reservation_date" required
-                                            min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>"
-                                            max="<?php echo date('Y-m-d', strtotime('+6 months')); ?>">
-                                    </div>
-                                </div>
                             </div>
 
-                            <div class="form-actions">
-                                <button type="submit" class="buy-button">Buy Tickets</button>
+                            <div class="reservation-date">
+                                <h2>Select Visit Date</h2>
+                                <div class="form-group">
+                                    <label for="reservation_date">Reservation Date</label>
+                                    <input type="date" id="reservation_date" name="reservation_date" required
+                                        min="<?php echo date('Y-m-d', strtotime('+1 day')); ?>"
+                                        max="<?php echo date('Y-m-d', strtotime('+6 months')); ?>">
+                                </div>
                             </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="buy-button">Buy Tickets</button>
+                        </div>
                         </form>
                     </div>
                 </div>

@@ -1,5 +1,6 @@
 <?php
 include '../config/database.php';
+include '../scripts/authorize.php';
 
 if (!isset($_SESSION['ticket_data'])) {
     header("Location: onetimeticket.php");
@@ -60,7 +61,7 @@ try {
     $valid_ticket_types = ['Adult', 'Child', 'Senior', 'Infant'];
 
     // Insert ticket records
-    $ticket_stmt = $conn->prepare("INSERT INTO tickets (transaction_date, transaction_time, cust_id, ticket_type, reservation_date) VALUES (?, ?, ?, ?, ?)");
+    $ticket_stmt = $conn->prepare("INSERT INTO transaction (transaction_date, transaction_time, cust_id, reservation_date) VALUES (?, ?, ?, ?)");
     if (!$ticket_stmt) {
         throw new Exception("Prepare failed for tickets: " . $conn->error);
     }

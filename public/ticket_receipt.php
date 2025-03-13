@@ -1,10 +1,10 @@
 <?php
 include '../config/database.php';
 include '../scripts/authorize.php';
-if (!isset($_SESSION['transaction_data'])) {
-    header("Location: onetimeticket.php");
-    exit();
-}
+// if (!isset($_SESSION['transaction_data'])) {
+//     header("Location: onetimeticket.php");
+//     exit();
+// }
 
 $data = $_SESSION['transaction_data'];
 ?>
