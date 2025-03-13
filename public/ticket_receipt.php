@@ -1,6 +1,6 @@
 <?php
 include '../config/database.php';
-
+include '../scripts/authorize.php';
 if (!isset($_SESSION['transaction_data'])) {
     header("Location: onetimeticket.php");
     exit();
@@ -24,8 +24,15 @@ $data = $_SESSION['transaction_data'];
         
         <?php
         // Fetch customer info
-        $stmt = $conn->prepare("SELECT first_name, last_name FROM customers WHERE cust_id = ?");
-        $stmt->bind_param("i", $data['cust_id']);
+        if ($is_member) {
+            // Fetch from the members table
+            $stmt = $conn->prepare("SELECT first_name, last_name FROM customers WHERE cust_id = ?");
+            $stmt->bind_param("i", $_SESSION['user_id']); 
+        } else {
+            // Fetch from the customers table
+            $stmt = $conn->prepare("SELECT first_name, last_name FROM customers WHERE cust_id = ?");
+            $stmt->bind_param("i", $data['cust_id']);
+        }
         $stmt->execute();
         $result = $stmt->get_result();
         $customer = $result->fetch_assoc();
