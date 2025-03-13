@@ -1,6 +1,6 @@
 <?php
-session_start();
 include '../config/database.php';
+include '../scripts/authorize.php';
 
 if (!isset($_SESSION['ticket_data'])) {
     header("Location: onetimeticket.php");
@@ -45,6 +45,19 @@ $data['tickets'] = array_merge([
     'Infant' => 0
 ], is_array($data['tickets']) ? $data['tickets'] : []);
 
+$query = "SELECT cust_id, first_name, last_name, cust_email, sex, date_of_birth FROM customers WHERE cust_email = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("s", $data['email']);
+$stmt->execute();
+$stmt->bind_result($cust_id, $first_name, $last_name, $email, $sex, $dob);
+$stmt->fetch();
+$stmt->close();
+
+if ($is_member) {
+    $discount_percentage = 0.25; 
+} else {
+    $discount_percentage = 0;
+}
 ?>
 
 <head>
@@ -103,7 +116,11 @@ $data['tickets'] = array_merge([
             foreach ($prices as $type => $price) {
                 $quantity = isset($data['tickets'][$type]) ? (int)$data['tickets'][$type] : 0;
                 if ($quantity > 0) {
-                    $subtotal = $price * $quantity;
+                    $ticket_price = $price;
+                    if ($is_member) {
+                        $ticket_price = $price * (1 - $discount_percentage);
+                    }
+                    $subtotal = $ticket_price * $quantity;
                     $total_price += $subtotal;
                     echo "<div class='summary-row'>
                             <span>$type x $quantity</span>

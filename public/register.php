@@ -34,10 +34,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($email_count > 0) {
         echo "<script>
         alert('This email is already associated with an existing membership or account.');
-        // Optionally, redirect the user or do something else
         setTimeout(function() {
-            location.href = 'login.php'; // Redirect to login page (adjust this to your needs)
-        }, 2000);  // Delay before redirecting
+            location.href = 'register.php';
+        });
     </script>";
     } else {
         // If the email doesn't exist, proceed with the registration or other actions
@@ -54,91 +53,101 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $membership_end_date = date("Y-m-d", strtotime("+1 year"));
 
         // Insert query for customer data
-        $sql_customer = "INSERT INTO customers (
-            cust_email, date_of_birth, sex, ticket_type, first_name, last_name
-        ) VALUES (?, ?, ?, ?, ?, ?)";
+        $query = "SELECT cust_id FROM customers WHERE customers.cust_email = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $email); // Bind the email parameter as a string
+        $stmt->execute();
+        $stmt->bind_result($cust_id); // Get the count result
+        $stmt->fetch();
+        $stmt->close();
 
-        if ($stmt_customer = $conn->prepare($sql_customer)) {
-            // Bind parameters for customer table
-            $stmt_customer->bind_param(
-                "ssssss",
-                $email,
-                $dob,
-                $gender,
-                $ticket_type,
-                $first_name,
-                $last_name
-            );
+        if ($cust_id == null) {
+            $sql_customer = "INSERT INTO customers (
+                cust_email, date_of_birth, sex, first_name, last_name
+            ) VALUES (?, ?, ?, ?, ?)";
 
-            // Execute query for customer
+            if ($stmt_customer = $conn->prepare($sql_customer)) {
+                // Bind parameters for customer table
+                $stmt_customer->bind_param(
+                    "sssss",
+                    $email,
+                    $dob,
+                    $gender,
+                    $first_name,
+                    $last_name
+                );
+            }
             if ($stmt_customer->execute()) {
-                $cust_id = $stmt_customer->insert_id; // Get the last inserted cust_id
+                $cust_id = $stmt_customer->insert_id;
+            }
+        }
 
-                // Insert query for member data
-                $sql_member = "INSERT INTO members (
+        // Execute query for customer
+        // Get the last inserted cust_id
+        // Insert query for member data
+        $sql_member = "INSERT INTO members (member_id,
                     password, 
                     membership_start_date, membership_end_date, 
-                    membership_type, membership_status
-                ) VALUES (?, ?, ?, ?, ?)";
+                    membership_type, membership_status, reward_points
+                ) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
 
-                if ($stmt_member = $conn->prepare($sql_member)) {
-                    // Bind parameters for member table
-                    $membership_status = 'active';
-                    $stmt_member->bind_param(
-                        "sssss",
-                        $password,
-                        $membership_start_date,
-                        $membership_end_date,
-                        $ticket_type,
-                        $membership_status // Membership is active by default
-                    );
+        if ($stmt_member = $conn->prepare($sql_member)) {
+            // Bind parameters for member table
+            $membership_status = 'active';
+            $reward_points = 500;
+            $stmt_member->bind_param(
+                "isssssi",
+                $cust_id,
+                $password,
+                $membership_start_date,
+                $membership_end_date,
+                $ticket_type,
+                $membership_status, // Membership is active by default
+                $reward_points
+            );
 
-                    // Execute query for member
-                    if ($stmt_member->execute()) {
-                        // Insert query for customer address
-                        $sql_address = "INSERT INTO cust_address (
+            // Execute query for member
+            if ($stmt_member->execute()) {
+                // Insert query for customer address
+                $sql_address = "INSERT INTO cust_address (
                             cust_id, street, city_name, state, postal_code, country
                         ) VALUES (?, ?, ?, ?, ?, ?)";
 
-                        if ($stmt_address = $conn->prepare($sql_address)) {
-                            // Bind parameters for address table
-                            $stmt_address->bind_param(
-                                "isssss",
-                                $cust_id,
-                                $address_line1,
-                                $city,
-                                $state,
-                                $zip_code,
-                                $country
-                            );
+                if ($stmt_address = $conn->prepare($sql_address)) {
+                    // Bind parameters for address table
+                    $stmt_address->bind_param(
+                        "isssss",
+                        $cust_id,
+                        $address_line1,
+                        $city,
+                        $state,
+                        $zip_code,
+                        $country
+                    );
 
-                            // Execute query for address
-                            if ($stmt_address->execute()) {
-                                echo "<script>alert('Registration and address saved successfully!'); window.location.href = 'login.php';</script>";
-                            } else {
-                                echo "<script>alert('Error saving address: " . $stmt_address->error . "');</script>";
-                            }
-
-                            $stmt_address->close();
-                        } else {
-                            echo "<script>alert('Error preparing address query: " . $conn->error . "');</script>";
-                        }
+                    // Execute query for address
+                    if ($stmt_address->execute()) {
+                        echo "<script>alert('Registration and address saved successfully!'); window.location.href = 'login.php';</script>";
                     } else {
-                        echo "<script>alert('Error saving member data: " . $stmt_member->error . "');</script>";
+                        echo "<script>alert('Error saving address: " . $stmt_address->error . "');</script>";
                     }
 
-                    $stmt_member->close();
+                    $stmt_address->close();
+                } else {
+                    echo "<script>alert('Error preparing address query: " . $conn->error . "');</script>";
                 }
             } else {
-                echo "<script>alert('Error saving customer data: " . $stmt_customer->error . "');</script>";
+                echo "<script>alert('Error saving member data: " . $stmt_member->error . "');</script>";
             }
 
-            $stmt_customer->close();
+            $stmt_member->close();
         }
-        $conn->close();
     }
+
+    $stmt_customer->close();
 }
+$conn->close();
 ?>
 
 <head>
@@ -146,9 +155,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <?php include('../includes/navbar.php'); ?>
-<h1>REGISTER FOR ZOO MEMBERSHIP</h1>
 <div class="container">
     <!-- Left Sidebar for Tabs -->
+    <h1>REGISTER FOR ZOO MEMBERSHIP</h1>
     <div class="tabs">
         <div class="tab active" onclick="showTab(1)">Step 1: Basic Info</div>
         <div class="tab" onclick="showTab(2)">Step 2: Membership</div>
@@ -228,14 +237,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>Step 2: Choose Membership</h2>
             <div class="form-group">
                 <label for="membership">Choose Membership Type</label>
-                <select id="membership" name="ticket_type" onchange="changeContent()" required>
+                <select id="membership" name="membership_type" onchange="changeContent()" required>
                     <option value="standard">Standard</option>
                     <option value="family">Family</option>
                     <option value="vip">VIP</option>
                 </select>
             </div>
             <div id="membershipInfo">
-                You selected Option 1! Here is the content for Option 1.
+                <h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a discounted price. Applies to one person</h3>
+                <div class='renew-img'><img class="renew-ticket" src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>
             </div>
         </div>
 
@@ -254,13 +264,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         var div = document.getElementById("membershipInfo");
         var selectedOption = select.value;
 
-        // Change div content based on the selected option
         if (selectedOption === "standard") {
-            div.innerHTML = "Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a discounted price.";
+            div.innerHTML = "<h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a discounted price. Applies to one person</h3> <div class='renew-img'><img class = 'renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>";
         } else if (selectedOption === "family") {
-            div.innerHTML = " Perfect for families! This membership includes two adults and up to three children, offering a cost-effective way to enjoy the zoo together.";
+            div.innerHTML = "<h3>Perfect for families! This membership includes two adults and up to three children, offering a cost-effective way to enjoy the zoo together.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
         } else if (selectedOption === "vip") {
-            div.innerHTML = "Experience the zoo like never before! VIP members get unlimited entry, access to exclusive events, behind-the-scenes tours, and discounts on tickets, food, and gift shop purchases.";
+            div.innerHTML = "<h3>Experience the zoo like never before! VIP members get unlimited entry, access to exclusive events, behind-the-scenes tours, and discounts on tickets, food, and gift shop purchases. </h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
         }
     }
 

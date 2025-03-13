@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../config/database.php';
 
 if (!isset($_SESSION['ticket_data'])) {
@@ -14,35 +13,45 @@ $conn->begin_transaction();
 
 try {
     // Insert customer data
-    $email = $data['email'];
-    $query = "SELECT cust_id FROM customers WHERE cust_email = ?";
-    $stmt = $conn->prepare($query);
-    $stmt->bind_param("s", $email); // Bind the email parameter as a string
-    $stmt->execute();
-    $stmt->bind_result($cust_id); // Get the count result
-    $stmt->fetch();
-    $stmt->close();
+    if ($data['email'] != null) {
+        $email = $data['email'];
+        $query = "SELECT cust_id FROM customers WHERE cust_email = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $stmt->bind_result($cust_id);
+        $stmt->fetch();
+        $stmt->close();
 
-    if ($cust_id == null) {
-        $stmt = $conn->prepare("INSERT INTO customers (first_name, last_name, cust_email, date_of_birth, sex) VALUES (?, ?, ?, ?, ?)");
-        if (!$stmt) {
-            throw new Exception("Prepare failed: " . $conn->error);
+
+
+        if ($cust_id == null) {
+            $stmt = $conn->prepare("INSERT INTO customers (first_name, last_name, cust_email, date_of_birth, sex) VALUES (?, ?, ?, ?, ?)");
+            if (!$stmt) {
+                throw new Exception("Prepare failed: " . $conn->error);
+            }
+
+            $stmt->bind_param(
+                "sssss",
+                $data['first_name'],
+                $data['last_name'],
+                $data['email'],
+                $data['dob'],
+                $data['sex']
+            );
+
+            if (!$stmt->execute()) {
+                throw new Exception("Customer insert failed: " . $stmt->error);
+            }
+            $cust_id = $conn->insert_id;
         }
-
-        $stmt->bind_param(
-            "sssss",
-            $data['first_name'],
-            $data['last_name'],
-            $data['email'],
-            $data['dob'],
-            $data['sex']
-        );
-
-        if (!$stmt->execute()) {
-            throw new Exception("Customer insert failed: " . $stmt->error);
-        }
-        $cust_id = $conn->insert_id;
     }
+
+    $discount_percentage = 0;
+    if ($is_member) {
+        $discount_percentage = 0.10;
+    }
+
     $current_date = date('Y-m-d');
     $current_time = date('H:i:s');
     $reservation_date = $data['reservation_date'];
@@ -87,7 +96,8 @@ try {
     $_SESSION['transaction_data'] = [
         'cust_id' => $cust_id,
         'tickets' => $data['tickets'],
-        'reservation_date' => $reservation_date
+        'reservation_date' => $reservation_date,
+        'discount_percentage' => $discount_percentage
     ];
 
     // Clear the ticket data session

@@ -1,5 +1,4 @@
 <?php
-// Start the session
 include '../config/database.php';
 include '../scripts/authorize.php';
 ?>
@@ -14,7 +13,7 @@ if (!$is_member) {
         alert('Please log in as a member to access!');
         setTimeout(function() {
             location.href = 'login.php';
-        }, 1000); // 3-second delay before redirecting
+        }, 1000);
     </script>";
     exit();
 }
@@ -37,12 +36,15 @@ $stmt = $conn->prepare($query);
 if (!$stmt) {
     die("Query preparation failed: " . $conn->error);
 }
-$stmt->bind_param("i", $user_id); // Assuming $user_id is the member's ID
+$stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $row = $result->fetch_assoc();
 
 $stmt->close();
+
+$conn->close();
+
 ?>
 <div class="container">
     <div class="tabs">
@@ -79,37 +81,90 @@ $stmt->close();
                     </h1>
                 </div>
                 <div class="Rewards-info">
-                        <h2>Reward Points explained!</h2>
-                        Zoo Rewards Points are our way of saying thank you for being a valued member! Each point is worth one cent and can be used to discount the price of your tickets. You can earn points in several ways:
-                        <h3>By registering as a member: 500 points</h3>
-                        <h3>Purchasing tickets: 100 points</h3>
-                        <h3>Shopping at our gift shop: 50 points for every dollar you spend</h3>
-                    </div>
+                    <h2>Reward Points explained!</h2>
+                    Zoo Rewards Points are our way of saying thank you for being a valued member! Each point is worth one cent and can be used to discount the price of your tickets. You can earn points in several ways:
+                    <h3>By registering as a member: 500 points</h3>
+                    <h3>Purchasing tickets: 100 points</h3>
+                    <h3>Shopping at our gift shop: 50 points for every dollar you spend</h3>
+                </div>
             </div>
+            <div class="Upcoming-event"></div>
         </div>
         <div class="tab-content" id="2">
             <div class="renew-membership">
                 <h1 class="welcome">Membership</h1>
                 <h2>Renew your membership:</h2>
 
-                <form method="POST" action="../scripts/renew_membership.php">
-                    <div class="form-group">
-                        <label for="membership">Choose Membership Type</label>
-                        <select id="membership" name="membership_type" onchange="changeContent()" required>
-                            <option value="standard">Standard</option>
-                            <option value="family">Family</option>
-                            <option value="vip">VIP</option>
-                        </select>
-                    </div>
+                <div class="form-group">
+                    <label for="membership">Choose Membership Type</label>
+                    <select id="membership" name="membership_type" onchange="changeContent()" required>
+                        <option value="standard">Standard</option>
+                        <option value="family">Family</option>
+                        <option value="vip">VIP</option>
+                    </select>
+                </div>
 
-                    <div id="membershipInfo">
-                        <h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a discounted price. Applies to one person</h3>
-                        <div class='renew-img'><img class="renew-ticket" src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>
-                    </div>
+                <div id="membershipInfo">
+                    <h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a discounted price. Applies to one person</h3>
+                    <div class='renew-img'><img class="renew-ticket" src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>
+                </div>
 
-                    <button type="submit" class="renew-btn">Renew Membership</button>
-                </form>
+                <button class="renew-btn" onclick="passMembershipInfo(); showTab(5);">Renew Membership</button>
             </div>
+        </div>
+        <div class="tab-content" id="3">
+            <h1 class="welcome">Buy Tickets</h1>
+
+        </div>
+        <div class="tab-content" id="4">
+            <h1 class="welcome">Profile</h1>
+        </div>
+        <div class="tab-content" id="5">
+            <h1 class="Payment">Payment:</h1>
+            <div class="payment-summary">
+                <h3>Membership Type:
+                    <span id="membership-type"><?php echo $row['membership_type']; ?></span>
+                </h3>
+                <h3>Renewal Status:
+                    <span id="renewal-status">
+                        <?php
+                        $current_date = new DateTime();
+                        $end_date = new DateTime($row['membership_end_date']);
+                        if ($current_date <= $end_date) {
+                            echo "On time (25% Discount applied)";
+                        } else {
+                            echo "Late Renewal (No Discount)";
+                        }
+                        ?>
+                    </span>
+                </h3>
+                <h3>Amount:
+                    <span id="payment-amount">
+                        <?php
+                        $basePrices = array(
+                            "standard" => 70,
+                            "family" => 120,
+                            "vip" => 150
+                        );
+                        $discount = ($current_date <= $end_date) ? 0.25 : 0;
+
+                        $amount = $basePrices[$row['membership_type']] * (1 - $discount);
+                        echo "$" . number_format($amount, 2);
+                        ?>
+                    </span>
+                </h3>
+            </div>
+
+            <div class="membership-info">
+                <h3>Membership Summary:</h3>
+                <p>Renew on time for a 25% discount on the renewal price.</p>
+                <p>Your membership will expire on: <span id="membership-expiry"><?php echo $row['membership_end_date']; ?></span></p>
+            </div>
+
+            <form id="membership_form" action="../scripts/renew_membership.php" method="POST">
+                <input type="hidden" name="membership_type" id="membership_type_input">
+                <button class="renew-btn" type="button" onclick="passMembershipInfoToForm()">Renew Membership</button>
+            </form>
         </div>
     </div>
 </div>
@@ -120,11 +175,20 @@ $stmt->close();
         tabContents.forEach(content => content.classList.remove('active'));
         tabs.forEach(tab => tab.classList.remove('active'));
 
-        if (step != 5) {
+        if (step !== 5) {
             document.getElementById(step).classList.add('active');
             tabs[step - 1].classList.add('active');
         } else if (step === 5) {
             document.getElementById(step).classList.add('active');
+            var membershipType = sessionStorage.getItem('membershipType');
+            console.log("Selected Membership Type: " + membershipType);
+
+            if (membershipType) {
+                document.getElementById('membership-type').textContent = membershipType;
+                updatePaymentAmount(membershipType);
+            } else {
+                console.log("No membership type found in sessionStorage");
+            }
         }
     }
 
@@ -140,5 +204,37 @@ $stmt->close();
         } else if (selectedOption === "vip") {
             div.innerHTML = "<h3>Experience the zoo like never before! VIP members get unlimited entry, access to exclusive events, behind-the-scenes tours, and discounts on tickets, food, and gift shop purchases. </h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300' height='500'> <img class='adult' src='../assets/img/adult.png' alt='adult' height='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
         }
+    }
+
+    function passMembershipInfoToForm() {
+        var membershipType = sessionStorage.getItem('membershipType');
+
+        if (membershipType) {
+            document.getElementById('membership_type_input').value = membershipType;
+            document.getElementById('membership_form').submit();
+        } else {
+            console.log("No membership_type found in sessionStorage.");
+        }
+    }
+
+    function passMembershipInfo() {
+        var selectedMembership = document.getElementById('membership').value;
+
+        sessionStorage.setItem('membershipType', selectedMembership);
+
+        showTab(5);
+    }
+
+    function updatePaymentAmount(membershipType) {
+        const basePrices = {
+            standard: 70,
+            family: 120,
+            vip: 150
+        };
+
+        var discount = 0.25;
+        var price = basePrices[membershipType] * (1 - discount);
+
+        document.getElementById('payment-amount').textContent = "$" + price.toFixed(2);
     }
 </script>

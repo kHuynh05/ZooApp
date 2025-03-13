@@ -7,7 +7,7 @@ $is_member = false;
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
-    $query = "SELECT * FROM members WHERE member_id = ?";
+    $query = "SELECT * FROM members WHERE member_id = ? AND membership_status = 'active'";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("i", $user_id);
     $stmt->execute();
