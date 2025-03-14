@@ -143,3 +143,11 @@
 .renew-btn:hover {
     background-color: #3a773a;
 }
+
+.ticket-header {
+    text-align: center;
+    background-color: seagreen; /* Green background */
+    color: white;
+    padding: 2rem;
+    margin-bottom: 3rem;
+}

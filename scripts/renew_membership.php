@@ -60,9 +60,9 @@ $discount = ($current_date <= new DateTime($membership_end_date)) ? 0.25 : 0;  /
 
 // Define the base prices for each membership type
 $basePrices = array(
-    "standard" => 70,
-    "family" => 120,
-    "vip" => 150
+    "Standard" => 70,
+    "Premium" => 120,
+    "Vip" => 150
 );
 
 // Calculate the renewal amount with discount applied
@@ -77,6 +77,15 @@ $query = "UPDATE members
           WHERE member_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("ssii", $membership_type, $new_end_date, $new_points, $user_id);
+$stmt->execute();
+$stmt->close();
+
+$current_date = date('Y-m-d');
+$current_time = date('H:i:s');
+
+$query = "INSERT INTO transactions (transaction_date, transaction_time, cust_id, total_profit) VALUES (?, ?, ?, ?)";
+$stmt = $conn->prepare($query);
+$stmt->bind_param("ssdi", $current_date, $current_time, $user_id, $amount);
 
 if ($stmt->execute()) {
     // Successfully updated the membership

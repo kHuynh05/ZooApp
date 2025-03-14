@@ -24,7 +24,7 @@ if (isset($_POST['pointsToUse']) && isset($_POST['finalTotalPrice'])) {
     $data = $_SESSION['ticket_data'];
 }
 
-echo '<pre>'; // This is optional, just to format the output for better readability
+echo '<pre>';
 var_dump($_SESSION['ticket_data']);
 var_dump($_SESSION['ticket_data']['points_used']);
 var_dump($_SESSION['ticket_data']['final_total']);
@@ -92,7 +92,7 @@ try {
         throw new Exception("Transaction insert failed: " . $ticket_stmt->error . " for type: " . $type);
     }
 
-    $transaction_id = $conn ->insert_id;
+    $transaction_id = $conn->insert_id;
     if (!$transaction_id) {
         throw new Exception("Failed to retrieve transaction ID.");
     }
@@ -107,23 +107,26 @@ try {
         if (!in_array($type, $valid_ticket_types)) {
             throw new Exception("Invalid ticket type: " . $type);
         }
-        if ($quantity > 0) {  // Only process if quantity is greater than 0
-            $ticket_stmt->bind_param(
-                "iss",
-                $transaction_id,
-                $type,
-                $data['reservation_date']
-            );
-        
-            if (!$ticket_stmt->execute()) {
-                throw new Exception("Transaction insert failed: " . $ticket_stmt->error . " for type: " . $type);
+        if ($quantity > 0) { // Only process if quantity is greater than 0
+            for ($i = 0; $i < $quantity; $i++) {
+                $ticket_stmt->bind_param(
+                    "iss",
+                    $transaction_id,
+                    $type,
+                    $data['reservation_date']
+                );
+
+
+                if (!$ticket_stmt->execute()) {
+                    throw new Exception("Transaction insert failed: " . $ticket_stmt->error . " for type: " . $type);
+                }
             }
         }
     }
     $ticket_stmt->close();
 
-    $ticket_stmt = $conn -> prepare("SELECT reward_points FROM members WHERE member_id = ?");
-    $ticket_stmt->bind_param("i",$cust_id);
+    $ticket_stmt = $conn->prepare("SELECT reward_points FROM members WHERE member_id = ?");
+    $ticket_stmt->bind_param("i", $cust_id);
     $ticket_stmt->execute();
 
     if (!$ticket_stmt->execute()) {
@@ -133,9 +136,10 @@ try {
     $ticket_stmt->fetch();
     $ticket_stmt->close();
 
-    $totalPoints = $reward_points - $_SESSION['ticket_data']['points_used'];
+    $totalTickets = array_sum($data['tickets']) - ($data['tickets']['Infant'] ?? 0);
+    $totalPoints = $reward_points - $_SESSION['ticket_data']['points_used'] + (100 * $totalTickets);
     $ticket_stmt = $conn->prepare("UPDATE members SET reward_points = ? WHERE member_id = ?");
-    $ticket_stmt->bind_param("ii",$totalPoints, $cust_id);
+    $ticket_stmt->bind_param("ii", $totalPoints, $cust_id);
 
     if (!$ticket_stmt->execute()) {
         throw new Exception("RewardPoints udpated failed: " . $ticket_stmt->error);

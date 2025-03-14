@@ -22,15 +22,24 @@ $query = "SELECT
     customers.first_name, 
     members.membership_type, 
     members.membership_status,
+    members.membership_start_date,
     members.membership_end_date,
     members.reward_points,
-    COUNT(DISTINCT tickets.transaction_date) AS total_visits, 
-    COUNT(tickets.transaction_number) AS total_tickets_purchased
+    COALESCE(COUNT(DISTINCT tickets.reservation_date), 0) AS total_visits, 
+    COALESCE(COUNT(tickets.ticket_id), 0) AS total_tickets_purchased
 FROM customers
 JOIN members ON customers.cust_id = members.member_id
-LEFT JOIN tickets ON tickets.cust_id = customers.cust_id
+LEFT JOIN transactions ON transactions.cust_id = customers.cust_id
+LEFT JOIN tickets ON tickets.transaction_number = transactions.transaction_number
 WHERE members.member_id = ?
-GROUP BY customers.first_name, members.membership_type, members.membership_status,members.membership_end_date,members.reward_points";
+GROUP BY customers.cust_id, 
+         customers.first_name, 
+         members.membership_type, 
+         members.membership_status, 
+         members.membership_start_date,
+         members.membership_end_date, 
+         members.reward_points;
+";
 
 $stmt = $conn->prepare($query);
 if (!$stmt) {
@@ -66,6 +75,9 @@ $conn->close();
                     </h1>
                     <h1 class="fact">Membership Status:
                         <?php echo $row['membership_status'] ?>
+                    </h1>
+                    <h1 class="fact">Membership Since:
+                        <?php echo $row['membership_start_date'] ?>
                     </h1>
                     <h1 class="fact">Membership Expiration:
                         <?php echo $row['membership_end_date'] ?>
@@ -113,7 +125,9 @@ $conn->close();
             </div>
         </div>
         <div class="tab-content" id="3">
-            <h1 class="welcome">Buy Tickets</h1>
+            <a href="ticket.php" class="ticket-headerx">
+                <h2>Buy Tickets</h2>
+            </a>
 
         </div>
         <div class="tab-content" id="4">
@@ -142,9 +156,9 @@ $conn->close();
                     <span id="payment-amount">
                         <?php
                         $basePrices = array(
-                            "standard" => 70,
-                            "family" => 120,
-                            "vip" => 150
+                            "Standard" => 70,
+                            "Family" => 120,
+                            "Vip" => 150
                         );
                         $discount = ($current_date <= $end_date) ? 0.25 : 0;
 
