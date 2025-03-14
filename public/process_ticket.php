@@ -4,7 +4,7 @@ include '../scripts/authorize.php';
 
 if (!isset($_SESSION['ticket_data'])) {
     $_SESSION['error_message'] = "No ticket data found. Please start over.";
-    header("Location: onetimeticket.php");
+    header("Location: ticket.php");
     exit();
 }
 

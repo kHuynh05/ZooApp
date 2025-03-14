@@ -3,7 +3,7 @@ include '../config/database.php';
 include '../scripts/authorize.php';
 
 if (!isset($_SESSION['ticket_data'])) {
-    header("Location: onetimeticket.php");
+    header("Location: ticket.php");
     exit();
 }
 
@@ -137,7 +137,7 @@ $stmt->close();
         </div>
 
         <div class="action-buttons">
-            <form action="onetimeticket.php" method="GET" style="display: inline;">
+            <form action="ticket.php" method="GET" style="display: inline;">
                 <input type="hidden" name="edit" value="1">
                 <button type="submit" class="action-button edit-button">Edit</button>
             </form>
