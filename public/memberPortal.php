@@ -98,14 +98,14 @@ $conn->close();
                 <div class="form-group">
                     <label for="membership">Choose Membership Type</label>
                     <select id="membership" name="membership_type" onchange="changeContent()" required>
-                        <option value="standard">Standard</option>
-                        <option value="family">Family</option>
-                        <option value="vip">VIP</option>
+                        <option value="Standard">Standard</option>
+                        <option value="Premium">Premium</option>
+                        <option value="Vip">VIP</option>
                     </select>
                 </div>
 
                 <div id="membershipInfo">
-                    <h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a discounted price. Applies to one person</h3>
+                    <h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a 15% discounted price.</h3>
                     <div class='renew-img'><img class="renew-ticket" src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>
                 </div>
 
@@ -197,12 +197,12 @@ $conn->close();
         var div = document.getElementById("membershipInfo");
         var selectedOption = select.value;
 
-        if (selectedOption === "standard") {
-            div.innerHTML = "<h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a discounted price. Applies to one person</h3> <div class='renew-img'><img class = 'renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>";
-        } else if (selectedOption === "family") {
-            div.innerHTML = "<h3>Perfect for families! This membership includes two adults and up to three children, offering a cost-effective way to enjoy the zoo together.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300' height='500'> <img class='adult' src='../assets/img/adult.png' alt='adult' height='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
-        } else if (selectedOption === "vip") {
-            div.innerHTML = "<h3>Experience the zoo like never before! VIP members get unlimited entry, access to exclusive events, behind-the-scenes tours, and discounts on tickets, food, and gift shop purchases. </h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300' height='500'> <img class='adult' src='../assets/img/adult.png' alt='adult' height='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
+        if (selectedOption === "Standard") {
+            div.innerHTML = "<h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a 15% discounted price. Applies to one person</h3> <div class='renew-img'><img class = 'renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>";
+        } else if (selectedOption === "Premium") {
+            div.innerHTML = "<h3>Perfect for families! This membership includes a 25% discount, offering a cost-effective way to enjoy the zoo together.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300' height='500'> <img class='adult' src='../assets/img/adult.png' alt='adult' height='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
+        } else if (selectedOption === "Vip") {
+            div.innerHTML = "<h3>Experience the zoo like never before! VIP members get a 40% discount, access to exclusive events, behind-the-scenes tours, and discounts on tickets, food, and gift shop purchases. </h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300' height='500'> <img class='adult' src='../assets/img/adult.png' alt='adult' height='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
         }
     }
 
@@ -227,9 +227,9 @@ $conn->close();
 
     function updatePaymentAmount(membershipType) {
         const basePrices = {
-            standard: 70,
-            family: 120,
-            vip: 150
+            Standard: 70,
+            Premium: 120,
+            Vip: 150
         };
 
         var discount = 0.25;

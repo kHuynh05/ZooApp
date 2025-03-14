@@ -1,14 +1,35 @@
 <?php
 include '../config/database.php';
+include '../scripts/authorize.php';
 
 if (!isset($_SESSION['ticket_data'])) {
-    header("Location: onetimeticket.php");
+    $_SESSION['error_message'] = "No ticket data found. Please start over.";
+    header("Location: ticket.php");
     exit();
 }
 
+// Get the data from session
 $data = $_SESSION['ticket_data'];
 
-// Start transaction
+// Get the points used and final total from POST data
+if (isset($_POST['pointsToUse']) && isset($_POST['finalTotalPrice'])) {
+    $points_used = (int)$_POST['pointsToUse'];
+    $final_total = (float)$_POST['finalTotalPrice'];
+
+    // Update the session data
+    $_SESSION['ticket_data']['points_used'] = $points_used;
+    $_SESSION['ticket_data']['final_total'] = $final_total;
+
+    // Now the updated data is available in $data
+    $data = $_SESSION['ticket_data'];
+}
+
+echo '<pre>'; // This is optional, just to format the output for better readability
+var_dump($_SESSION['ticket_data']);
+var_dump($_SESSION['ticket_data']['points_used']);
+var_dump($_SESSION['ticket_data']['final_total']);
+echo '</pre>';
+
 $conn->begin_transaction();
 
 try {
@@ -47,11 +68,6 @@ try {
         }
     }
 
-    $discount_percentage = 0;
-    if ($is_member) {
-        $discount_percentage = 0.10;
-    }
-
     $current_date = date('Y-m-d');
     $current_time = date('H:i:s');
     $reservation_date = $data['reservation_date'];
@@ -59,45 +75,82 @@ try {
     // Validate ticket types before insertion
     $valid_ticket_types = ['Adult', 'Child', 'Senior', 'Infant'];
 
-    // Insert ticket records
-    $ticket_stmt = $conn->prepare("INSERT INTO tickets (transaction_date, transaction_time, cust_id, ticket_type, reservation_date) VALUES (?, ?, ?, ?, ?)");
+    $ticket_stmt = $conn->prepare("INSERT INTO transactions (transaction_date, transaction_time, cust_id, total_profit) VALUES (?, ?, ?, ?)");
     if (!$ticket_stmt) {
         throw new Exception("Prepare failed for tickets: " . $conn->error);
     }
 
+    $ticket_stmt->bind_param(
+        "ssid",
+        $current_date,
+        $current_time,
+        $cust_id,
+        $_SESSION['ticket_data']['final_total']
+    );
+
+    if (!$ticket_stmt->execute()) {
+        throw new Exception("Transaction insert failed: " . $ticket_stmt->error . " for type: " . $type);
+    }
+
+    $transaction_id = $conn ->insert_id;
+    if (!$transaction_id) {
+        throw new Exception("Failed to retrieve transaction ID.");
+    }
+    $ticket_stmt->close();
+
+    $ticket_stmt = $conn->prepare("INSERT INTO tickets (transaction_number, ticket_type, reservation_date) VALUES (?, ?, ?)");
+    if (!$ticket_stmt) {
+        throw new Exception("Prepare failed for tickets: " . $conn->error);
+    }
     foreach ($data['tickets'] as $type => $quantity) {
         // Validate ticket type
         if (!in_array($type, $valid_ticket_types)) {
             throw new Exception("Invalid ticket type: " . $type);
         }
-
         if ($quantity > 0) {  // Only process if quantity is greater than 0
-            for ($i = 0; $i < $quantity; $i++) {
-                $ticket_stmt->bind_param(
-                    "ssiss",
-                    $current_date,
-                    $current_time,
-                    $cust_id,
-                    $type,
-                    $reservation_date
-                );
-
-                if (!$ticket_stmt->execute()) {
-                    throw new Exception("Ticket insert failed: " . $ticket_stmt->error . " for type: " . $type);
-                }
+            $ticket_stmt->bind_param(
+                "iss",
+                $transaction_id,
+                $type,
+                $data['reservation_date']
+            );
+        
+            if (!$ticket_stmt->execute()) {
+                throw new Exception("Transaction insert failed: " . $ticket_stmt->error . " for type: " . $type);
             }
         }
     }
+    $ticket_stmt->close();
 
+    $ticket_stmt = $conn -> prepare("SELECT reward_points FROM members WHERE member_id = ?");
+    $ticket_stmt->bind_param("i",$cust_id);
+    $ticket_stmt->execute();
+
+    if (!$ticket_stmt->execute()) {
+        throw new Exception("RewardPoints Read failed: " . $ticket_stmt->error);
+    }
+    $ticket_stmt->bind_result($reward_points);
+    $ticket_stmt->fetch();
+    $ticket_stmt->close();
+
+    $totalPoints = $reward_points - $_SESSION['ticket_data']['points_used'];
+    $ticket_stmt = $conn->prepare("UPDATE members SET reward_points = ? WHERE member_id = ?");
+    $ticket_stmt->bind_param("ii",$totalPoints, $cust_id);
+
+    if (!$ticket_stmt->execute()) {
+        throw new Exception("RewardPoints udpated failed: " . $ticket_stmt->error);
+    }
+
+    $ticket_stmt->close();
     // If we got here, everything worked
     $conn->commit();
 
     // Store transaction data for receipt
     $_SESSION['transaction_data'] = [
+        'transaction_number' => $transaction_id,
         'cust_id' => $cust_id,
         'tickets' => $data['tickets'],
         'reservation_date' => $reservation_date,
-        'discount_percentage' => $discount_percentage
     ];
 
     // Clear the ticket data session

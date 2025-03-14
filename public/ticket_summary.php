@@ -3,7 +3,7 @@ include '../config/database.php';
 include '../scripts/authorize.php';
 
 if (!isset($_SESSION['ticket_data'])) {
-    header("Location: onetimeticket.php");
+    header("Location: ticket.php");
     exit();
 }
 
@@ -18,15 +18,6 @@ $prices = [
     'Infant' => 0.00
 ];
 
-// Try to fetch prices from database
-$sql = "SELECT ticket_type, price FROM type_of_ticket";
-$result = $conn->query($sql);
-if ($result && $result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        $prices[$row['ticket_type']] = $row['price'];
-    }
-}
-
 // Validate data array
 $data = array_merge([
     'first_name' => '',
@@ -34,7 +25,9 @@ $data = array_merge([
     'email' => '',
     'sex' => '',
     'dob' => '',
-    'tickets' => []
+    'tickets' => [],
+    'points_used' => 0,          // Initialize points_used
+    'final_total' => 0           // Initialize final_total
 ], $data);
 
 // Ensure tickets array exists and has all types
@@ -52,12 +45,6 @@ $stmt->execute();
 $stmt->bind_result($cust_id, $first_name, $last_name, $email, $sex, $dob);
 $stmt->fetch();
 $stmt->close();
-
-if ($is_member) {
-    $discount_percentage = 0.25; 
-} else {
-    $discount_percentage = 0;
-}
 ?>
 
 <head>
@@ -69,19 +56,19 @@ if ($is_member) {
 
 <div class="container">
     <?php include('../includes/navbar.php'); ?>
-   
+
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="error-message">
-            <?php 
-                echo htmlspecialchars($_SESSION['error_message']);
-                unset($_SESSION['error_message']); // Clear the error message
+            <?php
+            echo htmlspecialchars($_SESSION['error_message']);
+            unset($_SESSION['error_message']); // Clear the error message
             ?>
         </div>
     <?php endif; ?>
-    
+
     <div class="summary-container">
         <h1 class="summary-title">Order Summary</h1>
-        
+
         <div class="summary-section">
             <h2>Personal Information</h2>
             <div class="summary-row">
@@ -109,7 +96,7 @@ if ($is_member) {
                 <span><?php echo date('F j, Y', strtotime($data['reservation_date'])); ?></span>
             </div>
         </div>
-        
+
         <div class="summary-section">
             <h2>Tickets Selected</h2>
             <?php
@@ -118,7 +105,7 @@ if ($is_member) {
                 if ($quantity > 0) {
                     $ticket_price = $price;
                     if ($is_member) {
-                        $ticket_price = $price * (1 - $discount_percentage);
+                        $ticket_price = $price * (1 - $member_discount);
                     }
                     $subtotal = $ticket_price * $quantity;
                     $total_price += $subtotal;
@@ -129,21 +116,87 @@ if ($is_member) {
                 }
             }
             ?>
+            <?php
+            if ($is_member) {
+                echo "<div class='use-reward-points' style='display: flex; align-items: center; gap: 5px;'>
+            <input type='checkbox' id='usePoints' name='usePoints' value='1' onchange='toggleRewardPoints()' style='width: 16px; height: 16px; appearance: auto;'>
+            <label for='usePoints' style='margin: 0;'>Use Reward Points</label>
+          </div> 
+          <div id='rewardPointsSection' style='display: none; margin-top: 10px;'>
+            <label for='pointsToUse'>Enter Points to Use: </label>
+            <input type='number' id='pointsToUse' name='pointsToUse' min='0' max='" . $reward_points . "' value='0' oninput='updateTotalPrice()'>
+            <span>Available Points: " . $reward_points . "</span>
+          </div>";
+            }
+            ?>
             <div class="total-price">
-                Total Price: $<?php echo number_format($total_price, 2); ?>
+                Total Price: <span id="totalPrice" data-original="<?php echo number_format($total_price, 2, '.', ''); ?>">
+                    $<?php echo number_format($total_price, 2); ?>
+                </span>
             </div>
         </div>
-        
+
         <div class="action-buttons">
-            <form action="onetimeticket.php" method="GET" style="display: inline;">
+            <form action="ticket.php" method="GET" style="display: inline;">
                 <input type="hidden" name="edit" value="1">
                 <button type="submit" class="action-button edit-button">Edit</button>
             </form>
-            <form action="process_ticket.php" method="POST" style="display: inline;">
+            <form action="process_ticket.php" method="POST" id="purchaseForm" style="display: inline;">
+                <input type="hidden" id="hiddenPointsToUse" name="pointsToUse" value="<?php echo $data['points_used']; ?>">
+                <input type="hidden" id="finalTotalPrice" name="finalTotalPrice" value="<?php echo $data['final_total'] ? $data['final_total'] : $total_price; ?>">
                 <button type="submit" class="action-button complete-button">Complete Purchase</button>
             </form>
         </div>
     </div>
-    
+
     <?php include('../includes/footer.php'); ?>
 </div>
+
+<script>
+    // Initialize form with stored values if they exist
+    document.addEventListener('DOMContentLoaded', function() {
+        let storedPoints = <?php echo $data['points_used']; ?>;
+        if (storedPoints > 0 && document.getElementById('usePoints')) {
+            document.getElementById('usePoints').checked = true;
+            toggleRewardPoints();
+            document.getElementById('pointsToUse').value = storedPoints;
+            updateTotalPrice();
+        }
+    });
+
+    function toggleRewardPoints() {
+        let checkbox = document.getElementById('usePoints');
+        let pointsSection = document.getElementById('rewardPointsSection');
+
+        if (checkbox.checked) {
+            pointsSection.style.display = 'block';
+        } else {
+            pointsSection.style.display = 'none';
+            document.getElementById('pointsToUse').value = 0;
+            updateTotalPrice();
+        }
+    }
+
+    function updateTotalPrice() {
+        let baseTotal = parseFloat(document.getElementById('totalPrice').dataset.original);
+        let pointsInput = document.getElementById('pointsToUse');
+        let pointsToUse = parseInt(pointsInput.value) || 0;
+        let maxPoints = parseInt(pointsInput.max);
+
+        // Ensure points do not exceed the allowed maximum
+        if (pointsToUse > maxPoints) {
+            pointsToUse = maxPoints;
+            pointsInput.value = maxPoints;
+        }
+
+        let pointsValue = pointsToUse * 0.01; // assuming 1 point = 0.01 for simplicity
+        let newTotal = Math.max(baseTotal - pointsValue, 0);
+
+        document.getElementById('totalPrice').textContent = '$' + newTotal.toFixed(2);
+        document.getElementById('hiddenPointsToUse').value = pointsToUse;
+        document.getElementById('finalTotalPrice').value = newTotal.toFixed(2);
+    }
+
+    // Ensure total updates when the input changes
+    document.getElementById('pointsToUse').addEventListener('input', updateTotalPrice);
+</script>
