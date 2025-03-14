@@ -25,7 +25,9 @@ $data = array_merge([
     'email' => '',
     'sex' => '',
     'dob' => '',
-    'tickets' => []
+    'tickets' => [],
+    'points_used' => 0,          // Initialize points_used
+    'final_total' => 0           // Initialize final_total
 ], $data);
 
 // Ensure tickets array exists and has all types
@@ -139,9 +141,9 @@ $stmt->close();
                 <input type="hidden" name="edit" value="1">
                 <button type="submit" class="action-button edit-button">Edit</button>
             </form>
-            <form action="process_ticket.php" method="POST" style="display: inline;">
-                <input type="hidden" id="hiddenPointsToUse" name="pointsToUse" value="0">
-                <input type="hidden" id="finalTotalPrice" name="finalTotalPrice" value="0">
+            <form action="process_ticket.php" method="POST" id="purchaseForm" style="display: inline;">
+                <input type="hidden" id="hiddenPointsToUse" name="pointsToUse" value="<?php echo $data['points_used']; ?>">
+                <input type="hidden" id="finalTotalPrice" name="finalTotalPrice" value="<?php echo $data['final_total'] ? $data['final_total'] : $total_price; ?>">
                 <button type="submit" class="action-button complete-button">Complete Purchase</button>
             </form>
         </div>
@@ -151,6 +153,17 @@ $stmt->close();
 </div>
 
 <script>
+    // Initialize form with stored values if they exist
+    document.addEventListener('DOMContentLoaded', function() {
+        let storedPoints = <?php echo $data['points_used']; ?>;
+        if (storedPoints > 0 && document.getElementById('usePoints')) {
+            document.getElementById('usePoints').checked = true;
+            toggleRewardPoints();
+            document.getElementById('pointsToUse').value = storedPoints;
+            updateTotalPrice();
+        }
+    });
+
     function toggleRewardPoints() {
         let checkbox = document.getElementById('usePoints');
         let pointsSection = document.getElementById('rewardPointsSection');
@@ -180,15 +193,9 @@ $stmt->close();
         let newTotal = Math.max(baseTotal - pointsValue, 0);
 
         document.getElementById('totalPrice').textContent = '$' + newTotal.toFixed(2);
-        document.getElementById('hiddenPointsToUse').value = pointsToUse; // Pass value to backend
-        
-        console.log("Points to use: " + document.getElementById('hiddenPointsToUse').value);
-        console.log("Final total price: " + document.getElementById('finalTotalPrice').value);
-
-        // Update the hidden field with the final price
-        document.getElementById('finalTotalPrice').value = newTotal.toFixed(2); // Set the final price here
+        document.getElementById('hiddenPointsToUse').value = pointsToUse;
+        document.getElementById('finalTotalPrice').value = newTotal.toFixed(2);
     }
-
 
     // Ensure total updates when the input changes
     document.getElementById('pointsToUse').addEventListener('input', updateTotalPrice);
