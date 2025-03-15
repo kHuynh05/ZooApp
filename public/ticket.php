@@ -1,28 +1,26 @@
 <?php
 // Include the database connection
 include '../config/database.php'; // Or however you connect to your database
-
-// Include the authorization file
-include '../scripts/authorize.php';
-echo($is_member);
 // Check if user is a member and redirect accordingly
-if ($is_member) {
-    header("Location: memberPortal.php");
-    exit();
-}
-
-// Continue with the regular ticket page content below
 ?>
-
-<!DOCTYPE html>
-<html>
 <head>
-    <title>Tickets - Zoo Management</title>
-    <!-- Your CSS and other head content -->
+    <link rel="stylesheet" href="../assets/css/ticket.css">
 </head>
-<body>
-    <!-- Your regular ticket page content -->
-    <h1>Purchase Tickets</h1>
-    <!-- Rest of your ticket page -->
-</body>
-</html>
+
+<div class="container">
+    <?php include('../includes/navbar.php'); ?>
+    
+    <div class="ticket-section">
+        <h1 class="ticket-header">Buy Tickets</h1>
+        
+        <div class="ticket-options">
+            <a href="onetimeticket.php" class="ticket-box">
+                <h2>General Admission</h2>
+            </a>
+            <a href="<?php echo $is_member ? 'memberPortal.php' : 'login.php'; ?>" class="ticket-box">
+                <h2>Members Ticket</h2>
+            </a>
+        </div>
+    </div>
+    <?php include('../includes/footer.php'); ?>
+</div>
