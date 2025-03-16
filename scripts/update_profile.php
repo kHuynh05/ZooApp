@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../config/database.php';
 include '../scripts/authorize.php';
 

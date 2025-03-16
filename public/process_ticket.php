@@ -80,13 +80,14 @@ try {
         throw new Exception("Prepare failed for tickets: " . $conn->error);
     }
 
+    $type = "tickets";
     $ticket_stmt->bind_param(
-        "ssid",
+        "ssids",
         $current_date,
         $current_time,
         $cust_id,
         $_SESSION['ticket_data']['final_total'],
-        "tickets"
+        $type
     );
 
     if (!$ticket_stmt->execute()) {

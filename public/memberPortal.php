@@ -136,13 +136,43 @@ $conn->close();
         </div>
         <div class="tab-content" id="3">
             <h1 class="welcome">Recent Orders</h1>
-            <h1>Orders placed within *</h1>
-            <select name="time" id="time">
-                <option value="1_month">1 month</option>
-                <option value="3_months">3 months</option>
-                <option value="6_months">6 months</option>
-                <option value="1_year">1 year</option>
-            </select>
+            <div class="filters">
+                <div class="filters">
+                    <span>Orders placed within *</span>
+                    <select name="time" id="time" onchange="update()">
+                        <option value="1_month">1 month</option>
+                        <option value="3_months">3 months</option>
+                        <option value="6_months">6 months</option>
+                        <option value="1_year">1 year</option>
+                    </select>
+                </div>
+                <div class="filters">
+                    <span>Type of Orders</span>
+                    <select name="type" id="type" onchange="update()">
+                        <option value="registration">registration</option>
+                        <option value="tickets">tickets</option>
+                        <option value="donations">donations</option>
+                        <option value="shop">shop</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transaction Number</th>
+                            <th>Transaction Date</th>
+                            <th>Transaction Time</th>
+                            <th>Transaction Type</th>
+                            <th>Total Profit</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                    </tbody>
+                </table>
+            </div>
+
         </div>
         <div class="tab-content" id="4">
             <form id="profileForm">
@@ -376,5 +406,64 @@ $conn->close();
         var price = basePrices[membershipType] * (1 - discount);
 
         document.getElementById('payment-amount').textContent = "$" + price.toFixed(2);
+    }
+
+    function update() {
+        let time = document.getElementById("time").value;
+        let orderType = document.getElementById("type").value;
+        let ordersTableBody = document.getElementById("ordersTableBody"); // Change this to tbody
+
+        let dataToSend = {
+            time: time,
+            orderType: orderType
+        };
+
+        fetch("../scripts/update_Orders.php", {
+                method: "POST",
+                body: JSON.stringify(dataToSend),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Clear the existing table content
+                    ordersTableBody.innerHTML = "";
+
+                    // Check if orders data is available and is an array
+                    if (Array.isArray(data.transactions) && data.transactions.length > 0) {
+                        data.transactions.forEach(transaction => {
+                            let actionButton = "";
+
+                            // If transaction type is "tickets", add a "View Tickets" button
+                            if (transaction.transaction_type === "tickets") {
+                                actionButton = `<button onclick="">View Tickets</button>`;
+                            }
+
+                            // Add a new row to the table
+                            let row = `
+                        <tr>
+                            <td>${transaction.transaction_number}</td>
+                            <td>${transaction.transaction_date}</td>
+                            <td>${transaction.transaction_time}</td>
+                            <td>${transaction.transaction_type}</td>
+                            <td>${transaction.total_profit}</td>
+                            <td>${actionButton}</td>
+                        </tr>
+                    `;
+                            ordersTableBody.innerHTML += row;
+                        });
+                    } else {
+                        // If no orders are found, display this message
+                        ordersTableBody.innerHTML = "<tr><td colspan='6'>No transactions found.</td></tr>";
+                    }
+                } else {
+                    showError(data.error || "Error occurred while fetching orders.");
+                }
+            })
+            .catch(error => {
+                showError(error.message || "Error occurred while processing the request.");
+            });
     }
 </script>

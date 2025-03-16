@@ -168,3 +168,75 @@ body{
     border-radius: 2px;
     border: 1px solid #fcc;
 }
+.filters{
+    display: flex;
+    padding-right: 20px;
+    gap:20px;
+}
+.table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Table headers */
+th {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Table data cells */
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Hover effect for rows */
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Styling the action button */
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Add a message if no transactions are found */
+.no-transactions {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: #777;
+}
+
+/* Optional: Add alternating row colors */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
