@@ -82,10 +82,10 @@ $stmt->close();
 
 $current_date = date('Y-m-d');
 $current_time = date('H:i:s');
-
-$query = "INSERT INTO transactions (transaction_date, transaction_time, cust_id, total_profit) VALUES (?, ?, ?, ?)";
+$type = "registration";
+$query = "INSERT INTO transactions (transaction_date, transaction_time, cust_id, total_profit, transaction_type) VALUES (?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($query);
-$stmt->bind_param("ssdi", $current_date, $current_time, $user_id, $amount);
+$stmt->bind_param("ssdis", $current_date, $current_time, $user_id, $amount, $type);
 
 if ($stmt->execute()) {
     // Successfully updated the membership

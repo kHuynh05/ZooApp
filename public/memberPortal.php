@@ -20,6 +20,9 @@ if (!$is_member) {
 
 $query = "SELECT 
     customers.first_name, 
+    customers.last_name,
+    customers.cust_email,
+    members.password,
     members.membership_type, 
     members.membership_status,
     members.membership_start_date,
@@ -34,6 +37,9 @@ LEFT JOIN tickets ON tickets.transaction_number = transactions.transaction_numbe
 WHERE members.member_id = ?
 GROUP BY customers.cust_id, 
          customers.first_name, 
+         customers.last_name,
+         customers.cust_email,
+         members.password,
          members.membership_type, 
          members.membership_status, 
          members.membership_start_date,
@@ -60,10 +66,12 @@ $conn->close();
         <h1 class="member-title">Membership Portal</h1>
         <div class="tab active" onclick="showTab(1)">Dashboard</div>
         <div class="tab" onclick="showTab(2)">Membership</div>
-        <div class="tab" onclick="showTab(3)">Tickets</div>
+        <div class="tab" onclick="showTab(3)">Recent Orders</div>
         <div class="tab" onclick="showTab(4)">Profile</div>
     </div>
     <div class="change-container" id="change-container">
+        <span id="error-message" class="error-message" style="display: none; padding: 10px; color: white;"></span>
+
         <div class="tab-content active" id="1">
             <h1 class="welcome">Welcome back,
                 <?php echo $row['first_name'] ?>
@@ -100,7 +108,9 @@ $conn->close();
                     <h3>Shopping at our gift shop: 50 points for every dollar you spend</h3>
                 </div>
             </div>
-            <div class="Upcoming-event"></div>
+            <a href="ticket.php">
+                <button class="ticket-header">Buy Tickets</button>
+            </a>
         </div>
         <div class="tab-content" id="2">
             <div class="renew-membership">
@@ -125,13 +135,38 @@ $conn->close();
             </div>
         </div>
         <div class="tab-content" id="3">
-            <a href="ticket.php" class="ticket-headerx">
-                <h2>Buy Tickets</h2>
-            </a>
-
+            <h1 class="welcome">Recent Orders</h1>
+            <h1>Orders placed within *</h1>
+            <select name="time" id="time">
+                <option value="1_month">1 month</option>
+                <option value="3_months">3 months</option>
+                <option value="6_months">6 months</option>
+                <option value="1_year">1 year</option>
+            </select>
         </div>
         <div class="tab-content" id="4">
-            <h1 class="welcome">Profile</h1>
+            <form id="profileForm">
+                <h1 class="welcome">Edit Profile</h1>
+                <label>Name:</label>
+                <input type="text" name="first_name" value="<?= htmlspecialchars($row['first_name']) ?>"><br><br>
+
+                <label>Name:</label>
+                <input type="text" name="last_name" value="<?= htmlspecialchars($row['last_name']) ?>"><br><br>
+
+                <label>Email:</label>
+                <input type="email" name="email" value="<?= htmlspecialchars($row['cust_email']) ?>"><br><br>
+
+                <label>Old Password:</label>
+                <input type="password" name="oldPassword" value=""><br><br>
+
+                <label>New Password:</label>
+                <input type="password" name="newPassword" value=""><br><br>
+
+                <label>Verify Password:</label>
+                <input type="password" name="verifyPassword" value=""><br><br>
+
+                <button class="renew-btn" type="button" onclick="saveProfile()">Save</button>
+            </form>
         </div>
         <div class="tab-content" id="5">
             <h1 class="Payment">Payment:</h1>
@@ -183,6 +218,97 @@ $conn->close();
     </div>
 </div>
 <script>
+    function saveProfile() {
+        let form = document.getElementById("profileForm");
+        if (!form) {
+            console.error("Form not found!");
+            return;
+        }
+
+        let formData = new FormData(form);
+
+        let oldPassword = formData.get("oldPassword")?.trim() || "";
+        let newPassword = formData.get("newPassword")?.trim() || "";
+        let verifyPassword = formData.get("verifyPassword")?.trim() || "";
+
+        let firstName = formData.get("first_name")?.trim() || "";
+        let lastName = formData.get("last_name")?.trim() || "";
+        let email = formData.get("email")?.trim() || "";
+
+        let profileUpdateData = {};
+        if (firstName) profileUpdateData.first_name = firstName;
+        if (lastName) profileUpdateData.last_name = lastName;
+        if (email) profileUpdateData.email = email;
+
+        let passwordUpdateData = {};
+        if (oldPassword && newPassword && verifyPassword) {
+            if (newPassword !== verifyPassword) {
+                showError("New password and verify password do not match.");
+                return;
+            }
+            passwordUpdateData = {
+                oldPassword: oldPassword,
+                newPassword: newPassword
+            };
+        } else if (newPassword && verifyPassword && !oldPassword) {
+            showError("Enter your old password");
+            return;
+        }
+
+        // Prepare final data to send
+        let dataToSend = {
+            profile: profileUpdateData,
+            password: passwordUpdateData
+        };
+
+        fetch("../scripts/update_profile.php", {
+                method: "POST",
+                body: JSON.stringify(dataToSend),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(data.error);
+                } else {
+                    showError(data.error || "Error occurred while updating the profile.");
+                }
+            })
+            .catch(error => {
+                showError(error.message || "Error occurred while processing the request.");
+            });
+    }
+
+    // Function to display success message
+    function showSuccess(message) {
+        const errorMessageDiv = document.getElementById("error-message");
+        errorMessageDiv.innerText = message;
+        errorMessageDiv.style.backgroundColor = "#dfd";
+        errorMessageDiv.style.color = "green"; // Optional: Make text white for better contrast
+        errorMessageDiv.style.display = "block";
+        setTimeout(() => {
+            errorMessageDiv.style.display = "none";
+        }, 3000);
+    }
+
+    // Function to display error message
+    function showError(message) {
+        const errorMessageDiv = document.getElementById("error-message");
+        errorMessageDiv.innerText = message;
+        errorMessageDiv.style.backgroundColor = "#fee";
+        errorMessageDiv.style.color = "red";
+        errorMessageDiv.style.display = "block";
+        setTimeout(() => {
+            errorMessageDiv.style.display = "none";
+        }, 3000);
+    }
+
+
+
+
+
     function showTab(step) {
         const tabContents = document.querySelectorAll('.tab-content');
         const tabs = document.querySelectorAll('.tab');

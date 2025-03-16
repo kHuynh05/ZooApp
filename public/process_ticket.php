@@ -75,7 +75,7 @@ try {
     // Validate ticket types before insertion
     $valid_ticket_types = ['Adult', 'Child', 'Senior', 'Infant'];
 
-    $ticket_stmt = $conn->prepare("INSERT INTO transactions (transaction_date, transaction_time, cust_id, total_profit) VALUES (?, ?, ?, ?)");
+    $ticket_stmt = $conn->prepare("INSERT INTO transactions (transaction_date, transaction_time, cust_id, total_profit, transaction_type) VALUES (?, ?, ?, ?,?)");
     if (!$ticket_stmt) {
         throw new Exception("Prepare failed for tickets: " . $conn->error);
     }
@@ -85,7 +85,8 @@ try {
         $current_date,
         $current_time,
         $cust_id,
-        $_SESSION['ticket_data']['final_total']
+        $_SESSION['ticket_data']['final_total'],
+        "tickets"
     );
 
     if (!$ticket_stmt->execute()) {

@@ -4,6 +4,7 @@ include '../config/database.php';
 
 // Check if user is logged in
 $is_member = false;
+$member_discount = 0;
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
