@@ -124,13 +124,11 @@ $conn->close();
                         $event_name = $event['event_name'];
                         $event_date = $event['event_date'];
                         $event_description = $event['description'];
+                        $event_picture = $event['picture'];
 
-                        // Fetch the image URL from get_image.php dynamically using event_id
-                        $imageUrl = "../../scripts/get_event_image.php?event_id=" . $event_id;
 
-                        // Display event with dynamic background image
                         echo "
-                            <a href='/public/event.php?event_id={$event_id}' class='event-home' style='background-image: url({$imageUrl});'>
+                            <a href='/public/event.php?event_id={$event_id}' class='event-home' style='background-image: url({$event_picture});'>
                                 <div>
                                     <h1 class='event-home-name'>{$event_name}</h1>
                                     <h2 class='event-home-date'>{$event_date}</h2>

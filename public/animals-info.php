@@ -32,7 +32,7 @@
         }
     } else {
         // Handle the case if no animals are found
-        $animals = ['row' => ['animal_id' => null, 'animal_name' => null, 'image' => null]];
+        $animals = ['animal_id' => null, 'animal_name' => null, 'image' => null];
     }
 
     $sqlForEnclosures = "SELECT enclosure_id, enclosure_name FROM enclosures";
@@ -47,7 +47,7 @@
         }
     } else {
         // Handle the case if no enclosures are found
-        $enclosures = ['row' => ['enclosure_id' => null, 'enclosure_name' => null]];
+        $enclosures = ['enclosure_id' => null, 'enclosure_name' => null];
     }
 
     // Close the connection
@@ -66,7 +66,7 @@
                     <?php foreach ($enclosures as $enclosure):
                         if ($enclosure['enclosure_id'] != null): ?>
 
-                            <option value="<?php echo $enclosure['enclosure_id']; ?>" <?php echo isset($_POST["enclosureType"]) && $_POST["enclosureType"] == $enclosure['enclosure_id'] ? 'selected' : ''; ?>><?php echo $enclosure['enclosure_name']; ?></option>
+                            <option value="<?php echo $enclosure['enclosure_id']; ?>" <?php echo isset($_POST["enclosureType"]) && ($_POST["enclosureType"] == $enclosure['enclosure_id']) ? 'selected' : ''; ?>><?php echo $enclosure['enclosure_name']; ?></option>
 
                     <?php endif;
                     endforeach; ?>
