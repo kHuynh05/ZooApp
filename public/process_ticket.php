@@ -24,15 +24,27 @@ if (isset($_POST['pointsToUse']) && isset($_POST['finalTotalPrice'])) {
     $data = $_SESSION['ticket_data'];
 }
 
-echo '<pre>';
-var_dump($_SESSION['ticket_data']);
-var_dump($_SESSION['ticket_data']['points_used']);
-var_dump($_SESSION['ticket_data']['final_total']);
-echo '</pre>';
-
 $conn->begin_transaction();
 
 try {
+    if (strtotime($data['reservation_date']) < strtotime(date('Y-m-d'))) {
+        throw new Exception("Cannot sell a ticket for a past reservation date.");
+    }
+
+    // Check if adding these tickets would exceed the daily limit
+    $reservation_date = $data['reservation_date'];
+    $stmt = $conn->prepare("SELECT COUNT(*) as count FROM tickets WHERE reservation_date = ?");
+    $stmt->bind_param("s", $reservation_date);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $current_count = $result->fetch_assoc()['count'];
+
+    // Calculate total tickets being purchased
+    $total_new_tickets = array_sum($data['tickets']);
+
+    if (($current_count + $total_new_tickets) > 30) {
+        throw new Exception("Daily ticket limit reached. Cannot sell more tickets for this date.");
+    }
     // Insert customer data
     if ($data['email'] != null) {
         $email = $data['email'];
@@ -70,7 +82,6 @@ try {
 
     $current_date = date('Y-m-d');
     $current_time = date('H:i:s');
-    $reservation_date = $data['reservation_date'];
 
     // Validate ticket types before insertion
     $valid_ticket_types = ['Adult', 'Child', 'Senior', 'Infant'];
@@ -115,7 +126,7 @@ try {
                     "iss",
                     $transaction_id,
                     $type,
-                    $data['reservation_date']
+                    $reservation_date
                 );
 
 

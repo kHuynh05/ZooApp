@@ -55,6 +55,14 @@ $stmt->close();
 
 <div class="container">
     <?php include('../includes/navbar.php'); ?>
+    <?php if (isset($_SESSION['error_message'])): ?>
+        <div class="error-message">
+        <?php 
+            echo htmlspecialchars($_SESSION['error_message']);
+            unset($_SESSION['error_message']); // Clear the error message
+        ?>
+        </div>
+    <?php endif; ?>
 
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="error-message">

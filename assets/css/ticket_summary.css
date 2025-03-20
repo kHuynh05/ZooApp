@@ -88,3 +88,14 @@
     border-radius: 4px;
     border: 1px solid #fcc;
 }
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    border-radius: 4px;
+    border: 1px solid #ef9a9a;
+    text-align: center;
+    font-weight: 500;
+}
