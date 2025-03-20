@@ -142,33 +142,6 @@ $conn->close();
                     ?>
                 </div>
             </div>
-            <div class="contact-container">
-                <h2>Contact Us</h2>
-                <form class="form-contact" action="../scripts/contact.php" method="POST">
-                    <div class="contactinfo">
-                        <div>
-                            <label for="firstname" class="starlabel">first name:</label>
-                            <input type="text" id="firstname" name="firstname" class="starlabel" required>
-
-                            <label for="lastname">last name:</label>
-                            <input type="text" id="lastname" name="lastname" class="starlabel" required>
-                        </div>
-                        <div>
-                            <label for="email" class="starlabel">Email</label>
-                            <input type="email" id="email" name="email" class="starlabel" required>
-
-                            <label for="phone">Phone</label>
-                            <input type="tel" id="phone" name="phone" class="starlabel">
-                        </div>
-                    </div>
-                    <div class="contactMessage">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="4" class="messageArea starlabel" required></textarea>
-
-                        <button class='frontPageButton messageButton' type="submit">Send Message</button>
-                    </div>
-                </form>
-            </div>
         </div>
     </div>
     <?php include('../includes/footer.php'); ?>

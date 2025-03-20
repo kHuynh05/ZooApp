@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm_password = $_POST['confirm_password'];
     $dob = $_POST['date_of_birth'];
     $gender = $_POST['sex'];
-    $ticket_type = $_POST['ticket_type'];
+    $ticket_type = $_POST['membership_type'];
 
     // Address data
     $address_line1 = $_POST['address_line1'];
@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $password,
                 $membership_start_date,
                 $membership_end_date,
-                $ticket_type,
+                $membership_type,
                 $membership_status, // Membership is active by default
                 $reward_points
             );
