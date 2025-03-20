@@ -21,7 +21,7 @@
 
             // Display the event image if available
             if (!empty($picture)) {
-                echo '<img class="event-img" src="data:image/jpeg;base64,' . base64_encode($picture) . '" alt="Event Image">';
+                echo '<img class="event-img" src="' . $picture . '" alt="Event Image">';
             } else {
                 echo "<p>No image available for this event.</p>";
             }

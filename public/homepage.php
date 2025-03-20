@@ -124,13 +124,11 @@ $conn->close();
                         $event_name = $event['event_name'];
                         $event_date = $event['event_date'];
                         $event_description = $event['description'];
+                        $event_picture = $event['picture'];
 
-                        // Fetch the image URL from get_image.php dynamically using event_id
-                        $imageUrl = "../../scripts/get_event_image.php?event_id=" . $event_id;
 
-                        // Display event with dynamic background image
                         echo "
-                            <a href='/public/event.php?event_id={$event_id}' class='event-home' style='background-image: url({$imageUrl});'>
+                            <a href='/public/event.php?event_id={$event_id}' class='event-home' style='background-image: url({$event_picture});'>
                                 <div>
                                     <h1 class='event-home-name'>{$event_name}</h1>
                                     <h2 class='event-home-date'>{$event_date}</h2>
@@ -141,33 +139,6 @@ $conn->close();
                     }
                     ?>
                 </div>
-            </div>
-            <div class="contact-container">
-                <h2>Contact Us</h2>
-                <form class="form-contact" action="../scripts/contact.php" method="POST">
-                    <div class="contactinfo">
-                        <div>
-                            <label for="firstname" class="starlabel">first name:</label>
-                            <input type="text" id="firstname" name="firstname" class="starlabel" required>
-
-                            <label for="lastname">last name:</label>
-                            <input type="text" id="lastname" name="lastname" class="starlabel" required>
-                        </div>
-                        <div>
-                            <label for="email" class="starlabel">Email</label>
-                            <input type="email" id="email" name="email" class="starlabel" required>
-
-                            <label for="phone">Phone</label>
-                            <input type="tel" id="phone" name="phone" class="starlabel">
-                        </div>
-                    </div>
-                    <div class="contactMessage">
-                        <label for="message">Message</label>
-                        <textarea id="message" name="message" rows="4" class="messageArea starlabel" required></textarea>
-
-                        <button class='frontPageButton messageButton' type="submit">Send Message</button>
-                    </div>
-                </form>
             </div>
         </div>
     </div>

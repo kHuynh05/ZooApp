@@ -4,6 +4,7 @@ include '../config/database.php';
 
 // Check if user is logged in
 $is_member = false;
+$member_discount = 0;
 if (isset($_SESSION['user_id'])) {
     $user_id = $_SESSION['user_id'];
 
@@ -38,11 +39,11 @@ if (isset($_SESSION['user_id'])) {
         $is_member = true;
 
         if ($is_member) {
-            if($membership_type == "vip"){
+            if($membership_type == "Vip"){
                 $member_discount = .4;
-            }else if($membership_type == "premium"){
+            }else if($membership_type == "Premium"){
                 $member_discount = .25;
-            }else if($membership_type == "standard"){
+            }else if($membership_type == "Standard"){
                 $member_discount = .1;
             }
         }else{

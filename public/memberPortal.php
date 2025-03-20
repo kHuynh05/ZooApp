@@ -20,17 +20,32 @@ if (!$is_member) {
 
 $query = "SELECT 
     customers.first_name, 
+    customers.last_name,
+    customers.cust_email,
+    members.password,
     members.membership_type, 
     members.membership_status,
+    members.membership_start_date,
     members.membership_end_date,
     members.reward_points,
-    COUNT(DISTINCT tickets.transaction_date) AS total_visits, 
-    COUNT(tickets.transaction_number) AS total_tickets_purchased
+    COALESCE(COUNT(DISTINCT tickets.reservation_date), 0) AS total_visits, 
+    COALESCE(COUNT(tickets.ticket_id), 0) AS total_tickets_purchased
 FROM customers
 JOIN members ON customers.cust_id = members.member_id
-LEFT JOIN tickets ON tickets.cust_id = customers.cust_id
+LEFT JOIN transactions ON transactions.cust_id = customers.cust_id
+LEFT JOIN tickets ON tickets.transaction_number = transactions.transaction_number
 WHERE members.member_id = ?
-GROUP BY customers.first_name, members.membership_type, members.membership_status,members.membership_end_date,members.reward_points";
+GROUP BY customers.cust_id, 
+         customers.first_name, 
+         customers.last_name,
+         customers.cust_email,
+         members.password,
+         members.membership_type, 
+         members.membership_status, 
+         members.membership_start_date,
+         members.membership_end_date, 
+         members.reward_points;
+";
 
 $stmt = $conn->prepare($query);
 if (!$stmt) {
@@ -51,10 +66,12 @@ $conn->close();
         <h1 class="member-title">Membership Portal</h1>
         <div class="tab active" onclick="showTab(1)">Dashboard</div>
         <div class="tab" onclick="showTab(2)">Membership</div>
-        <div class="tab" onclick="showTab(3)">Tickets</div>
+        <div class="tab" onclick="showTab(3)">Recent Orders</div>
         <div class="tab" onclick="showTab(4)">Profile</div>
     </div>
     <div class="change-container" id="change-container">
+        <span id="error-message" class="error-message" style="display: none; padding: 10px; color: white;"></span>
+
         <div class="tab-content active" id="1">
             <h1 class="welcome">Welcome back,
                 <?php echo $row['first_name'] ?>
@@ -66,6 +83,9 @@ $conn->close();
                     </h1>
                     <h1 class="fact">Membership Status:
                         <?php echo $row['membership_status'] ?>
+                    </h1>
+                    <h1 class="fact">Membership Since:
+                        <?php echo $row['membership_start_date'] ?>
                     </h1>
                     <h1 class="fact">Membership Expiration:
                         <?php echo $row['membership_end_date'] ?>
@@ -88,7 +108,9 @@ $conn->close();
                     <h3>Shopping at our gift shop: 50 points for every dollar you spend</h3>
                 </div>
             </div>
-            <div class="Upcoming-event"></div>
+            <a href="ticket.php">
+                <button class="ticket-header">Buy Tickets</button>
+            </a>
         </div>
         <div class="tab-content" id="2">
             <div class="renew-membership">
@@ -113,11 +135,68 @@ $conn->close();
             </div>
         </div>
         <div class="tab-content" id="3">
-            <h1 class="welcome">Buy Tickets</h1>
+            <h1 class="welcome">Recent Orders</h1>
+            <div class="filters">
+                <div class="filters">
+                    <span>Orders placed within *</span>
+                    <select name="time" id="time" onchange="update()">
+                        <option value="1_month">1 month</option>
+                        <option value="3_months">3 months</option>
+                        <option value="6_months">6 months</option>
+                        <option value="1_year">1 year</option>
+                    </select>
+                </div>
+                <div class="filters">
+                    <span>Type of Orders</span>
+                    <select name="type" id="type" onchange="update()">
+                        <option value="registration">registration</option>
+                        <option value="tickets">tickets</option>
+                        <option value="donations">donations</option>
+                        <option value="shop">shop</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Transaction Number</th>
+                            <th>Transaction Date</th>
+                            <th>Transaction Time</th>
+                            <th>Transaction Type</th>
+                            <th>Total Profit</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ordersTableBody">
+                    </tbody>
+                </table>
+            </div>
 
         </div>
         <div class="tab-content" id="4">
-            <h1 class="welcome">Profile</h1>
+            <form id="profileForm">
+                <h1 class="welcome">Edit Profile</h1>
+                <label>Name:</label>
+                <input type="text" name="first_name" value="<?= htmlspecialchars($row['first_name']) ?>"><br><br>
+
+                <label>Name:</label>
+                <input type="text" name="last_name" value="<?= htmlspecialchars($row['last_name']) ?>"><br><br>
+
+                <label>Email:</label>
+                <input type="email" name="email" value="<?= htmlspecialchars($row['cust_email']) ?>"><br><br>
+
+                <label>Old Password:</label>
+                <input type="password" name="oldPassword" value=""><br><br>
+
+                <label>New Password:</label>
+                <input type="password" name="newPassword" value=""><br><br>
+
+                <label>Verify Password:</label>
+                <input type="password" name="verifyPassword" value=""><br><br>
+
+                <button class="renew-btn" type="button" onclick="saveProfile()">Save</button>
+            </form>
         </div>
         <div class="tab-content" id="5">
             <h1 class="Payment">Payment:</h1>
@@ -142,9 +221,9 @@ $conn->close();
                     <span id="payment-amount">
                         <?php
                         $basePrices = array(
-                            "standard" => 70,
-                            "family" => 120,
-                            "vip" => 150
+                            "Standard" => 70,
+                            "Family" => 120,
+                            "Vip" => 150
                         );
                         $discount = ($current_date <= $end_date) ? 0.25 : 0;
 
@@ -169,6 +248,97 @@ $conn->close();
     </div>
 </div>
 <script>
+    function saveProfile() {
+        let form = document.getElementById("profileForm");
+        if (!form) {
+            console.error("Form not found!");
+            return;
+        }
+
+        let formData = new FormData(form);
+
+        let oldPassword = formData.get("oldPassword")?.trim() || "";
+        let newPassword = formData.get("newPassword")?.trim() || "";
+        let verifyPassword = formData.get("verifyPassword")?.trim() || "";
+
+        let firstName = formData.get("first_name")?.trim() || "";
+        let lastName = formData.get("last_name")?.trim() || "";
+        let email = formData.get("email")?.trim() || "";
+
+        let profileUpdateData = {};
+        if (firstName) profileUpdateData.first_name = firstName;
+        if (lastName) profileUpdateData.last_name = lastName;
+        if (email) profileUpdateData.email = email;
+
+        let passwordUpdateData = {};
+        if (oldPassword && newPassword && verifyPassword) {
+            if (newPassword !== verifyPassword) {
+                showError("New password and verify password do not match.");
+                return;
+            }
+            passwordUpdateData = {
+                oldPassword: oldPassword,
+                newPassword: newPassword
+            };
+        } else if (newPassword && verifyPassword && !oldPassword) {
+            showError("Enter your old password");
+            return;
+        }
+
+        // Prepare final data to send
+        let dataToSend = {
+            profile: profileUpdateData,
+            password: passwordUpdateData
+        };
+
+        fetch("../scripts/update_profile.php", {
+                method: "POST",
+                body: JSON.stringify(dataToSend),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    showSuccess(data.error);
+                } else {
+                    showError(data.error || "Error occurred while updating the profile.");
+                }
+            })
+            .catch(error => {
+                showError(error.message || "Error occurred while processing the request.");
+            });
+    }
+
+    // Function to display success message
+    function showSuccess(message) {
+        const errorMessageDiv = document.getElementById("error-message");
+        errorMessageDiv.innerText = message;
+        errorMessageDiv.style.backgroundColor = "#dfd";
+        errorMessageDiv.style.color = "green"; // Optional: Make text white for better contrast
+        errorMessageDiv.style.display = "block";
+        setTimeout(() => {
+            errorMessageDiv.style.display = "none";
+        }, 3000);
+    }
+
+    // Function to display error message
+    function showError(message) {
+        const errorMessageDiv = document.getElementById("error-message");
+        errorMessageDiv.innerText = message;
+        errorMessageDiv.style.backgroundColor = "#fee";
+        errorMessageDiv.style.color = "red";
+        errorMessageDiv.style.display = "block";
+        setTimeout(() => {
+            errorMessageDiv.style.display = "none";
+        }, 3000);
+    }
+
+
+
+
+
     function showTab(step) {
         const tabContents = document.querySelectorAll('.tab-content');
         const tabs = document.querySelectorAll('.tab');
@@ -236,5 +406,64 @@ $conn->close();
         var price = basePrices[membershipType] * (1 - discount);
 
         document.getElementById('payment-amount').textContent = "$" + price.toFixed(2);
+    }
+
+    function update() {
+        let time = document.getElementById("time").value;
+        let orderType = document.getElementById("type").value;
+        let ordersTableBody = document.getElementById("ordersTableBody"); // Change this to tbody
+
+        let dataToSend = {
+            time: time,
+            orderType: orderType
+        };
+
+        fetch("../scripts/update_Orders.php", {
+                method: "POST",
+                body: JSON.stringify(dataToSend),
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Clear the existing table content
+                    ordersTableBody.innerHTML = "";
+
+                    // Check if orders data is available and is an array
+                    if (Array.isArray(data.transactions) && data.transactions.length > 0) {
+                        data.transactions.forEach(transaction => {
+                            let actionButton = "";
+
+                            // If transaction type is "tickets", add a "View Tickets" button
+                            if (transaction.transaction_type === "tickets") {
+                                actionButton = `<button onclick="">View Tickets</button>`;
+                            }
+
+                            // Add a new row to the table
+                            let row = `
+                        <tr>
+                            <td>${transaction.transaction_number}</td>
+                            <td>${transaction.transaction_date}</td>
+                            <td>${transaction.transaction_time}</td>
+                            <td>${transaction.transaction_type}</td>
+                            <td>${transaction.total_profit}</td>
+                            <td>${actionButton}</td>
+                        </tr>
+                    `;
+                            ordersTableBody.innerHTML += row;
+                        });
+                    } else {
+                        // If no orders are found, display this message
+                        ordersTableBody.innerHTML = "<tr><td colspan='6'>No transactions found.</td></tr>";
+                    }
+                } else {
+                    showError(data.error || "Error occurred while fetching orders.");
+                }
+            })
+            .catch(error => {
+                showError(error.message || "Error occurred while processing the request.");
+            });
     }
 </script>

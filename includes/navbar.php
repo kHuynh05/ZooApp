@@ -28,7 +28,7 @@
             <div class="dropdown-content">
                 <?php
                 if($is_member) {
-                    echo '<a href="update-profile.php">Update Profile</a>';
+                    echo '<a href="memberPortal.php">Member Portal</a>';
                     echo '<a href="../scripts/logout.php">Logout</a>';
                 } else {
                     echo '<a href="login.php">Login</a>';

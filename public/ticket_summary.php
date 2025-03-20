@@ -26,11 +26,10 @@ $data = array_merge([
     'sex' => '',
     'dob' => '',
     'tickets' => [],
-    'points_used' => 0,          // Initialize points_used
-    'final_total' => 0           // Initialize final_total
+    'points_used' => 0,         
+    'final_total' => 0           
 ], $data);
 
-// Ensure tickets array exists and has all types
 $data['tickets'] = array_merge([
     'Adult' => 0,
     'Child' => 0,
@@ -69,7 +68,7 @@ $stmt->close();
         <div class="error-message">
             <?php
             echo htmlspecialchars($_SESSION['error_message']);
-            unset($_SESSION['error_message']); // Clear the error message
+            unset($_SESSION['error_message']);
             ?>
         </div>
     <?php endif; ?>
