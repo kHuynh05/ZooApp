@@ -60,85 +60,8 @@
     align-items: left;
 }
 
-.form-container{
-    display: flex;
-    gap: 50px;
-    flex-wrap: wrap;
-    margin: 100px;
-    justify-content: center;
-}
-
-.form-box{
-    border: 2px solid black;
-    padding: 25px;
-    width: 100%;
-    max-width: 1100px; 
-    background-color: white;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1); 
-}
-
-.form-header{
-    text-align: center;
-    justify-content: center;
-    align-items: center;
-}
-
-.form-group{
-    text-align: left;
-    align-items: left;
-}
-
-.form-thing{
-    align-items: first baseline;
-}
-
-
-.form-name{
-    display: flex;
-    gap: 15px;
-}
-
-.form-address, .form-address1, .form-address2{
-    display: flex;
-    gap: 15px;
-}
-
-.form-address2{
-    margin-bottom: 10px;
-    width: 350px;
-}
-
-select {
-    width: 100%;
-    border: 1px, solid, #ccc;
-    padding: 10px;
-    font-size: 16px;
-    border-radius: 5px;
-    background-color: white;
-    color: #333;
-    cursor: pointer;
-}
-
-option {
-    background-color: white;
-    color: black;
-    font-size: 16px;
-}
-
-.warning{
-    color: gray;
-    opacity: 0.4;
-    font-size: 15px;
-}
-
-.input-group{
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-}
-
-.form-amount{
-    max-width: 350px;
+.donate-btn{
+    margin-top: 20px;
 }
 
 button{
