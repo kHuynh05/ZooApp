@@ -1,11 +1,11 @@
 .container {
     width: 100vw;
-    height: 300vh;
+    height: 250vh;
     margin: 0px;
     padding: 0px;
 }
 .homePage{
-    padding:0px;
+    padding:0px 0px 20px 0px;
 }
 .frontPage {
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/frontPage.jpg');
@@ -55,7 +55,7 @@
 }
 
 .featured {
-    height: 15%;
+    height: 21%;
     padding: 40px 50px;
     margin: 0px;
     background-color: seagreen;
@@ -99,7 +99,7 @@
 }
 
 .supportways {
-    height: 30%;
+    height: 36%;
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/support-img.avif');
     background-size: cover;
     background-position: center;
@@ -184,7 +184,7 @@
 }
 
 .upcoming-events-homepage {
-    height: 33%;
+    height: 39%;
     display: flex;
     flex-direction: column;
     padding :0px 70px;
@@ -228,32 +228,4 @@
 }
 .event-home-desc{
     text-align: right;
-}
-
-.contact-container {
-    height: 18%;
-    background: darkseagreen;
-    margin: 30px 100px 30px 40px;
-    padding:0px 20px;
-    border-radius: 10px;
-    border: 10px solid darkseagreen;
-}
-.form-contact{
-    height:auto;
-    display: flex;
-}
-.contactinfo{
-    width: 30%;
-    height: 100%;
-    margin:0px 20px 0px 0px;
-}
-.contactMessage{
-    width:100%;
-    height: auto;
-}
-.messageArea{
-    height: 67%;
-}
-.messageButton{
-    width:100%
 }

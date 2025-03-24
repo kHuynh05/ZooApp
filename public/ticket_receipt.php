@@ -1,8 +1,8 @@
 <?php
 include '../config/database.php';
-
+include '../scripts/authorize.php';
 if (!isset($_SESSION['transaction_data'])) {
-    header("Location: onetimeticket.php");
+    header("Location: ticket.php");
     exit();
 }
 
@@ -24,8 +24,15 @@ $data = $_SESSION['transaction_data'];
         
         <?php
         // Fetch customer info
-        $stmt = $conn->prepare("SELECT first_name, last_name FROM customers WHERE cust_id = ?");
-        $stmt->bind_param("i", $data['cust_id']);
+        if ($is_member) {
+            // Fetch from the members table
+            $stmt = $conn->prepare("SELECT first_name, last_name FROM customers WHERE cust_id = ?");
+            $stmt->bind_param("i", $_SESSION['user_id']); 
+        } else {
+            // Fetch from the customers table
+            $stmt = $conn->prepare("SELECT first_name, last_name FROM customers WHERE cust_id = ?");
+            $stmt->bind_param("i", $data['cust_id']);
+        }
         $stmt->execute();
         $result = $stmt->get_result();
         $customer = $result->fetch_assoc();
@@ -38,8 +45,8 @@ $data = $_SESSION['transaction_data'];
               </div>";
         
         // Fetch tickets
-        $stmt = $conn->prepare("SELECT transaction_number, ticket_type FROM tickets WHERE cust_id = ?");
-        $stmt->bind_param("i", $data['cust_id']);
+        $stmt = $conn->prepare("SELECT ticket_id, ticket_type FROM tickets, transactions WHERE tickets.transaction_number = transactions.transaction_number AND tickets.transaction_number = ? AND cust_id = ?");
+        $stmt->bind_param("ii", $data['transaction_number'],$data['cust_id']);
         $stmt->execute();
         $result = $stmt->get_result();
         
@@ -47,14 +54,13 @@ $data = $_SESSION['transaction_data'];
         while ($ticket = $result->fetch_assoc()) {
             echo "<div class='ticket'>
                     <h3>Ticket Type: {$ticket['ticket_type']}</h3>
-                    <p>Transaction #: {$ticket['transaction_number']}</p>
+                    <p>Ticket #: {$ticket['ticket_id']}</p>
                     <div class='barcode'>
-                        <img src='https://barcode.tec-it.com/barcode.ashx?data={$ticket['transaction_number']}&code=Code128' alt='Barcode'>
+                        <img src='https://barcode.tec-it.com/barcode.ashx?data={$ticket['ticket_id']}&code=Code128' alt='Barcode'>
                     </div>
                   </div>";
         }
         echo "</div>";
-        
         // Clear session data
         unset($_SESSION['transaction_data']);
         ?>
