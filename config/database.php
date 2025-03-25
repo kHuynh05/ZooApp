@@ -18,9 +18,7 @@ if (!$dbHost || !$dbName || !$dbUser || !$dbPass || !$secretKey) {
 }
 
 // SSL connection to MySQL
-$conn = mysqli_init();
-mysqli_ssl_set($conn, NULL, NULL, __DIR__ . "/../assets/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
-mysqli_real_connect($conn, $dbHost, $dbUser, $dbPass, $dbName, 3306);
+$conn = mysqli_connect($dbHost, $dbUser, $dbPass, $dbName, 3306);
 
 if (mysqli_connect_errno()) {
     die('Failed to connect to MySQL: ' . mysqli_connect_error());
