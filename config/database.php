@@ -2,34 +2,29 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start(); // Ensure session is started only once
 }
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Initialize dotenv
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
+// Get database credentials using getenv() for Azure environment variables
+$dbHost = getenv('DB_HOST');  // Get DB_HOST environment variable
+$dbName = getenv('DB_NAME');  // Get DB_NAME environment variable
+$dbUser = getenv('DB_USER');  // Get DB_USER environment variable
+$dbPass = getenv('DB_PASS');  // Get DB_PASS environment variable
+$secretKey = getenv('SECRET_KEY');  // Get SECRET_KEY environment variable
 
-// Validate required variables
-$dotenv->required([
-    'DB_HOST',
-    'DB_NAME',
-    'DB_USER',
-    'DB_PASS',
-    'SECRET_KEY'
-])->notEmpty();
+// Check if all required environment variables are set
+if (!$dbHost || !$dbName || !$dbUser || !$dbPass || !$secretKey) {
+    die('Required environment variables are missing!');
+}
 
-// Get database credentials using $_ENV
-$dbHost = $_ENV['DB_HOST'];
-$dbName = $_ENV['DB_NAME'];
-$dbUser = $_ENV['DB_USER'];
-$dbPass = $_ENV['DB_PASS'];
-$secretKey = $_ENV['SECRET_KEY'];
-
+// SSL connection to MySQL
 $conn = mysqli_init();
-mysqli_ssl_set($conn,NULL,NULL, __DIR__ . "/../assets/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
+mysqli_ssl_set($conn, NULL, NULL, __DIR__ . "/../assets/DigiCertGlobalRootCA.crt.pem", NULL, NULL);
 mysqli_real_connect($conn, $dbHost, $dbUser, $dbPass, $dbName, 3306);
+
 if (mysqli_connect_errno()) {
     die('Failed to connect to MySQL: ' . mysqli_connect_error());
-}else{
+} else {
     error_log("Connected!");
 }
 ?>
