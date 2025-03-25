@@ -1,7 +1,7 @@
 <?php
 include '../config/database.php';  // Ensure the correct path
 
-if(isset($_POST['submit'])) {
+if (isset($_POST['submit'])) {
     $first_name = htmlspecialchars($_POST['first_name']);
     $last_name = htmlspecialchars($_POST['last_name']);
     $subject = htmlspecialchars($_POST['title']);
@@ -18,29 +18,49 @@ if(isset($_POST['submit'])) {
     $headers = "From: " . $mailfrom . "\r\n";
     $headers .= "Reply-To: " . $mailfrom . "\r\n";
     $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
-    
-    $txt = "You have received a message from " . $first_name . " " . $last_name . ".\n\n" . $message;
 
-    if (mail($mailTo, $subject, $txt, $headers)) {
-        echo "<p>Message Sent Successfully</p>";
-    } else {
-        echo "<p>Message Failed To Send</p>";
+    $stmt = $conn->prepare("INSERT INTO contact (first_name, last_name, email, title, message) VALUES (?, ?, ?, ?, ?)");
+
+    // Check for errors in preparing the statement
+    if ($stmt === false) {
+        die('Prepare failed: ' . $conn->error);
     }
+
+    // Bind parameters to the prepared statement
+    $stmt->bind_param("sssss", $first_name, $last_name, $mailfrom, $subject, $message);
+
+    // Execute the statement
+    if ($stmt->execute()) {
+        echo "Record successfully inserted!";
+    } else {
+        echo "Error: " . $stmt->error;
+    }
+
+    // Close the statement
+    $stmt->close();
+
+    $conn->close();
+
+
+
 }
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Contact Form</title>
+
     <head>
-    <link rel="stylesheet" href="../assets/css/contact.css">
+        <link rel="stylesheet" href="../assets/css/contact.css">
+    </head>
 </head>
-</head>
+
 <body>
     <main>
-        <p>CONTACT US</p> 
+        <p>CONTACT US</p>
         <form class="contact-form" action="" method="post">
             <input type="text" name="first_name" placeholder="First Name" required>
             <input type="text" name="last_name" placeholder="Last Name" required>
@@ -51,7 +71,5 @@ if(isset($_POST['submit'])) {
         </form>
     </main>
 </body>
+
 </html>
-
-
-

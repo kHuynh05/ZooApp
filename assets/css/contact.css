@@ -1,5 +1,5 @@
 body {
-    background-color: lightgray;
+    background-color: green;
     font-family: Arial, sans-serif;
 }
 
@@ -9,6 +9,63 @@ h1 {
 }
 
 p {
-    color: blue;
+    text-align: center;
+    color: black;
     font-size: 18px;
+    margin-top: auto;
+}
+
+input {
+    background-color: rgb(255, 255, 255);
+    width: 70%;
+    height: 40px; /* Standard input height */
+    margin-left: 12%;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid black;
+    margin-bottom: 20px;
+}
+
+textarea {
+    background-color: white;
+    width: 70%; /* Slightly wider than input fields */
+    height: 200px; /* Make it larger */
+    margin-left: 12%;
+    font-size: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 2px solid black;
+    margin-bottom: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    resize: vertical; /* Allow resizing */
+}
+
+input:focus-within {
+    outline: none;
+    border-color: green;
+    border-width: 3px;
+}
+
+textarea:focus-within {
+    outline: none;
+    border-color: green;
+    border-width: 3px;
+}
+
+button {
+    background-color: chartreuse;
+    border-radius: 20px;
+    border: 2px solid black; /* Corrected border syntax */
+    font-size: 22px;
+    padding: 10px 18px;
+    text-align: center;
+    display: flex;
+    margin: auto;
+    cursor: pointer; /* Added to improve usability */
+}
+
+button:hover {
+    opacity: 80%; /* Fixed missing semicolon */
+    cursor: pointer;
 }
