@@ -20,13 +20,13 @@ Validation logic will be within adminPortal.php
 
 
     <label for="start-date">Select Start Date:</label>
-    <input type="datetime-local" id="start-date" name="event_date" placeholder="Enter Date and Time!" required>
+    <input type="datetime-local" id="datetime" name="event_date" placeholder="Enter Date and Time!" required>
 
     <label for="end-time">Select End Date & Time:</label>
-    <input type="datetime-local" id="end-time" name="ending_time" placeholder="Enter Date and Time!" required>
+    <input type="datetime-local" id="datetime" name="ending_time" placeholder="Enter Date and Time!" required>
 
     <label for="event-picture">Upload Picture:</label>
-    <input type="file" id="event-picture" name="picture" accept="image/*" required>
+    <input type="file" id="field-picture" name="picture" accept="image/*" required>
 
     <button type="submit">Submit</button>
 </form>
