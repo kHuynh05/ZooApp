@@ -4,6 +4,7 @@
             <img src="/assets/img/zoo-logo.jpg" alt="Zoo Logo" class="footer-logo">
             <p class="address">6200 Hermann Park Drive, Houston, TX 77030</p>
         </div>
+        <a href="../public/employeeLogin.php" >Employee Portal</a>
         <div class="footer-bottom">
             <p>&copy; 2025 Zootopia. All rights reserved</p>
         </div>
@@ -53,5 +54,12 @@
     .footer-bottom p {
         margin: 0;
         font-size: 14px;
+    }
+    a {
+        color: #333333;
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        font-size: 24px;
     }
 </style>
