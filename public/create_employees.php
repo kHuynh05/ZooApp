@@ -100,7 +100,7 @@ $conn->close();
     <?php if ($message): ?>
         <p class="error"><?php echo $message; ?></p>
     <?php endif; ?>
-    <h1>Create Employee</h1>
+    <h1>Add Employee</h1>
     <form id="form" method="POST">
         <div class="form-container">
             <div class="forms">
