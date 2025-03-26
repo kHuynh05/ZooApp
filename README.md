@@ -7,6 +7,7 @@ Resources we are using: HTML, CSS, PHP, Mysql, and Azure.
 Setup the structure of the files and created an .gitignore file to hide the database credentials. To connect to the database, we use composer which will need to be downloaded.
 
 Windows: https://getcomposer.org/download/
+
 Mac: 
 
 1. Download Composer installer

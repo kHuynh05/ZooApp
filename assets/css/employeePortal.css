@@ -1,0 +1,142 @@
+body {
+    height: 100vh;
+    margin:0px;
+}
+
+.container {
+    display: flex;
+    height:100%;
+}
+
+.tab-container {
+    height:100%;
+    width:20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: left;
+    background-color: seagreen;
+    color:white;
+}
+
+.member-title {
+    font-size: 40px;
+    margin: 20px;
+}
+
+.tab {
+    padding: 20px 20px;
+    font-size: 30px;
+    cursor: pointer;
+    text-align: left;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.tab.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.tab:hover {
+    background-color: #ddd;
+}
+
+.tab-content {
+    height: 100%;
+    width: 100%;
+}
+
+.tab-pane {
+    display: block;
+    height:90%;
+    padding:33px 40px 0px 40px;
+}
+
+.tab-pane.hidden {
+    display: none;
+}
+
+.tab-content.active {
+    display: block;
+    height:90%;
+    padding:33px 40px 0px 40px;
+}
+
+.form-container{
+    display:flex;
+    justify-content: space-between;
+}
+.forms{
+    width:100%;
+    padding:20px;
+}
+.form-group {
+    margin-bottom: 15px;
+    width:100%;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input, .form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Add spacing between tabs and form elements */
+.form-address {
+    margin-top: 20px;
+}
+
+.form-address input, .form-address select {
+    width: 48%;
+    margin-right: 4%;
+}
+
+.form-address input:last-child, .form-address select:last-child {
+    margin-right: 0;
+}
+
+/* Style for the submit button (optional) */
+button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #45a049;
+}
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-group input {
+    width: 100%;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.password-toggle:hover {
+    color: #2c5f2d;
+}

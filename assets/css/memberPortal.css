@@ -1,0 +1,242 @@
+body{
+    height: 100vh;
+}
+.container{
+    margin: 0px;
+    height:85%;
+    display: flex;
+}
+.tabs {
+    height:100%;
+    width:20%;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: left;
+    background-color: seagreen;
+    color:white;
+}
+.member-title{
+    margin:20px;
+    font-size: 40px;
+}
+.tab {
+    padding: 20px 20px;
+    font-size: 30px;
+    cursor: pointer;
+    text-align: left;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+.tab.active {
+    background-color: #4CAF50;  
+    color: white;
+}
+
+.tab:hover {
+    background-color: #ddd;
+}
+.change-container{
+    height: 100%;
+    width: 100%;
+}
+.tab-content {
+    display: none; 
+    border-radius: 5px;
+    height:90%;
+}
+
+.tab-content.active {
+    display: block;
+    height:90%;
+    padding:33px 40px 0px 40px;
+}
+
+.info{
+    display: flex;
+    justify-content: space-between;
+    height:60%;
+}
+.Rewards-info{
+    background-color: seagreen;
+    color:white;
+    font-size: 20px;
+    padding:10px 60px;
+    justify-content:center;
+    height:70%;
+    width:50%;
+}
+.renew-membership {
+    background-color: white;
+    border-radius: 8px;
+    margin: auto;
+}
+
+.welcome {
+    font-size: 50px;
+    border-bottom: 2px solid black;
+    color: seagreen;
+    font-weight: bold;
+    margin: 0px 0px 10px 0px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+
+#membership {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+#membershipInfo {
+    background-color: seagreen;
+    color: white;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    font-size: 16px;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+
+.renew-img{
+    display:flex;
+    align-items: end;
+    padding:20px;
+}
+
+.renew-img img.adult{
+    height:300px;
+    width:auto;
+}
+
+.renew-img img.child{
+    height:125px;
+    width:auto;
+}
+.renew-ticket{
+    border-right: 2px solid black;
+}
+.renew-btn {
+    background-color: seagreen;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 15px;
+}
+
+.renew-btn:hover {
+    background-color: #3a773a;
+}
+
+.ticket-header {
+    background-color: seagreen;
+    color:white;
+    border-radius: 100px;
+    border: 0px;
+    height:10%;
+    width:100%;
+    font-size:30px;
+    margin-bottom:10px;
+    margin-top: 20px;
+}
+
+.ticket-header:hover{
+    background-color: #4CAF50; 
+}
+
+.error-message {
+    background: #fee;
+    color: #c00;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 2px;
+    border: 1px solid #fcc;
+}
+.filters{
+    display: flex;
+    padding-right: 20px;
+    gap:20px;
+}
+.table-container {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 20px 0;
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Table headers */
+th {
+    background-color: #007bff;
+    color: white;
+    padding: 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Table data cells */
+td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: left;
+    font-size: 14px;
+}
+
+/* Hover effect for rows */
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Styling the action button */
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+/* Add a message if no transactions are found */
+.no-transactions {
+    text-align: center;
+    padding: 20px;
+    font-size: 16px;
+    color: #777;
+}
+
+/* Optional: Add alternating row colors */
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
