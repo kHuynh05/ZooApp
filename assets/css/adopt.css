@@ -1,0 +1,239 @@
+.homepage{
+    background-color: rgb(234, 233, 233);
+    padding: 2rem;
+    min-height: calc(100vh - 200px);
+}
+
+.frontpage{
+    border-style: solid;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: seagreen;
+    padding: 20px;
+}
+
+.frontpage-main{
+    text-align: center;
+    justify-content: center;
+    color: white;
+}
+
+.adopt-info{
+    text-align: left;
+    align-items: left;
+    color: white;
+}
+
+img {
+    width: 200px; 
+    height: 200px; 
+    border-radius: 50%;
+    object-fit: cover; 
+    display: block; 
+}
+
+.responsive-circle {
+    width: 100%;
+    max-width: 200px;
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/*right here*/
+.close-btn {
+    float: right;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+    text-decoration: none;
+}
+
+.close-btn:hover {
+    color: seagreen;
+}
+
+.dropdown-wrapper{
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.animal-card {
+    position: relative;
+    width: 250px;
+    text-align: center;
+    margin-bottom: 250px;
+}
+
+.animal-label{
+    color: gray;
+    opacity: 0.9;
+    margin-top: 25px;
+    padding-top: 45px;
+    padding-right: 45px;
+    font-size: 1rem;
+}
+
+.animal-card label {
+    display: block;
+    cursor: pointer;
+}
+
+.animal-card img{
+    transition: all 0.3s ease;
+}
+
+.animal-card img:hover{
+    transform: scale(1.05);
+    opacity: 0.9;
+}
+
+.animal-card input[type="radio"] {
+    display: none;
+}
+
+.dropdown-content {
+    margin: 30px auto;
+    background: white;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 1000px;
+    text-align: left;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.animal-card input:checked + label + .dropdown-content {
+    display: block;
+}
+
+.animals{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: flex-start; /* THIS aligns dropdowns to the top of their card */
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+
+.animal-title, .packet-title{
+    color: grey;
+    font-size: 10rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 25px;
+}
+
+.plush-image{
+    max-height: 250px;
+}
+
+.dropdown-body{
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.dropdown-img{
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/*animal ends here*/
+
+.packet{
+    display: flex;
+    gap: 50px;
+    flex-wrap: wrap; 
+    justify-content: center; 
+}
+
+.friends, .guardian, .protector, .classroom-package, .birthday-package{
+    border-style: solid;
+    display: flex;
+    flex-direction: column; 
+    align-items: flex-start;
+    padding: 20px;
+    margin: 10px;
+
+    width: 450px;
+    height: 500px;
+    justify-content: space-between;
+
+    /*max-width: 450px;
+    max-height: 750px;*/
+    transition: all 0.3s ease;
+}
+
+.birthday-package{
+    height: auto;
+}
+
+.more{
+    margin-top: 20px;
+    align-self: flex-start;
+    color: purple;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.friends, .birthday-package{
+    background-color: white;
+    color: black;
+}
+
+.protector{
+    background-color: green;
+    color: white;
+    border-color: black;
+}
+
+.guardian, .classroom-package{
+    background-color: seagreen;
+    border-color: black;
+    color: white;
+}
+
+.guardian:hover, .classroom-package:hover, .protector:hover{
+    border-color: yellowgreen;
+    box-shadow: 0 7px 8px rgba(0, 0, 0, 0.3);
+}
+
+.friends:hover, .birthday-package:hover{
+    box-shadow: 0 7px 8px rgba(0, 0, 0, 0.3);
+}
+
+li{
+    padding: 15px;
+}
+
+.packet-header{
+    width: 400px;
+}
+
+.packet-info{
+    margin: 20px;
+    align-items: left;
+    justify-content: left;
+    text-align: left;
+    width: auto;
+}
+
+ul{
+    list-style-type: none
+}
+
+.pack-list{
+    padding-left: 0;
+    margin: 0;
+}

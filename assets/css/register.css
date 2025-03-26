@@ -95,3 +95,24 @@ button {
 button:hover {
     background-color: #45a049;
 }
+.password-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-input-group input {
+    width: 100%;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 10px;
+    cursor: pointer;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.password-toggle:hover {
+    color: #2c5f2d;
+}
