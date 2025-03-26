@@ -72,7 +72,7 @@ jobs:
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'zootopia-project'
+          app-name: 'zootopia'
           slot-name: 'Production'
           package: .
           
