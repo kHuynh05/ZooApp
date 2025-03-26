@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $confirm_password = $_POST['confirm_password'];
     $dob = $_POST['date_of_birth'];
     $gender = $_POST['sex'];
-    $ticket_type = $_POST['membership_type'];
+    $membership_type = $_POST['membership_type'];
 
     // Address data
     $address_line1 = $_POST['address_line1'];
@@ -259,6 +259,7 @@ $conn->close();
             </div>
             <div class="form-group">
                 <label for="dob">Date of Birth</label>
+
                 <input type="date" id="dob" name="date_of_birth" 
                         max="<?php echo date('Y-m-d'); ?>" required>
             </div>
@@ -275,6 +276,7 @@ $conn->close();
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="cust_email" required>
             </div>
+
 
 
             <div class="form-group">
