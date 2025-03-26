@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // Verify password
-    if ($emp_id && $password == $stored_password) {
+    if ($emp_id && password_verify($password,$stored_password)) {
         // Securely start the session for the logged-in user
         session_regenerate_id(true);
         $_SESSION['emp_id'] = $emp_id;
