@@ -1,50 +1,56 @@
 <?php // Start the session
-// include '../../config/database.php';
-// include '../scripts/authorize.php';
+include '../config/database.php';
 
-// // Initialize variables
-// $email = "";
-// $password = "";
-// $message = "";
+// Initialize variables
+$email = "";
+$password = "";
+$message = "";
 
-// if ($_SERVER["REQUEST_METHOD"] == "POST") {
-//     $email = $_POST['email'];
-//     $password = $_POST['password'];
+if (isset($_SESSION['message'])) {
+    $message = $_SESSION['message'];
 
-//     // Query to check email and get the hashed password
-//     $query = "SELECT emp_id, password FROM members, customers WHERE customers.cust_id = members.member_id AND customers.cust_email = ?";
-//     $stmt = $conn->prepare($query);
-//     $stmt->bind_param("s", $email);
-//     $stmt->execute();
-//     $stmt->bind_result($user_id, $stored_password);
-//     $stmt->fetch();
+    // Remove the message from the session after displaying it
+    unset($_SESSION['message']);
+}
 
-    
-//     // Verify password
-//     if ($user_id && password_verify($password, $stored_password)) {
-//         // Securely start the session for the logged-in user
-//         session_regenerate_id(true);
-//         $_SESSION['user_id'] = $user_id;
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
 
-//         // Redirect to member portal
-//         header("Location: ../memberPortal.php");
-//         exit();
-//     } else {
-//         $message = "Invalid email or password.";
-//     }
+    // Query to check email and get the hashed password
+    $query = "SELECT emp_id, emp_password, role FROM employees WHERE emp_email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $stmt->bind_result($emp_id, $stored_password, $role);
+    $stmt->fetch();
 
-//     $stmt->close();
-// }
 
-// $conn->close();
+    // Verify password
+    if ($emp_id && $password == $stored_password) {
+        // Securely start the session for the logged-in user
+        session_regenerate_id(true);
+        $_SESSION['emp_id'] = $emp_id;
+        $_SESSION['role'] = $role;
+        // Redirect to member portal
+        header("Location: employeePortal.php");
+        exit();
+    } else {
+        $message = "Invalid password or email";
+    }
+
+    $stmt->close();
+}
+
+$conn->close();
 ?>
 <head>
-    <link rel="stylesheet" href="../../assets/css/login.css">
+    <link rel="stylesheet" href="../assets/css/login.css">
 </head>
 <div class="container">
-    <?php include('../../includes/navbar.php'); ?>
+    <?php include('../includes/navbar.php'); ?>
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Employee Login</h2>
 
         <!-- Show error message if invalid credentials -->
         <?php if ($message): ?>
@@ -52,7 +58,7 @@
         <?php endif; ?>
 
         <!-- Login form -->
-        <form method="POST" action="login.php">
+        <form method="POST" action="employeeLogin.php">
             <div class="form-group">
                 <input type="text" name="email" placeholder="Email" value="<?php echo htmlspecialchars($email); ?>" required>
             </div>
@@ -61,9 +67,8 @@
             </div>
             <div class="form-actions">
                 <button type="submit">Login</button>
-                <span class="register-link">New user? <a href="register.php">Register here</a></span>
             </div>
         </form>
     </div>
-    <?php include('../../includes/footer.php'); ?>
+    <?php include('../includes/footer.php'); ?>
 </div>
