@@ -16,19 +16,16 @@ $permissions = [
         "logout"
     ],
     "shop" => [
-        "timesheet", 
         "process_transactions", 
         "generate_sales_reports",
         "logout"
     ],
     "vet" => [
-        "timesheet", 
         "provide_medical_assistance", 
         "maintain_medical_records",
         "logout"
     ],
-    "care" => [
-        "timesheet", 
+    "care" => [ 
         "feed_animals", 
         "maintain_enclosures",
         "logout"
