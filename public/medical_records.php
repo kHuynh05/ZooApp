@@ -251,5 +251,4 @@ while ($row = $result->fetch_assoc()) {
         window.onload = initialLoad;
     </script>
 </body>
-
 </html>
