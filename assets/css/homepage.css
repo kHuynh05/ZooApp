@@ -229,3 +229,11 @@
 .event-home-desc{
     text-align: right;
 }
+.popup-message{
+    background-color: rgba(0, 255, 0, 0.4);
+    text-align: center;
+    padding:5px 0px;
+    font-size:large;
+    color:black;
+    display:none;
+}

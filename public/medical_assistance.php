@@ -42,6 +42,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $message = "Error: " . $stmt->error;
         }
         $stmt->close();
+        $stmt = $conn->prepare("UPDATE animals SET status = ? WHERE animal_id = ?");
+        $stmt -> bind_param("si", $health_status, $animal_id);
+        $stmt->execute();
+        $stmt->close();
     } else {
         $message = "Errors: " . implode(", ", $errors);
     }

@@ -11,30 +11,17 @@ $item_prices = [
     'Zoo Hat' => 19.99
 ];
 
-// Build the main query
-$query = "SELECT 
-    t.transaction_number, 
-    t.transaction_date, 
-    i.item_name, 
-    i.quantity
-    FROM transactions t
-    JOIN shop_items i ON t.transaction_number = i.transaction_id
-    WHERE t.transaction_type = 'shop'
-    ORDER BY t.transaction_date DESC";
-
-$result = $conn->query($query);
-
 // Fetch unique items for the filter dropdown
 $item_query = "SELECT DISTINCT item_name FROM shop_items ORDER BY item_name";
 $item_result = $conn->query($item_query);
 ?>
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Sales Report</title>
     <style>
-
         .container {
             display: flex;
             flex: 1;
@@ -66,16 +53,19 @@ $item_result = $conn->query($item_query);
         .filter-row {
             margin-bottom: 15px;
         }
-        .filter-row div{
-            margin-bottom:15px;
+
+        .filter-row div {
+            margin-bottom: 15px;
         }
+
         label {
             display: block;
             margin-bottom: 5px;
             font-weight: bold;
         }
 
-        input, select {
+        input,
+        select {
             width: 100%;
             padding: 8px;
             border: 1px solid #ddd;
@@ -93,7 +83,7 @@ $item_result = $conn->query($item_query);
             border: none;
             padding: 10px 15px;
             border-radius: 4px;
-            margin:0px;
+            margin: 0px;
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
@@ -107,7 +97,8 @@ $item_result = $conn->query($item_query);
             border-collapse: collapse;
         }
 
-        .table th, .table td {
+        .table th,
+        .table td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: left;
@@ -149,9 +140,10 @@ $item_result = $conn->query($item_query);
         }
     </style>
 </head>
+
 <body>
     <h1>Shop Sales Report</h1>
-    
+
     <div class="container">
         <div class="sidebar">
             <!-- Transaction ID Search -->
@@ -163,7 +155,7 @@ $item_result = $conn->query($item_query);
                 </div>
                 <button class="btn" onclick="searchByTransactionId()">Search</button>
             </div>
-            
+
             <!-- Filter Form -->
             <div class="filter-container">
                 <form id="filter-form">
@@ -179,7 +171,7 @@ $item_result = $conn->query($item_query);
                         <div>
                             <label for="items">Select Items</label>
                             <select id="items" multiple>
-                                <?php while($item_row = $item_result->fetch_assoc()): ?>
+                                <?php while ($item_row = $item_result->fetch_assoc()): ?>
                                     <option value="<?= htmlspecialchars($item_row['item_name']) ?>">
                                         <?= htmlspecialchars($item_row['item_name']) ?>
                                     </option>
@@ -209,29 +201,7 @@ $item_result = $conn->query($item_query);
                     </tr>
                 </thead>
                 <tbody id="results-body">
-                    <?php 
-                    $transactions = [];
-                    $total_revenue = 0;
-                    $total_items_sold = 0;
-                    $unique_transactions = [];
-                    
-                    while($row = $result->fetch_assoc()): 
-                        $item_name = $row['item_name'];
-                        $quantity = $row['quantity'];
-                        $price = $item_prices[$item_name] ?? 0;
-                        $total_line = $quantity * $price;
-                        
-                        // Store full transaction data for client-side filtering
-                        $transactions[] = [
-                            'transaction_number' => $row['transaction_number'],
-                            'transaction_date' => $row['transaction_date'],
-                            'item_name' => $item_name,
-                            'quantity' => $quantity,
-                            'price' => $price,
-                            'total' => $total_line
-                        ];
-                    endwhile; 
-                    ?>
+                    <!-- Results will be loaded dynamically -->
                 </tbody>
             </table>
 
@@ -246,10 +216,6 @@ $item_result = $conn->query($item_query);
     </div>
 
     <script>
-        // Full transaction data from PHP
-        const allTransactions = <?= json_encode($transactions) ?>;
-        const itemPrices = <?= json_encode($item_prices) ?>;
-
         function searchByTransactionId() {
             const startId = document.getElementById('transaction-id-start').value.trim().toLowerCase();
             const endId = document.getElementById('transaction-id-end').value.trim().toLowerCase();
@@ -259,37 +225,18 @@ $item_result = $conn->query($item_query);
             document.getElementById('end_date').value = '';
             document.getElementById('items').selectedIndex = -1;
 
-            // Filter transactions by transaction ID range
-            const filteredTransactions = allTransactions.filter(transaction => {
-                const transactionNumber = transaction.transaction_number.toLowerCase();
-                
-                // If no start ID, match all up to end ID
-                if (!startId && endId) {
-                    return transactionNumber <= endId;
-                }
-                
-                // If no end ID, match all from start ID
-                if (startId && !endId) {
-                    return transactionNumber >= startId;
-                }
-                
-                // If both start and end IDs are provided
-                if (startId && endId) {
-                    return transactionNumber >= startId && transactionNumber <= endId;
-                }
-                
-                // If no IDs are provided, return all transactions
-                return true;
+            // Fetch data with transaction ID filters
+            fetchFilteredTransactions({
+                startId: startId,
+                endId: endId
             });
-
-            renderTransactions(filteredTransactions);
         }
 
         function applyFilters() {
             const startDate = document.getElementById('start_date').value;
             const endDate = document.getElementById('end_date').value;
             const selectedItems = Array.from(document.getElementById('items').selectedOptions)
-                                       .map(option => option.value);
+                .map(option => option.value);
 
             // Reset transaction ID search
             document.getElementById('transaction-id-start').value = '';
@@ -301,35 +248,69 @@ $item_result = $conn->query($item_query);
                 return;
             }
 
-            // Filter transactions
-            const filteredTransactions = allTransactions.filter(transaction => {
-                // Date filter
-                const transactionDate = new Date(transaction.transaction_date);
-                const start = startDate ? new Date(startDate) : null;
-                const end = endDate ? new Date(endDate) : null;
-
-                const dateCheck = (!start || transactionDate >= start) && 
-                                  (!end || transactionDate <= end);
-
-                // Item filter
-                const itemCheck = selectedItems.length === 0 || 
-                                  selectedItems.includes(transaction.item_name);
-
-                return dateCheck && itemCheck;
+            // Fetch data with date and item filters
+            fetchFilteredTransactions({
+                startDate: startDate,
+                endDate: endDate,
+                items: selectedItems
             });
-
-            renderTransactions(filteredTransactions);
         }
 
-        function renderTransactions(filteredTransactions) {
+        function fetchFilteredTransactions(filters) {
+            // Show loading indicator
+            const resultsBody = document.getElementById('results-body');
+            resultsBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">Loading...</td></tr>';
+
+            // Create form data for the POST request
+            const formData = new FormData();
+
+            // Add all filters to the form data
+            Object.keys(filters).forEach(key => {
+                if (Array.isArray(filters[key])) {
+                    // Handle arrays like selected items
+                    filters[key].forEach(value => {
+                        formData.append(`${key}[]`, value);
+                    });
+                } else if (filters[key]) {
+                    // Only add non-empty values
+                    formData.append(key, filters[key]);
+                }
+            });
+
+            // Fetch data from PHP script
+            fetch('../scripts/get_transactions.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                renderTransactions(data.transactions);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                resultsBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Error loading data. Please try again.</td></tr>';
+            });
+        }
+
+        function renderTransactions(transactions) {
             const resultsBody = document.getElementById('results-body');
             resultsBody.innerHTML = '';
+
+            if (transactions.length === 0) {
+                resultsBody.innerHTML = '<tr><td colspan="6" style="text-align: center;">No transactions found matching the selected filters.</td></tr>';
+                return;
+            }
 
             let totalRevenue = 0;
             let totalItemsSold = 0;
             const uniqueTransactions = new Set();
 
-            filteredTransactions.forEach(transaction => {
+            transactions.forEach(transaction => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${transaction.transaction_number}</td>
@@ -343,7 +324,7 @@ $item_result = $conn->query($item_query);
 
                 // Update summary calculations
                 totalRevenue += transaction.total;
-                totalItemsSold += transaction.quantity;
+                totalItemsSold += parseInt(transaction.quantity);
                 uniqueTransactions.add(transaction.transaction_number);
             });
 
@@ -351,13 +332,6 @@ $item_result = $conn->query($item_query);
             document.getElementById('total-transactions').textContent = uniqueTransactions.size;
             document.getElementById('total-revenue').textContent = totalRevenue.toFixed(2);
             document.getElementById('total-items-sold').textContent = totalItemsSold;
-        }
-
-        // Initial load of all transactions
-        function initialLoad() {
-            document.getElementById('start_date').value = '<?= date('Y-m-01') ?>';
-            document.getElementById('end_date').value = '<?= date('Y-m-d') ?>';
-            renderTransactions(allTransactions);
         }
 
         // Add multiple select functionality hint
@@ -370,7 +344,8 @@ $item_result = $conn->query($item_query);
         itemsSelect.parentNode.insertBefore(hint, itemsSelect.nextSibling);
 
         // Load initial data when page loads
-        window.onload = initialLoad;
+        window.onload = () => fetchFilteredTransactions({});
     </script>
 </body>
+
 </html>
