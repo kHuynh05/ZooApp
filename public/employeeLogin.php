@@ -5,7 +5,7 @@ include '../config/database.php';
 $email = "";
 $password = "";
 $message = "";
- 
+
 if (isset($_SESSION['message'])) {
     $message = $_SESSION['message'];
 
@@ -27,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 
     // Verify password
-    if ($emp_id && password_verify($password,$stored_password)) {
+    if ($emp_id && $password == $stored_password) {
         // Securely start the session for the logged-in user
         session_regenerate_id(true);
         $_SESSION['emp_id'] = $emp_id;
@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
+
 <head>
     <link rel="stylesheet" href="../assets/css/login.css">
 </head>
