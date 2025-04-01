@@ -4,6 +4,22 @@
 <?php
 // Include database connection
 include '../config/database.php';  // Make sure the path is correct
+$query = "SELECT enclosure_name, status FROM enclosures";
+$result = $conn->query($query);
+
+// Initialize an array to store closed enclosures
+$closed_enclosures = [];
+
+if ($result->num_rows > 0) {
+    // Loop through the results and collect closed enclosures
+    while ($row = $result->fetch_assoc()) {
+        if ($row['status'] == 'closed') {
+            // Add closed enclosures to the array
+            $closed_enclosures[] = $row['enclosure_name'];
+        }
+    }
+}
+$result->close();
 
 // Fetch the upcoming events (you can adjust the query based on your database)
 $sqlForEvents = "SELECT event_id, event_name, event_date, description, picture FROM events ORDER BY event_date LIMIT 3";
@@ -42,6 +58,17 @@ $conn->close();
 
 <div class='container'>
     <?php include('../includes/navbar.php'); ?>
+    <div id="popup-message" class="popup-message">
+        <?php
+        if (count($closed_enclosures) > 0) {
+            // Display the closed enclosures message
+            echo "<strong>Closed Enclosures: </strong>";
+            foreach ($closed_enclosures as $enclosure) {
+                echo $enclosure . " ";
+            }
+        }
+        ?>
+    </div>
     <div class='homePage'>
         <div class='frontPage'>
             <div class='frontPage-text'>
@@ -53,7 +80,6 @@ $conn->close();
             </div>
         </div>
         <div class='homePageInfo'>
-
             <div class='featured'>
                 <h1 class='featureIntro'>MEET <br> OUR <br>FEATURED <br>ANIMALS</h1>
                 <?php
@@ -144,3 +170,14 @@ $conn->close();
     </div>
     <?php include('../includes/footer.php'); ?>
 </div>
+<script>
+    // JavaScript to show the popup message if there are closed enclosures
+    window.onload = function() {
+        var popupMessage = document.getElementById("popup-message");
+
+        <?php if (count($closed_enclosures) > 0): ?>
+            // If there are closed enclosures, show the message box
+            popupMessage.classList.add("show");
+        <?php endif; ?>
+    };
+</script>

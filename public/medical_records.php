@@ -30,26 +30,6 @@ if ($employees_result->num_rows > 0) {
         $employees[] = $row;
     }
 }
-
-// Fetch all medical records
-$query = "SELECT ac.*, 
-                 a.animal_name, 
-                 s.species_name, 
-                 e.emp_name,
-                 enc.enclosure_name
-          FROM animal_conditions ac
-          JOIN animals a ON ac.animal_id = a.animal_id
-          JOIN species s ON a.species_id = s.species_id
-          JOIN employees e ON ac.emp_id = e.emp_id
-          JOIN enclosures enc ON a.enclosure_id = enc.enclosure_id
-          ORDER BY ac.recorded_at DESC
-          LIMIT 50";
-
-$result = $conn->query($query);
-$records = [];
-while ($row = $result->fetch_assoc()) {
-    $records[] = $row;
-}
 ?>
 
 <!DOCTYPE html>
@@ -122,6 +102,20 @@ while ($row = $result->fetch_assoc()) {
             background-color: #f4f4f4;
             border-radius: 8px;
         }
+
+        .btn-filter {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-filter:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 
@@ -172,49 +166,55 @@ while ($row = $result->fetch_assoc()) {
                 </tr>
             </thead>
             <tbody id="records-body">
-                <!-- Rows will be dynamically populated -->
+                <!-- Records will be loaded dynamically -->
             </tbody>
         </table>
     </div>
 
     <script>
-        // Store all records from PHP
-        const allRecords = <?php echo json_encode($records); ?>;
-
-        // Initial load of records
-        function initialLoad() {
-            renderRecords(allRecords);
-        }
-
-        // Apply filters
         function applyFilters() {
-            const animalFilter = document.getElementById('animal-filter').value;
-            const vetFilter = document.getElementById('vet-filter').value;
+            const animalId = document.getElementById('animal-filter').value;
+            const vetId = document.getElementById('vet-filter').value;
             const startDate = document.getElementById('start-date').value;
             const endDate = document.getElementById('end-date').value;
 
-            // Filter records
-            const filteredRecords = allRecords.filter(record => {
-                // Animal filter
-                const animalCheck = !animalFilter || record.animal_id == animalFilter;
+            // Validate dates
+            if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+                alert('Start date must be before or equal to end date');
+                return;
+            }
 
-                // Veterinarian filter
-                const vetCheck = !vetFilter || record.emp_id == vetFilter;
+            // Show loading state
+            const recordsBody = document.getElementById('records-body');
+            recordsBody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Loading...</td></tr>';
 
-                // Date filter
-                const recordDate = new Date(record.recorded_at);
-                const start = startDate ? new Date(startDate) : null;
-                const end = endDate ? new Date(endDate) : null;
-                const dateCheck = (!start || recordDate >= start) &&
-                    (!end || recordDate <= end);
+            // Create form data for the POST request
+            const formData = new FormData();
+            if (animalId) formData.append('animal_id', animalId);
+            if (vetId) formData.append('vet_id', vetId);
+            if (startDate) formData.append('startDate', startDate);
+            if (endDate) formData.append('endDate', endDate);
 
-                return animalCheck && vetCheck && dateCheck;
+            // Fetch data from PHP script
+            fetch('../scripts/get_medical_records.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                renderRecords(data.records);
+            })
+            .catch(error => {
+                console.error('Error fetching data:', error);
+                recordsBody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: red;">Error loading data. Please try again.</td></tr>';
             });
-
-            renderRecords(filteredRecords);
         }
 
-        // Render records in the table
         function renderRecords(records) {
             const recordsBody = document.getElementById('records-body');
             recordsBody.innerHTML = ''; // Clear existing rows
@@ -248,8 +248,7 @@ while ($row = $result->fetch_assoc()) {
         }
 
         // Load initial records when page loads
-        window.onload = initialLoad;
+        window.onload = () => applyFilters();
     </script>
 </body>
-
 </html>
