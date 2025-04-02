@@ -5,7 +5,7 @@ include '../config/database.php';
 $email = "";
 $password = "";
 $message = "";
- 
+
 if (isset($_SESSION['message'])) {
     $message = $_SESSION['message'];
 
@@ -44,6 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 $conn->close();
 ?>
+
 <head>
     <link rel="stylesheet" href="../assets/css/login.css">
 </head>

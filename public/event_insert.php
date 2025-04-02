@@ -1,44 +1,32 @@
-//admin checker logic!! GOES HERE
+<!-- 
+ 
+This delivers the HTML Form to allow for event inserting
+Validation logic will be within adminPortal.php 
 
-<?php
-// Include database connection
-include '../config/database.php';
+-->
+
+<head>
+    <link rel="stylesheet" href="../assets/css/insert-form.css">
+</head>
+
+<form action="adminPortal.php" method="POST" class="insert-form" enctype="multipart/form-data">
+    <h2>Insert New Event</h2>
+
+    <input type="text" id="field-name" name="event_name" placeholder="Enter Name!" required>
+
+    <input type="text" id="field-location" name="location" placeholder="Enter Location!" required>
+
+    <input type="text" id="field-description" name="description" placeholder="Enter Description!" required>
 
 
-// Check if there are any animals in the result
-if ($result->num_rows > 0) {
-    // Loop through the results and display each animal
-    $eventFields = [];
-    while ($row = $result->fetch_assoc()) {
-        $eventFields[] = $row;
-    }
-} else {
-    // Handle the case if failure to get event field
-    $eventFields = ['event_id' => null];
-}
+    <label for="start-date">Select Start Date:</label>
+    <input type="datetime-local" id="datetime" name="event_date" placeholder="Enter Date and Time!" required>
 
-?>
+    <label for="end-time">Select End Date & Time:</label>
+    <input type="datetime-local" id="datetime" name="ending_time" placeholder="Enter Date and Time!" required>
 
-<form action="/insert" method="POST" class="insert-form">
-    <h2>Insert New Item</h2>
-
-    <!-- Field Group: Example Input -->
-    <div class="form-group">
-        <label for="field1">Field Label 1</label>
-        <input type="text" id="field1" name="field1" placeholder="Enter value" required>
-    </div>
-
-    <!-- Field Group: Example Dropdown -->
-    <div class="form-group">
-        <label for="field2">Field Label 2</label>
-        <select id="field2" name="field2" required>
-            <option value="">Select an option</option>
-            <option value="value1">Option 1</option>
-            <option value="value2">Option 2</option>
-        </select>
-    </div>
-
-    <!-- More fields can be added/removed here as needed -->
+    <label for="event-picture">Upload Picture:</label>
+    <input type="file" id="field-picture" name="picture" accept="image/*" required>
 
     <button type="submit">Submit</button>
 </form>

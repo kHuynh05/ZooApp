@@ -27,6 +27,7 @@ $permissions = [
         "logout"
     ],
     "care" => [ 
+        "maintain_medical_records",
         "feed_animals", 
         "maintain_enclosures",
         "logout"
