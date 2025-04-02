@@ -12,6 +12,7 @@ include '../scripts/employeeRole.php';
         $tabs = [
             "create_employees" => ["title" => "Create Employees", "id" => "create_employees"],
             "create_events" => ["title" => "Create Events", "id" => "create_events"],
+            "view_events" => ["title" => "View Events", "id" => "view_events"],
             "view_transaction_report" => ["title" => "Transaction Report", "id" => "transaction_report"],
             "view_customers" => ["title" => "View Customers", "id" => "view_customers"],
             "view_reports" => ["title" => "View Reports", "id" => "view_reports"],
@@ -23,7 +24,7 @@ include '../scripts/employeeRole.php';
             "maintain_medical_records" => ["title" => "Medical Records", "id" => "medical_records"],
             "feed_animals" => ["title" => "Feed Animals", "id" => "feed_animals"],
             "maintain_enclosures" => ["title" => "Maintain Enclosures", "id" => "maintain_enclosures"],
-            "logout" => ["title" => "Logout", "id" => "logout"]
+            "logout" => ["title" => "Logout", "id" => "logout"]  
         ];
 
         foreach ($tabs as $permission => $tab) {

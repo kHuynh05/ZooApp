@@ -13,7 +13,7 @@
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $event_id);
         $stmt->execute();
-        $stmt->bind_result($event_name, $event_date, $location, $description, $picture);
+        $stmt->bind_result($event_name, $event_date, $ending_time, $location, $description, $picture);
         $stmt->fetch();
 
         if ($event_name) {
