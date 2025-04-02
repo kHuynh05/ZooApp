@@ -25,7 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $file_extension = pathinfo($_FILES["picture"]["name"], PATHINFO_EXTENSION);
             $file_name = uniqid() . '.' . $file_extension;
             $target_file = $target_dir . $file_name;
-            $relative_path = "assets/img/" . $file_name;
+            $relative_path = "../assets/img/" . $file_name;
 
             if (move_uploaded_file($_FILES["picture"]["tmp_name"], $target_file)) {
                 // Insert into database
@@ -119,7 +119,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Add this line to show loading state
             document.querySelector('button[type="submit"]').disabled = true;
 
-            fetch('<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>', {
+            fetch('create_events.php', {
                 method: 'POST',
                 body: formData
             })
