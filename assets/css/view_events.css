@@ -1,0 +1,126 @@
+/* Scope styles to only #eventsPage */
+#eventsPage {
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+/* Prevent layout breaking inside form */
+#eventsPage .form-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Ensuring proper layout */
+#eventsPage .container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Styling upcoming and past event sections */
+#eventsPage .upcoming-events,
+#eventsPage .past-events {
+    width: 100%;
+    height: auto;
+    padding-bottom: 20px;
+}
+
+/* Event grid layout */
+#eventsPage .events-grid {
+    display: flex;
+    flex-wrap: nowrap;  /* Ensures horizontal scrolling */
+    overflow-x: auto;
+    gap: 15px;
+    padding: 10px;
+    white-space: nowrap;
+    scroll-behavior: smooth;
+}
+
+/* Hide scrollbar but keep scrolling functionality */
+#eventsPage .events-grid::-webkit-scrollbar {
+    height: 8px;
+}
+
+#eventsPage .events-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#eventsPage .events-grid::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+/* Event card styles */
+#eventsPage .event-card {
+    flex: 0 0 300px;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    background: white;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    transition: transform 0.2s ease-in-out;
+    display: flex;
+    flex-direction: column;
+}
+
+#eventsPage .event-card:hover {
+    transform: translateY(-5px);
+}
+
+/* Image inside event cards */
+#eventsPage .event-card img {
+    width: 100%;
+    height: 60%;
+    object-fit: cover;
+}
+
+/* Event information styling */
+#eventsPage .event-info {
+    padding: 15px;
+    height: 40%;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+#eventsPage .event-info h3 {
+    margin: 0;
+    font-size: 1.2em;
+    white-space: normal;
+}
+
+#eventsPage .event-info p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #666;
+}
+
+/* Styling for past events */
+#eventsPage .event-card.past {
+    opacity: 0.7;
+    filter: grayscale(30%);
+}
+
+/* Headers styling */
+#eventsPage h1,
+#eventsPage h2 {
+    margin: 0;
+    padding: 10px 0;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #eventsPage .events-grid {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    #eventsPage .event-card {
+        flex: 0 0 90%;
+    }
+}

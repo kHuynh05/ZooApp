@@ -133,7 +133,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     const jsonData = JSON.parse(data);
                     if (jsonData.status === 'success') {
                         // Redirect on success
-                        window.location.replace('view_events.php');
+                        //window.location.replace('view_events.php');
+                        window.location.href = 'employeePortal.php?tab=view_events';
                     } else {
                         // Show error message
                         showMessage(jsonData.message, 'error');
@@ -141,7 +142,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 } catch (e) {
                     // If response isn't JSON, check if it contains success message
                     if (data.includes('success')) {
-                        window.location.replace('view_events.php');
+                       // window.location.replace('view_events.php');
+                       window.location.href = 'employeePortal.php?tab=view_events';
                     } else {
                         // Show raw error message
                         showMessage('An error occurred while creating the event', 'error');

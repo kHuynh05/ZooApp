@@ -2,14 +2,14 @@
     <link rel="stylesheet" href="../assets/css/event.css">
 </head>
 <div>
-    <?php include('../includes/navbar.php'); ?>
+    <?php include('../includes/navbar.php'); ?>  
     <?php
     include '../config/database.php';
 
     if (isset($_GET['event_id'])) {
         $event_id = intval($_GET['event_id']); // Convert to integer for security
 
-        $query = "SELECT event_name, event_date, location, description, picture FROM events WHERE event_id = ?";
+        $query = "SELECT event_name, event_date, ending_time, location, description, picture FROM events WHERE event_id = ?";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $event_id);
         $stmt->execute();
