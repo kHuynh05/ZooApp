@@ -79,7 +79,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: auto;
-    max-height: calc(100vh - 250px);
+    max-height: calc(80vh - 220px);
 }
 
 /* Table styling */

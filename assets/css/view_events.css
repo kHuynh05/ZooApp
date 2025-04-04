@@ -1,3 +1,7 @@
+/* Adjusts all rem-based elements */
+html {
+    font-size: 50%; 
+}
 /* Scope styles to only #eventsPage */
 #eventsPage {
     padding: 20px;
@@ -24,7 +28,7 @@
 #eventsPage .past-events {
     width: 100%;
     height: auto;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
 }
 
 /* Event grid layout */
