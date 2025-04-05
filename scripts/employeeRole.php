@@ -7,13 +7,15 @@ $permissions = [
         "view_events",
         "view_transaction_report", 
         "view_customers", 
-        "view_reports",
+        "view_contact_concerns",
         "logout"
     ],
     "manager" => [
         "view_employees", 
-        "view_reports", 
-        "handle_vet_requests",
+        "view_contact_concerns", 
+        "add_animals",
+        "delete_animals",
+        "assign_caretaker",
         "logout"
     ],
     "shop" => [
