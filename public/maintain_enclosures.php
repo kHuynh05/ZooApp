@@ -49,7 +49,7 @@ include '../scripts/employeeRole.php';
         $sql = "SELECT a.animal_id, a.animal_name, s.species_name, ac.mood, ac.health_status, ac.recorded_at
                 FROM animals a
                 JOIN species s ON a.species_id = s.species_id
-                JOIN enclosures e ON a.enclosure_id = e.enclosure_id
+                JOIN enclosures e ON s.enclosure_id = e.enclosure_id
                 JOIN caretaker c ON e.enclosure_id = c.enclosure_id
                 LEFT JOIN (
                     SELECT ac1.*
