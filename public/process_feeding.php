@@ -22,8 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     // Verify animal belongs to the enclosure
-    $sql = "SELECT 1 FROM animals 
-            WHERE animal_id = ? AND enclosure_id = ?";
+    $sql = "SELECT 1 FROM animals a
+            JOIN species s ON a.species_id = s.species_id
+            WHERE a.animal_id = ? AND s.enclosure_id = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ii", $animal_id, $enclosure_id);
     $stmt->execute();

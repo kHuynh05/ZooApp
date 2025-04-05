@@ -37,6 +37,8 @@ include '../scripts/employeeRole.php';
             "view_contact_concerns" => ["title" => "View Customer concerns", "id" => "view_concerns"],
             "view_employees" => ["title" => "View Employees", "id" => "view_employees"],
             "handle_vet_requests" => ["title" => "Vet Requests", "id" => "vet_requests"],
+            "update_animals" => ["title" => "Update Animals", "id" => "update_animals"],
+            "assign_care" => ["title" => "Assign Care", "id" => "assign_care"],
             "process_transactions" => ["title" => "Process Transactions", "id" => "process_transactions"],
             "generate_sales_reports" => ["title" => "Sales Reports", "id" => "sales_reports"],
             "provide_medical_assistance" => ["title" => "Medical Assistance", "id" => "medical_assistance"],
@@ -62,7 +64,7 @@ include '../scripts/employeeRole.php';
         foreach ($tabs as $permission => $tab) {
             if (in_array($permission, $allowed_actions)) {
                 echo '<div id="' . $tab['id'] . '" class="tab-pane hidden">';
-                include $tab['id'] . ".php"; 
+                include $tab['id'] . ".php";
                 echo '</div>';
             }
         }
