@@ -31,8 +31,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // If no errors, proceed with database insertion
     if (empty($errors)) {
         $stmt = $conn->prepare("INSERT INTO animal_conditions 
-            (animal_id, emp_id, weight, mood, health_status, additional_notes) 
-            VALUES (?, ?, ?, ?, ?, ?)");
+            (animal_id, emp_id, weight, mood, health_status, additional_notes, recorded_at) 
+            VALUES (?, ?, ?, ?, ?, ?, NOW())");
         $stmt->bind_param("iidsss", $animal_id, $emp_id, $weight, $mood, $health_status, $additional_notes);
 
         if ($stmt->execute()) {
@@ -52,10 +52,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Fetch animals from database
-$sql = "SELECT animal_id, animal_name, species_name, enclosure_name 
-        FROM animals
-        JOIN enclosures ON species.enclosure_id = enclosures.enclosure_id 
-        JOIN species ON animals.species_id = species.species_id";
+$sql = "SELECT a.animal_id, a.animal_name, s.species_name, e.enclosure_name 
+        FROM animals a
+        JOIN species s ON a.species_id = s.species_id
+        JOIN enclosures e ON s.enclosure_id = e.enclosure_id";
 $result = $conn->query($sql);
 
 $animals = [];

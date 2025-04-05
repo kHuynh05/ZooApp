@@ -7,10 +7,10 @@ if (!isset($_SESSION['emp_id'])) {
 }
 
 // Fetch all animals for the dropdown
-$animals_query = "SELECT animal_id, animal_name, species_name 
-                  FROM animals 
-                  JOIN species ON animals.species_id = species.species_id 
-                  ORDER BY animal_name";
+$animals_query = "SELECT a.animal_id, a.animal_name, s.species_name 
+                  FROM animals a
+                  JOIN species s ON a.species_id = s.species_id 
+                  ORDER BY a.animal_name";
 $animals_result = $conn->query($animals_query);
 $animals = [];
 if ($animals_result->num_rows > 0) {
@@ -157,7 +157,6 @@ if ($employees_result->num_rows > 0) {
                     <th>Date</th>
                     <th>Animal</th>
                     <th>Species</th>
-                    <th>Habitat</th>
                     <th>Weight (kg)</th>
                     <th>Mood</th>
                     <th>Health Status</th>
@@ -197,22 +196,22 @@ if ($employees_result->num_rows > 0) {
 
             // Fetch data from PHP script
             fetch('../scripts/get_medical_records.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                renderRecords(data.records);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                recordsBody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: red;">Error loading data. Please try again.</td></tr>';
-            });
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    renderRecords(data.records);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    recordsBody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: red;">Error loading data. Please try again.</td></tr>';
+                });
         }
 
         function renderRecords(records) {
@@ -236,7 +235,6 @@ if ($employees_result->num_rows > 0) {
                     <td>${record.recorded_at}</td>
                     <td>${record.animal_name}</td>
                     <td>${record.species_name}</td>
-                    <td>${record.enclosure_name}</td>
                     <td>${record.weight}</td>
                     <td>${record.mood}</td>
                     <td>${record.health_status}</td>
@@ -251,4 +249,5 @@ if ($employees_result->num_rows > 0) {
         window.onload = () => applyFilters();
     </script>
 </body>
+
 </html>
