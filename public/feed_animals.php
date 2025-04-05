@@ -111,7 +111,7 @@ include '../scripts/employeeRole.php';
                         FROM feeding_records f 
                         JOIN animals a ON f.animal_id = a.animal_id 
                         JOIN species s ON a.species_id = s.species_id
-                        JOIN enclosures e ON a.enclosure_id = e.enclosure_id 
+                        JOIN enclosures e ON s.enclosure_id = e.enclosure_id 
                         JOIN caretaker c ON e.enclosure_id = c.enclosure_id 
                         WHERE c.emp_id = ?
                         ORDER BY f.feeding_time DESC LIMIT 10";

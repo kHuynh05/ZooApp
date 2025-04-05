@@ -25,7 +25,7 @@ if ($result->num_rows === 0) {
 $sql = "SELECT a.animal_id, a.animal_name, s.species_name 
         FROM animals a
         JOIN species s ON a.species_id = s.species_id
-        WHERE a.enclosure_id = ?
+        WHERE s.enclosure_id = ?
         ORDER BY a.animal_name";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $enclosure_id);
