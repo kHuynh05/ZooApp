@@ -1,9 +1,11 @@
 /* Base styles */
 .content-section {
-    width: 100vw;
+    width: 80vw;
     margin: 0;
     padding: 0;
     background-color: #f5f6fa;
+    height: 100vh;
+    overflow-y: auto;
 }
 
 .content-section h2 {
@@ -78,7 +80,7 @@
 /* Animal Conditions Section */
 .animal-conditions-section {
     background-color: white;
-    margin: 30px 100px;
+    margin: 30px 50px;
     padding: 40px;
     border-radius: 20px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
@@ -138,7 +140,7 @@
 /* Maintenance Reports Section */
 .maintenance-reports-section {
     background-color: white;
-    margin: 30px 100px;
+    margin: 30px 50px;
     padding: 40px;
     border-radius: 20px;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
