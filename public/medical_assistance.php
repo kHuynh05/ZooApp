@@ -43,7 +43,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
         $stmt->close();
         $stmt = $conn->prepare("UPDATE animals SET status = ? WHERE animal_id = ?");
-        $stmt -> bind_param("si", $health_status, $animal_id);
+        $stmt->bind_param("si", $health_status, $animal_id);
         $stmt->execute();
         $stmt->close();
     } else {
@@ -53,8 +53,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 // Fetch animals from database
 $sql = "SELECT animal_id, animal_name, species_name, enclosure_name 
-        FROM animals 
-        JOIN enclosures ON animals.enclosure_id = enclosures.enclosure_id 
+        FROM animals
+        JOIN enclosures ON species.enclosure_id = enclosures.enclosure_id 
         JOIN species ON animals.species_id = species.species_id";
 $result = $conn->query($sql);
 
