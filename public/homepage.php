@@ -22,19 +22,42 @@ if ($result->num_rows > 0) {
 $result->close();
 
 // Fetch the upcoming events (you can adjust the query based on your database)
-$sqlForEvents = "SELECT event_id, event_name, event_date, description, picture FROM events ORDER BY event_date LIMIT 3";
+$sqlForEvents = "SELECT event_id, event_name, event_date, description, picture 
+                 FROM events 
+                 WHERE event_date >= NOW() 
+                 ORDER BY event_date ASC 
+                 LIMIT 3";
+
 $resultForEvents = $conn->query($sqlForEvents);
 
-// Check if there are any events in the result
-if ($resultForEvents->num_rows > 0) {
-    // Loop through the results and display each event
+// If we don't have 3 upcoming events, get some recent past events
+if ($resultForEvents->num_rows < 3) {
+    $remaining = 3 - $resultForEvents->num_rows;
+    $sqlForPastEvents = "SELECT event_id, event_name, event_date, description, picture 
+                        FROM events 
+                        WHERE event_date < NOW() 
+                        ORDER BY event_date DESC 
+                        LIMIT ?";
+    
+    $stmt = $conn->prepare($sqlForPastEvents);
+    $stmt->bind_param("i", $remaining);
+    $stmt->execute();
+    $pastEvents = $stmt->get_result();
+    
+    // Combine upcoming and past events
     $events = [];
     while ($row = $resultForEvents->fetch_assoc()) {
         $events[] = $row;
     }
+    while ($row = $pastEvents->fetch_assoc()) {
+        $events[] = $row;
+    }
 } else {
-    // Handle the case if no events are found
+    // Just get the upcoming events
     $events = [];
+    while ($row = $resultForEvents->fetch_assoc()) {
+        $events[] = $row;
+    }
 }
 
 $sqlForAnimals = "SELECT species_id, species_name, description, img FROM species ORDER BY species_id LIMIT 3";
