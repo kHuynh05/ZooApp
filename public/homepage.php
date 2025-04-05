@@ -37,7 +37,7 @@ if ($resultForEvents->num_rows > 0) {
     $events = [];
 }
 
-$sqlForAnimals = "SELECT animal_id, animal_name, animal_description, image FROM animals ORDER BY animal_id LIMIT 3";
+$sqlForAnimals = "SELECT species_id, species_name, description, img FROM species ORDER BY species_id LIMIT 3";
 $resultForAnimals = $conn->query($sqlForAnimals);
 
 // Check if there are any animals in the result
@@ -85,17 +85,17 @@ $conn->close();
                 <?php
                 // Loop through animals and display them
                 foreach ($animals as $animal) {
-                    $animal_id = $animal['animal_id'];
-                    $animal_name = $animal['animal_name'];
-                    $animal_description = $animal['animal_description'];
-                    $animal_image = $animal['image'];
+                    $species_id = $animal['species_id'];
+                    $species_name = $animal['species_name'];
+                    $description = $animal['description'];
+                    $img = $animal['img'];
 
                     // Display 3 animals
                     echo "
                             <div class='feature'>
-                                <img class='featureimage' src='{$animal_image}' />
-                                <h1 class='featuretitle'>{$animal_name}</h1>
-                                <span class='featuredescription'>{$animal_description}</span>
+                                <img class='featureimage' src='{$img}' />
+                                <h1 class='featuretitle'>{$species_name}</h1>
+                                <span class='featuredescription'>{$description}</span>
                             </div>
                         ";
                 }
