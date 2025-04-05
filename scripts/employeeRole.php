@@ -13,7 +13,6 @@ $permissions = [
     "manager" => [
         "view_employees",
         "view_reports",
-        "handle_vet_requests",
         "update_animals",
         "assign_care",
         "logout"
