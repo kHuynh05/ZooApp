@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             $species_id = $_POST['species_id'];
 
             // Check if there are any animals of this species
-            $check_sql = "SELECT COUNT(*) as count FROM animals WHERE species_id = ?";
+            $check_sql = "SELECT COUNT(*) as count FROM animals WHERE species_id = ? AND deleted = FALSE";
             $check_stmt = $conn->prepare($check_sql);
             $check_stmt->bind_param("i", $species_id);
             $check_stmt->execute();
@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 exit();
             }
 
-            $sql = "DELETE FROM species WHERE species_id = ?";
+            $sql = "UPDATE species SET deleted = TRUE WHERE species_id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $species_id);
 
@@ -39,14 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         case 'remove_animal':
             $animal_id = $_POST['animal_id'];
 
-            // First delete any conditions for this animal
-            $sql = "DELETE FROM animal_conditions WHERE animal_id = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("i", $animal_id);
-            $stmt->execute();
-
-            // Then delete the animal
-            $sql = "DELETE FROM animals WHERE animal_id = ?";
+            // Soft delete the animal
+            $sql = "UPDATE animals SET deleted = TRUE WHERE animal_id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("i", $animal_id);
 
