@@ -71,6 +71,43 @@
     min-height: 100px;
 }
 
+/* File Input Styling */
+.form-group .file-input {
+    padding: 12px;
+    background-color: #f8f9fa;
+    border: 2px dashed #e9ecef;
+    cursor: pointer;
+    text-align: center;
+}
+
+.form-group .file-input:hover {
+    background-color: #e9ecef;
+    border-color: seagreen;
+}
+
+.form-group .file-help {
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #666;
+    font-style: italic;
+}
+
+/* Custom file input button */
+.form-group .file-input::file-selector-button {
+    padding: 8px 16px;
+    margin-right: 16px;
+    border: none;
+    border-radius: 50px;
+    background-color: seagreen;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.form-group .file-input::file-selector-button:hover {
+    background-color: darkseagreen;
+}
+
 /* Buttons */
 .btn-submit {
     background-color: seagreen;
@@ -188,6 +225,11 @@
 
     .management-table {
         overflow-x: auto;
+    }
+
+    .form-group .file-input::file-selector-button {
+        padding: 6px 12px;
+        font-size: 0.9rem;
     }
 }
 
