@@ -21,15 +21,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $fun_fact = $_POST['fun_fact'];
                 $enclosure_id = $_POST['enclosure_id'];
 
-                $sql = "INSERT INTO species (species_name, class, habitat, diet_type, conservation_status, description, fun_fact, enclosure_id) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                // Handle image upload
+                $img_path = null;
+                if (isset($_FILES['species_image']) && $_FILES['species_image']['error'] === UPLOAD_ERR_OK) {
+                    $file = $_FILES['species_image'];
+                    $file_extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+                    // Validate file type - only allow jpg
+                    if ($file_extension !== 'jpg') {
+                        $message = "Error: Only JPG files are allowed.";
+                        $messageClass = "error";
+                        break;
+                    }
+
+                    // Create standardized filename
+                    $standardized_name = strtolower(str_replace(' ', '-', trim($species_name))) . '-animal.jpg';
+                    $upload_path = '../assets/img/' . $standardized_name;
+
+                    // Check if file already exists
+                    if (file_exists($upload_path)) {
+                        $message = "Error: An image for this species already exists.";
+                        $messageClass = "error";
+                        break;
+                    }
+
+                    // Move uploaded file
+                    if (move_uploaded_file($file['tmp_name'], $upload_path)) {
+                        $img_path = $standardized_name;
+                    } else {
+                        $message = "Error uploading file.";
+                        $messageClass = "error";
+                        break;
+                    }
+                }
+
+                $sql = "INSERT INTO species (species_name, class, habitat, diet_type, conservation_status, description, fun_fact, enclosure_id, img) 
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("sssssssi", $species_name, $class, $habitat, $diet_type, $conservation_status, $description, $fun_fact, $enclosure_id);
+                $stmt->bind_param("sssssssss", $species_name, $class, $habitat, $diet_type, $conservation_status, $description, $fun_fact, $enclosure_id, $img_path);
 
                 if ($stmt->execute()) {
                     $message = "Species added successfully!";
                     $messageClass = "success";
                 } else {
+                    // If database insert fails, remove the uploaded image
+                    if ($img_path && file_exists($upload_path)) {
+                        unlink($upload_path);
+                    }
                     $message = "Error adding species: " . $stmt->error;
                     $messageClass = "error";
                 }
@@ -69,14 +107,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $date_of_birth = $_POST['date_of_birth'];
                 $date_of_rescue = $_POST['date_of_rescue'];
                 $sex = $_POST['sex'];
-                $fact = $_POST['fact'];
                 $status = $_POST['status'];
                 $species_id = $_POST['species_id'];
 
-                $sql = "INSERT INTO animals (animal_name, date_of_birth, date_of_rescue, sex, fact, status, species_id) 
-                        VALUES (?, ?, ?, ?, ?, ?, ?)";
+                $sql = "INSERT INTO animals (animal_name, date_of_birth, date_of_rescue, sex, status, species_id) 
+                        VALUES (?, ?, ?, ?, ?, ?)";
                 $stmt = $conn->prepare($sql);
-                $stmt->bind_param("ssssssi", $animal_name, $date_of_birth, $date_of_rescue, $sex, $fact, $status, $species_id);
+                $stmt->bind_param("sssssi", $animal_name, $date_of_birth, $date_of_rescue, $sex, $status, $species_id);
 
                 if ($stmt->execute()) {
                     $message = "Animal added successfully!";
@@ -118,16 +155,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="content-section">
     <h2>Animal Management</h2>
 
-    <?php if (isset($message)): ?>
-        <div class="message <?php echo $messageClass; ?>">
-            <?php echo htmlspecialchars($message); ?>
-        </div>
-    <?php endif; ?>
+    <div id="message-container"></div>
 
     <!-- Species Management -->
     <div class="management-form">
         <h3>Species Management</h3>
-        <form method="POST" action="">
+        <form id="speciesForm" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="action" value="add_species">
             <div class="form-group">
                 <label for="species_name">Species Name:</label>
@@ -147,7 +180,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <div class="form-group">
                 <label for="conservation_status">Conservation Status:</label>
-                <input type="text" name="conservation_status" required>
+                <select name="conservation_status" required>
+                    <option value="stable">Stable</option>
+                    <option value="vulnerable">Vulnerable</option>
+                    <option value="endangered">Endangered</option>
+                </select>
             </div>
             <div class="form-group">
                 <label for="description">Description:</label>
@@ -171,6 +208,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ?>
                 </select>
             </div>
+            <div class="form-group">
+                <label for="species_image">Species Image (JPG only):</label>
+                <input type="file" name="species_image" accept=".jpg" required class="file-input">
+                <p class="file-help">Image will be saved as: [species-name]-animal.jpg</p>
+            </div>
             <button type="submit" class="btn-submit">Add Species</button>
         </form>
     </div>
@@ -178,7 +220,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Animal Management -->
     <div class="management-form">
         <h3>Animal Management</h3>
-        <form method="POST" action="">
+        <form id="animalForm" method="POST">
             <input type="hidden" name="action" value="add_animal">
             <div class="form-group">
                 <label for="animal_name">Animal Name:</label>
@@ -195,19 +237,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="form-group">
                 <label for="sex">Sex:</label>
                 <select name="sex" required>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="M">Male</option>
+                    <option value="F">Female</option>
                 </select>
-            </div>
-            <div class="form-group">
-                <label for="fact">Fact:</label>
-                <textarea name="fact" rows="2" required></textarea>
             </div>
             <div class="form-group">
                 <label for="status">Status:</label>
                 <select name="status" required>
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
+                    <option value="sick">Sick</option>
+                    <option value="well">Well</option>
+                    <option value="recovering">Recovering</option>
                 </select>
             </div>
             <div class="form-group">
@@ -231,80 +270,184 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Current Species List -->
     <div class="management-table">
         <h3>Current Species</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Species Name</th>
-                    <th>Class</th>
-                    <th>Habitat</th>
-                    <th>Enclosure</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $sql = "SELECT s.*, e.enclosure_name 
-                        FROM species s 
-                        JOIN enclosures e ON s.enclosure_id = e.enclosure_id";
-                $result = $conn->query($sql);
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($row['species_name']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['class']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['habitat']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['enclosure_name']) . "</td>";
-                    echo "<td>
-                            <form method='POST' action='' style='display:inline;'>
-                                <input type='hidden' name='action' value='remove_species'>
-                                <input type='hidden' name='species_id' value='" . $row['species_id'] . "'>
-                                <button type='submit' class='btn-cancel'>Remove</button>
-                            </form>
-                          </td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+        <div id="speciesTableContainer">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Species Name</th>
+                        <th>Class</th>
+                        <th>Habitat</th>
+                        <th>Enclosure</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT s.*, e.enclosure_name 
+                            FROM species s 
+                            JOIN enclosures e ON s.enclosure_id = e.enclosure_id";
+                    $result = $conn->query($sql);
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['species_name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['class']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['habitat']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['enclosure_name']) . "</td>";
+                        echo "<td>
+                                <form method='POST' action='' style='display:inline;'>
+                                    <input type='hidden' name='action' value='remove_species'>
+                                    <input type='hidden' name='species_id' value='" . $row['species_id'] . "'>
+                                    <button type='submit' class='btn-cancel'>Remove</button>
+                                </form>
+                              </td>";
+                        echo "</tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <!-- Current Animals List -->
     <div class="management-table">
         <h3>Current Animals</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Animal Name</th>
-                    <th>Species</th>
-                    <th>Date of Birth</th>
-                    <th>Sex</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                $sql = "SELECT a.*, s.species_name 
-                        FROM animals a 
-                        JOIN species s ON a.species_id = s.species_id";
-                $result = $conn->query($sql);
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($row['animal_name']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['species_name']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['date_of_birth']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['sex']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['status']) . "</td>";
-                    echo "<td>
-                            <form method='POST' action='' style='display:inline;'>
-                                <input type='hidden' name='action' value='remove_animal'>
-                                <input type='hidden' name='animal_id' value='" . $row['animal_id'] . "'>
-                                <button type='submit' class='btn-cancel'>Remove</button>
-                            </form>
-                          </td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+        <div id="animalsTableContainer">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Animal Name</th>
+                        <th>Species</th>
+                        <th>Date of Birth</th>
+                        <th>Sex</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $sql = "SELECT a.*, s.species_name 
+                            FROM animals a 
+                            JOIN species s ON a.species_id = s.species_id";
+                    $result = $conn->query($sql);
+                    while ($row = $result->fetch_assoc()) {
+                        echo "<tr>";
+                        echo "<td>" . htmlspecialchars($row['animal_name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['species_name']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['date_of_birth']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['sex']) . "</td>";
+                        echo "<td>" . htmlspecialchars($row['status']) . "</td>";
+                        echo "<td>
+                                <form method='POST' action='' style='display:inline;'>
+                                    <input type='hidden' name='action' value='remove_animal'>
+                                    <input type='hidden' name='animal_id' value='" . $row['animal_id'] . "'>
+                                    <button type='submit' class='btn-cancel'>Remove</button>
+                                </form>
+                              </td>";
+                        echo "</tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
+
+<script>
+    // Function to show message
+    function showMessage(message, isSuccess) {
+        const messageContainer = document.getElementById('message-container');
+        messageContainer.innerHTML = `
+        <div class="message ${isSuccess ? 'success' : 'error'}">
+            ${message}
+        </div>
+    `;
+        setTimeout(() => {
+            messageContainer.innerHTML = '';
+        }, 5000);
+    }
+
+    // Function to refresh tables
+    function refreshTables() {
+        // Refresh species table
+        fetch('../scripts/get_species_table.php')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('speciesTableContainer').innerHTML = html;
+            });
+
+        // Refresh animals table
+        fetch('../scripts/get_animals_table.php')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('animalsTableContainer').innerHTML = html;
+            });
+    }
+
+    // Handle species form submission
+    document.getElementById('speciesForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('../scripts/handle_species.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message, data.success);
+                if (data.success) {
+                    this.reset();
+                    refreshTables();
+                }
+            })
+            .catch(error => {
+                showMessage('An error occurred while processing your request.', false);
+            });
+    });
+
+    // Handle animal form submission
+    document.getElementById('animalForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('../scripts/handle_animal.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message, data.success);
+                if (data.success) {
+                    this.reset();
+                    refreshTables();
+                }
+            })
+            .catch(error => {
+                showMessage('An error occurred while processing your request.', false);
+            });
+    });
+
+    // Handle remove buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('.btn-cancel')) {
+            e.preventDefault();
+            const form = e.target.closest('form');
+            const formData = new FormData(form);
+
+            fetch('../scripts/handle_remove.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showMessage(data.message, data.success);
+                    if (data.success) {
+                        refreshTables();
+                    }
+                })
+                .catch(error => {
+                    showMessage('An error occurred while processing your request.', false);
+                });
+        }
+    });
+</script>
