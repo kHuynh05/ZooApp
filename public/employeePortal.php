@@ -4,6 +4,25 @@ include '../scripts/employeeRole.php';
 
 <head>
     <link rel="stylesheet" href="../assets/css/employeePortal.css">
+    <script>
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.add('hidden'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.remove('hidden');
+            var clickedTab = document.querySelector(`.tab[onclick="showTab('${tabId}')"]`);
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
+        }
+
+        window.onload = function() {
+            var firstTab = document.querySelector('.tab');
+            if (firstTab) {
+                var firstTabId = firstTab.getAttribute('onclick').match(/'([^']+)'/)[1];
+                showTab(firstTabId);
+            }
+        };
+    </script>
 </head>
 <div class="container">
     <div class="tab-container">
@@ -15,7 +34,7 @@ include '../scripts/employeeRole.php';
             "view_events" => ["title" => "View Events", "id" => "view_events"],
             "view_transaction_report" => ["title" => "Transaction Report", "id" => "transaction_report"],
             "view_customers" => ["title" => "View Customers", "id" => "view_customers"],
-            "view_reports" => ["title" => "View Reports", "id" => "view_reports"],
+            "view_contact_concerns" => ["title" => "View Customer concerns", "id" => "view_concerns"],
             "view_employees" => ["title" => "View Employees", "id" => "view_employees"],
             "handle_vet_requests" => ["title" => "Vet Requests", "id" => "vet_requests"],
             "update_animals" => ["title" => "Update Animals", "id" => "update_animals"],
@@ -26,6 +45,9 @@ include '../scripts/employeeRole.php';
             "maintain_medical_records" => ["title" => "Medical Records", "id" => "medical_records"],
             "feed_animals" => ["title" => "Feed Animals", "id" => "feed_animals"],
             "maintain_enclosures" => ["title" => "Maintain Enclosures", "id" => "maintain_enclosures"],
+            "add_animals" => ["title" => "Add Animals", "id" => "add_animals"],
+            "delete_animals" => ["title" => "Delete Animals", "id" => "delete_animals"],
+            "assign_caretaker" => ["title" => "Assign Caretaker", "id" => "assign_caretaker"],
             "logout" => ["title" => "Logout", "id" => "logout"]  
         ];
 
@@ -49,25 +71,3 @@ include '../scripts/employeeRole.php';
         ?>
     </div>
 </div>
-<script>
-    window.onload = function() {
-        var firstTab = document.querySelector('.tab');
-        if (firstTab) {
-            var firstTabId = firstTab.getAttribute('onclick').match(/'([^']+)'/)[1];
-            showTab(firstTabId);
-        }
-    };
-
-    function showTab(tabId) {
-        document.querySelectorAll('.tab-pane').forEach(tab => tab.classList.add('hidden'));
-
-        document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-
-        document.getElementById(tabId).classList.remove('hidden');
-
-        var clickedTab = document.querySelector(`.tab[onclick="showTab('${tabId}')"]`);
-        if (clickedTab) {
-            clickedTab.classList.add('active');
-        }
-    }
-</script>

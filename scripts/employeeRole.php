@@ -5,6 +5,7 @@ $permissions = [
         "create_employees",
         "create_events",
         "view_events",
+
         "view_transaction_report",
         "view_customers",
         "view_reports",
