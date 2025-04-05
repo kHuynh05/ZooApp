@@ -47,8 +47,8 @@ try {
 
     // Create a report for this status change
     $report_details = "Enclosure '" . $enclosure_name . "' status changed to " . strtoupper($new_status);
-    $sql = "INSERT INTO reports (report_details, report_datetime, has_been_responded) 
-            VALUES (?, CURRENT_TIMESTAMP, 1)";
+    $sql = "INSERT INTO reports (report_details, report_datetime) 
+            VALUES (?, CURRENT_TIMESTAMP)";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $report_details);
 
