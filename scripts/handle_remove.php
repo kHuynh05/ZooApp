@@ -50,7 +50,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 echo json_encode(['success' => false, 'message' => 'Error removing animal: ' . $stmt->error]);
             }
             break;
-
         default:
             echo json_encode(['success' => false, 'message' => 'Invalid action']);
             break;

@@ -39,18 +39,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $employee = $result->fetch_assoc();
 
         if ($employee && $employee['role'] == 'care') {
-            // Insert into caretaker table
-            $sql = "INSERT INTO caretaker (emp_id, enclosure_id) VALUES (?, ?)";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ii", $emp_id, $enclosure_id);
+            // Check if assignment already exists
+            $check_sql = "SELECT * FROM caretaker WHERE emp_id = ?";
+            $check_stmt = $conn->prepare($check_sql);
+            $check_stmt->bind_param("i", $emp_id);
+            $check_stmt->execute();
+            $result = $check_stmt->get_result();
 
-            if ($stmt->execute()) {
-                $message = "Caretaker assigned successfully!";
-                $messageClass = "success";
+            if ($result->num_rows > 0) {
+                // Update existing assignment
+                $update_sql = "UPDATE caretaker SET enclosure_id = ? WHERE emp_id = ?";
+                $update_stmt = $conn->prepare($update_sql);
+                $update_stmt->bind_param("ii", $enclosure_id, $emp_id);
+
+                if ($update_stmt->execute()) {
+                    $message = "Caretaker assignment updated successfully!";
+                    $messageClass = "success";
+                } else {
+                    $message = "Error updating caretaker assignment: " . $update_stmt->error;
+                    $messageClass = "error";
+                }
+                $update_stmt->close();
             } else {
-                $message = "Error assigning caretaker: " . $stmt->error;
-                $messageClass = "error";
+                // Insert new assignment
+                $sql = "INSERT INTO caretaker (emp_id, enclosure_id) VALUES (?, ?)";
+                $stmt = $conn->prepare($sql);
+                $stmt->bind_param("ii", $emp_id, $enclosure_id);
+
+                if ($stmt->execute()) {
+                    $message = "Caretaker assigned successfully!";
+                    $messageClass = "success";
+                } else {
+                    $message = "Error assigning caretaker: " . $stmt->error;
+                    $messageClass = "error";
+                }
             }
+            $check_stmt->close();
         } else {
             $message = "Selected employee is not a caretaker.";
             $messageClass = "error";
