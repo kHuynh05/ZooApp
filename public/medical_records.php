@@ -10,6 +10,7 @@ if (!isset($_SESSION['emp_id'])) {
 $animals_query = "SELECT a.animal_id, a.animal_name, s.species_name 
                   FROM animals a
                   JOIN species s ON a.species_id = s.species_id 
+                  WHERE a.deleted = 0 AND s.deleted = 0
                   ORDER BY a.animal_name";
 $animals_result = $conn->query($animals_query);
 $animals = [];
