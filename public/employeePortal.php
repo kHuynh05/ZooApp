@@ -30,10 +30,10 @@ include '../scripts/employeeRole.php';
         <?php
         $tabs = [
             "create_employees" => ["title" => "Create Employees", "id" => "create_employees"],
+            "remove_employee" => ["title" => "Remove Employee", "id" => "remove_employee"],
             "create_events" => ["title" => "Create Events", "id" => "create_events"],
             "view_events" => ["title" => "View Events", "id" => "view_events"],
             "view_transaction_report" => ["title" => "Transaction Report", "id" => "transaction_report"],
-            "view_customers" => ["title" => "View Customers", "id" => "view_customers"],
             "view_contact_concerns" => ["title" => "View Customer concerns", "id" => "view_concerns"],
             "view_employees" => ["title" => "View Employees", "id" => "view_employees"],
             "handle_vet_requests" => ["title" => "Vet Requests", "id" => "vet_requests"],
@@ -48,7 +48,7 @@ include '../scripts/employeeRole.php';
             "add_animals" => ["title" => "Add Animals", "id" => "add_animals"],
             "delete_animals" => ["title" => "Delete Animals", "id" => "delete_animals"],
             "assign_caretaker" => ["title" => "Assign Caretaker", "id" => "assign_caretaker"],
-            "logout" => ["title" => "Logout", "id" => "logout"]  
+            "logout" => ["title" => "Logout", "id" => "logout"]
         ];
 
         foreach ($tabs as $permission => $tab) {

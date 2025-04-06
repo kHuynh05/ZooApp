@@ -19,7 +19,7 @@ include '../scripts/authorize.php';
     <div class="navbar-links">
         <a href="animals-info.php">Animals</a>
         <a href="ticket.php">Tickets</a>
-        <a href="about.php">Events</a>
+        <a href="event_viewer.php">Events</a>
         <a href="contact.php">Contact</a>
         <!-- Profile Dropdown options -->
         <div class="profile-dropdown">
