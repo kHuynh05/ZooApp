@@ -20,8 +20,7 @@
         $query = "SELECT s.species_name, s.img, s.description, s.fun_fact, s.conservation_status, s.habitat,
                  e.enclosure_name
           FROM species AS s, enclosures AS e
-          WHERE s.enclosure_id = e.enclosure_id AND s.species_id = ?";
-
+          WHERE s.enclosure_id = e.enclosure_id AND s.species_id = ? AND s.deleted = 0";
 
         $stmt = $conn->prepare($query);
         $stmt->bind_param("i", $species_id);
