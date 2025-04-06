@@ -12,37 +12,35 @@ $query = "SELECT ac.condition_id, ac.animal_id, ac.emp_id, ac.weight, ac.mood,
           JOIN animals a ON ac.animal_id = a.animal_id
           JOIN species s ON a.species_id = s.species_id
           JOIN employees e ON ac.emp_id = e.emp_id
-          JOIN enclosures enc ON s.enclosure_id = enc.enclosure_id";
+          JOIN enclosures enc ON s.enclosure_id = enc.enclosure_id
+          WHERE a.deleted = 0 AND s.deleted = 0";
 
 $params = [];
 $types = "";
 
 // Handle animal filter
 if (!empty($_POST['animal_id'])) {
-    $query .= " WHERE ac.animal_id = ?";
+    $query .= " AND ac.animal_id = ?";
     $params[] = $_POST['animal_id'];
     $types .= "i";
 }
 
 // Handle veterinarian filter
 if (!empty($_POST['vet_id'])) {
-    $query .= empty($params) ? " WHERE" : " AND";
-    $query .= " ac.emp_id = ?";
+    $query .= " AND ac.emp_id = ?";
     $params[] = $_POST['vet_id'];
     $types .= "i";
 }
 
 // Handle date range filter
 if (!empty($_POST['startDate'])) {
-    $query .= empty($params) ? " WHERE" : " AND";
-    $query .= " DATE(ac.recorded_at) >= ?";
+    $query .= " AND DATE(ac.recorded_at) >= ?";
     $params[] = $_POST['startDate'];
     $types .= "s";
 }
 
 if (!empty($_POST['endDate'])) {
-    $query .= empty($params) ? " WHERE" : " AND";
-    $query .= " DATE(ac.recorded_at) <= ?";
+    $query .= " AND DATE(ac.recorded_at) <= ?";
     $params[] = $_POST['endDate'];
     $types .= "s";
 }

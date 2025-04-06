@@ -10,7 +10,7 @@ if (!in_array('update_animals', $allowed_actions)) {
 $sql = "SELECT s.*, e.enclosure_name 
         FROM species s 
         JOIN enclosures e ON s.enclosure_id = e.enclosure_id
-        WHERE s.deleted = FALSE
+        WHERE s.deleted = 0
         ORDER BY s.species_name";
 
 $result = $conn->query($sql);

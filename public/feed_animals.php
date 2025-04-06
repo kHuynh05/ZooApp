@@ -113,7 +113,7 @@ include '../scripts/employeeRole.php';
                         JOIN species s ON a.species_id = s.species_id
                         JOIN enclosures e ON s.enclosure_id = e.enclosure_id 
                         JOIN caretaker c ON e.enclosure_id = c.enclosure_id 
-                        WHERE c.emp_id = ?
+                        WHERE c.emp_id = ? AND a.deleted = 0 AND s.deleted = 0
                         ORDER BY f.feeding_time DESC LIMIT 10";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $emp_id);
@@ -144,16 +144,35 @@ include '../scripts/employeeRole.php';
             return;
         }
 
+        // Show loading state
+        document.getElementById('animal').innerHTML = '<option value="">Loading animals...</option>';
+
         // Fetch animals for selected enclosure using AJAX
-        fetch(`get_enclosure_animals.php?enclosure_id=${enclosureId}`)
-            .then(response => response.json())
+        fetch(`../scripts/get_enclosure_animals.php?enclosure_id=${enclosureId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .then(animals => {
+                if (animals.error) {
+                    throw new Error(animals.error);
+                }
+
                 let options = '<option value="">Select an animal</option>';
-                animals.forEach(animal => {
-                    options += `<option value="${animal.animal_id}">${animal.animal_name} (${animal.species_name})</option>`;
-                });
+                if (animals.length > 0) {
+                    animals.forEach(animal => {
+                        options += `<option value="${animal.animal_id}">${animal.animal_name} (${animal.species_name})</option>`;
+                    });
+                } else {
+                    options = '<option value="">No animals found in this enclosure</option>';
+                }
                 document.getElementById('animal').innerHTML = options;
             })
-            .catch(error => console.error('Error loading animals:', error));
+            .catch(error => {
+                console.error('Error loading animals:', error);
+                document.getElementById('animal').innerHTML = '<option value="">Error loading animals</option>';
+            });
     }
 </script>
