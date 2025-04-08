@@ -1,8 +1,9 @@
 #transactionReport {
     padding: 20px;
     width: 100%;
-    height: 100%;
+    min-height: 100vh; /* Ensure it takes full viewport height */
     background-color: #f8f9fa;
+    box-sizing: border-box; /* Include padding in width/height calculation */
 }
 
 /* Title styling */
@@ -10,6 +11,7 @@
     color: #2c3e50;
     margin-bottom: 30px;
     font-size: 2em;
+    text-align: center; /* Center title */
 }
 
 /* Filter container styling */
@@ -24,20 +26,24 @@
 .date-filters {
     display: flex;
     gap: 20px;
-    align-items: flex-end;
+    align-items: flex-end; /* Align items to the bottom */
     flex-wrap: wrap;
+    margin-bottom: 20px; /* Space between filters and summary */
 }
 
 .filter-group {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    flex: 1; /* Allow groups to grow */
+    min-width: 180px; /* Minimum width before wrapping */
 }
 
 /* Input and select styling */
 .filter-group label {
     font-weight: 500;
     color: #4a5568;
+    font-size: 0.9em;
 }
 
 .filter-group input,
@@ -46,7 +52,9 @@
     border: 1px solid #e2e8f0;
     border-radius: 4px;
     font-size: 14px;
-    min-width: 200px;
+    width: 100%; /* Make inputs take full width of their group */
+    box-sizing: border-box;
+    height: 35px; /* Consistent height */
 }
 
 .filter-group input:focus,
@@ -58,28 +66,69 @@
 
 /* Filter button styling */
 .filter-container button {
-    padding: 8px 16px;
+    padding: 0 16px; /* Adjust padding */
     background-color: rgb(46, 170, 100);
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-weight: 500;
-    height: 35px;
+    height: 35px; /* Match input height */
+    line-height: 35px; /* Vertically center text */
     transition: background-color 0.2s;
+    white-space: nowrap; /* Prevent button text wrapping */
 }
 
 .filter-container button:hover {
     background-color: seagreen;
 }
 
+/* Summary container styling */
+.summary-container {
+    display: flex;
+    justify-content: space-around;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    flex-wrap: wrap;
+}
+
+/* Individual summary box styling */
+.summary-box {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 6px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    flex: 1; /* Allow boxes to grow and shrink */
+    min-width: 120px;
+}
+
+.summary-box h4 {
+    margin: 0 0 8px 0;
+    font-size: 0.9em;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.summary-box p {
+    margin: 0;
+    font-size: 1.2em;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+
 /* Table container styling */
 .table-container {
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    overflow: auto;
-    max-height: calc(80vh - 220px);
+    overflow: auto; /* Changed to auto for horizontal scroll if needed */
+    /* Consider setting a max-height if content can be very long */
+    /* max-height: calc(100vh - 350px); /* Example: Adjust based on filter/summary height */
 }
 
 /* Table styling */
@@ -87,6 +136,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     font-size: 14px;
+    table-layout: auto; /* Allow table to adjust column widths */
 }
 
 thead {
@@ -102,6 +152,7 @@ th {
     color: #4a5568;
     font-weight: 600;
     border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap; /* Prevent header text wrapping */
 }
 
 td {
@@ -116,15 +167,36 @@ tbody tr:hover {
 }
 
 /* Responsive design */
+@media (max-width: 992px) { /* Adjust breakpoint if needed */
+    .filter-group {
+        min-width: calc(50% - 10px); /* Two columns */
+    }
+}
+
 @media (max-width: 768px) {
+    #transactionReport h1 {
+        font-size: 1.8em;
+    }
     .date-filters {
         flex-direction: column;
+        align-items: stretch; /* Stretch items full width */
         gap: 15px;
     }
 
-    .filter-group input,
-    .filter-group select {
-        min-width: 100%;
+    .filter-group {
+        min-width: 100%; /* Full width on smaller screens */
+    }
+
+    .filter-container button {
+        width: 100%; /* Full width button */
+    }
+
+    .summary-container {
+        justify-content: center;
+    }
+    .summary-box {
+        min-width: calc(50% - 10px); /* Two columns for summary boxes */
+        margin-bottom: 10px;
     }
 
     table {
@@ -132,9 +204,19 @@ tbody tr:hover {
     }
 
     th, td {
-        padding: 8px 12px;
+        padding: 10px 12px;
     }
 }
+
+@media (max-width: 480px) {
+     .summary-box {
+        min-width: 100%; /* Full width for summary boxes */
+    }
+    th, td {
+        padding: 8px 10px;
+    }
+}
+
 
 /* Scrollbar styling */
 .table-container::-webkit-scrollbar {
@@ -157,16 +239,17 @@ tbody tr:hover {
 }
 
 /* Amount column alignment */
-td:nth-child(4) {
-    text-align: left;
+td:nth-child(4) { /* 4th column (Amount) */
+    text-align: right; /* Align amounts to the right */
+    font-family: monospace; /* Use monospace font for amounts */
 }
 
 /* Transaction type styling */
-td:last-child {
+td:last-child { /* Last column (Type) */
     text-transform: capitalize;
 }
 
-/* Donation transaction number styling */
-td:first-child {
+/* Transaction number styling */
+td:first-child { /* First column (Transaction Number) */
     font-family: monospace;
 }
