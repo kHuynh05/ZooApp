@@ -34,13 +34,13 @@
             ? $_POST["enclosureType"]
             : $_GET["enclosure"];
 
-        $sqlForAnimals = "SELECT animal_id, animal_name, image FROM animals WHERE enclosure_id = ?";
+        $sqlForAnimals = "SELECT species_id, species_name, img FROM species WHERE enclosure_id = ?";
         $stmt = $conn->prepare($sqlForAnimals);
         $stmt->bind_param("i", $selectedEnclosureID); // "i" for integer
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
-        $sqlForAnimals = "SELECT animal_id, animal_name, image FROM animals";
+        $sqlForAnimals = "SELECT species_id, species_name, img FROM species";
         $result = $conn->query($sqlForAnimals);
     }
 
@@ -51,7 +51,7 @@
             $animals[] = $row;
         }
     } else {
-        $animals = [['animal_id' => null, 'animal_name' => null, 'image' => null]];
+        $animals = [['species_id' => null, 'species_name' => null, 'img' => null]];
     }
 
     // Close the connection
@@ -62,18 +62,6 @@
         <?php include('../includes/navbar.php'); ?>
 
         <h1>Our Animals</h1>
-
-        <!-- Display current enclosure filter if selected -->
-        <?php if ($selectedEnclosureID !== null): ?>
-            <?php
-            foreach ($enclosures as $enclosure) {
-                if ($enclosure['enclosure_id'] == $selectedEnclosureID) {
-                    echo "<h2>Viewing animals in: " . htmlspecialchars($enclosure['enclosure_name']) . "</h2>";
-                    break;
-                }
-            }
-            ?>
-        <?php endif; ?>
 
         <div class="filter-container">
             <form method="POST">
@@ -97,10 +85,10 @@
 
         <div class="animal-grid">
             <?php foreach ($animals as $animal):
-                if ($animal['animal_id'] != null): ?>
-                    <a href='animal.php?animal_id=<?php echo $animal['animal_id']; ?>' class="animal-item">
-                        <img src="<?php echo htmlspecialchars($animal['image']); ?>" alt="<?php echo htmlspecialchars($animal['animal_name']); ?>">
-                        <h3><?php echo htmlspecialchars($animal['animal_name']); ?></h3>
+                if ($animal['species_id'] != null): ?>
+                    <a href='animal.php?species_id=<?php echo $animal['species_id']; ?>' class="animal-item">
+                        <img src="<?php echo htmlspecialchars($animal['img']); ?>" alt="<?php echo htmlspecialchars($animal['species_name']); ?>">
+                        <h3><?php echo htmlspecialchars($animal['species_name']); ?></h3>
                     </a>
             <?php endif;
             endforeach; ?>
