@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         header("Location: employeePortal.php");
         exit();
     } else {
-        $message = "Invalid password or email"
+        $message = "Invalid password or email";
     }
 
     $stmt->close();
