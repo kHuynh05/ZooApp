@@ -17,33 +17,15 @@ if ($result->num_rows > 0) {
 }
 
 // Define enclosure descriptions and images
-$enclosure_info = [
-    'Safari Zone' => [
-        'description' => 'A vast open space mimicking the African savanna, featuring wide grasslands and scattered trees. Perfect for our large mammals who need room to roam.',
-        'image' => '../assets/img/safari-zone.jpg'
-    ],
-    'Canopy Heaven' => [
-        'description' => 'A dense, humid environment replicating tropical rainforests. Multi-level habitats with plenty of climbing structures for our primates.',
-        'image' => '../assets/img/tropical-zone.jpg'
-    ],
-    'Aquatic Life' => [
-        'description' => 'State-of-the-art marine habitat with temperature-controlled waters and wave simulation. Ideal for our aquatic animals.',
-        'image' => '../assets/img/aquatic-zone.jpg'
-    ],
-    'Insect World' => [
-        'description' => 'A breathtaking ecosystem sheltering insects coming from all over the world, displaying trees, ant nests and more!',
-        'image' => '../assets/img/Insect.jpg'
-    ],
-    'Reptile Realm' => [
-        'description' => 'A warm, tropical environment showcasing a variety of cold-blooded creatures from deserts, rainforests, and wetlands around the world.',
-        'image' => '../assets/img/Reptile.jpg'
-    ],
-    'Bird Domain' => [
-        'description' => 'An open-air aviary and indoor exhibits featuring birds from around the globe, offering a symphony of sights and sounds as you discover the wonders of avian life.',
-        'image' => '../assets/img/Brid.jpg'
-    ]
-    
-];
+$enclosure_info = [];
+
+foreach ($enclosures as $enclosure) {
+    $name = $enclosure['enclosure_name'];
+    $enclosure_info[$name] = [
+        'description' => $enclosure['enclosure_desc'],
+        'image' => $enclosure['img']
+    ];
+}
 ?>
 
 <div class="container">

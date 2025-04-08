@@ -17,6 +17,7 @@ include '../scripts/authorize.php';
         </a>
     </div>
     <div class="navbar-links">
+            <a href="enclosure.php">Enclosures</a>
             <a href="animals-info.php">Animals</a>
             <a href="ticket.php">Tickets</a>
             <a href="about.php">About</a>
