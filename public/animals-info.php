@@ -13,13 +13,13 @@
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST["enclosureType"]) && $_POST["enclosureType"] != "") {
         $selectedEnclosureID = $_POST["enclosureType"];
 
-        $sqlForAnimals = "SELECT animal_id, animal_name, image FROM animals WHERE enclosure_id = ?;";
+        $sqlForAnimals = "SELECT species_id, species_name, img FROM species WHERE enclosure_id = ? AND deleted = 0";
         $stmt = $conn->prepare($sqlForAnimals);
-        $stmt->bind_param("i", $selectedEnclosureID); // "i" for integer
+        $stmt->bind_param("i", $selectedEnclosureID);
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
-        $sqlForAnimals = "SELECT animal_id, animal_name, image FROM animals";
+        $sqlForAnimals = "SELECT species_id, species_name, img FROM species";
         $result = $conn->query($sqlForAnimals);
     }
 
@@ -32,7 +32,7 @@
         }
     } else {
         // Handle the case if no animals are found
-        $animals = ['animal_id' => null, 'animal_name' => null, 'image' => null];
+        $animals = ['species_id' => null, 'species_name' => null, 'img' => null];
     }
 
     $sqlForEnclosures = "SELECT enclosure_id, enclosure_name FROM enclosures";
@@ -76,11 +76,11 @@
 
         <div class="animal-grid">
             <?php foreach ($animals as $animal):
-                if ($animal['animal_id'] != null): ?>
+                if ($animal['species_id'] != null): ?>
 
-                    <a href='animal.php?animal_id=<?php echo $animal['animal_id']; ?>' class="animal-item">
-                        <img src="<?php echo $animal['image']; ?>" alt="<?php echo $animal['animal_name']; ?>">
-                        <h3><?php echo $animal['animal_name']; ?></h3>
+                    <a href='animal.php?species_id=<?php echo $animal['species_id']; ?>' class="animal-item">
+                        <img src="<?php echo $animal['img']; ?>" alt="<?php echo $animal['species_name']; ?>">
+                        <h3><?php echo $animal['species_name']; ?></h3>
                     </a>
 
             <?php endif;
