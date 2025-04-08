@@ -34,13 +34,13 @@
             ? $_POST["enclosureType"]
             : $_GET["enclosure"];
 
-        $sqlForAnimals = "SELECT species_id, species_name, img FROM species WHERE enclosure_id = ?";
+        $sqlForAnimals = "SELECT species_id, species_name, img FROM species WHERE enclosure_id = ? AND deleted = 0";
         $stmt = $conn->prepare($sqlForAnimals);
         $stmt->bind_param("i", $selectedEnclosureID); // "i" for integer
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
-        $sqlForAnimals = "SELECT species_id, species_name, img FROM species";
+        $sqlForAnimals = "SELECT species_id, species_name, img FROM species WHERE deleted = 0";
         $result = $conn->query($sqlForAnimals);
     }
 
