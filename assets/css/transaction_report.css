@@ -126,9 +126,8 @@
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    overflow: auto; /* Changed to auto for horizontal scroll if needed */
-    /* Consider setting a max-height if content can be very long */
-    /* max-height: calc(100vh - 350px); /* Example: Adjust based on filter/summary height */
+    overflow: auto;
+     max-height: calc(100vh - 415px); 
 }
 
 /* Table styling */
@@ -240,7 +239,7 @@ tbody tr:hover {
 
 /* Amount column alignment */
 td:nth-child(4) { /* 4th column (Amount) */
-    text-align: right; /* Align amounts to the right */
+    text-align: left; /* Align amounts to the right */
     font-family: monospace; /* Use monospace font for amounts */
 }
 
