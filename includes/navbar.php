@@ -20,7 +20,7 @@ include '../scripts/authorize.php';
             <a href="enclosure.php">Enclosures</a>
             <a href="animals-info.php">Animals</a>
             <a href="ticket.php">Tickets</a>
-            <a href="about.php">About</a>
+            <a href="event_viewer.php">Events</a>
             <a href="contact.php">Contact</a> 
             <!-- Profile Dropdown options -->
             <div class="profile-dropdown"> 
