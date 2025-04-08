@@ -29,7 +29,20 @@ $enclosure_info = [
     'Aquatic Life' => [
         'description' => 'State-of-the-art marine habitat with temperature-controlled waters and wave simulation. Ideal for our aquatic animals.',
         'image' => '../assets/img/aquatic-zone.jpg'
+    ],
+    'Insect World' => [
+        'description' => 'A breathtaking ecosystem sheltering insects coming from all over the world, displaying trees, ant nests and more!',
+        'image' => '../assets/img/Insect.jpg'
+    ],
+    'Reptile Realm' => [
+        'description' => 'A warm, tropical environment showcasing a variety of cold-blooded creatures from deserts, rainforests, and wetlands around the world.',
+        'image' => '../assets/img/Reptile.jpg'
+    ],
+    'Bird Domain' => [
+        'description' => 'An open-air aviary and indoor exhibits featuring birds from around the globe, offering a symphony of sights and sounds as you discover the wonders of avian life.',
+        'image' => '../assets/img/Brid.jpg'
     ]
+    
 ];
 ?>
 

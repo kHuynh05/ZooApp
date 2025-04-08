@@ -1,0 +1,68 @@
+.filter-container {
+    margin: 20px;
+    padding: 10px;
+}
+
+.filter-container label {
+    margin-right: 10px;
+}
+
+.filter-container select {
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.employees-list {
+    margin: 20px;
+    position: relative;
+    max-height: calc(100vh - 150px);
+    overflow-y: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: #f5f5f5;
+    border-bottom: 2px solid #ddd;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+th {
+    color: #666;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+td {
+    color: #333;
+    font-size: 14px;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Column widths to match the screenshot */
+th:nth-child(1), td:nth-child(1) { width: 5%; }  /* ID */
+th:nth-child(2), td:nth-child(2) { width: 15%; } /* Name */
+th:nth-child(3), td:nth-child(3) { width: 25%; } /* Email */
+th:nth-child(4), td:nth-child(4) { width: 15%; } /* Starting Day */
+th:nth-child(5), td:nth-child(5) { width: 10%; } /* Gender */
+th:nth-child(6), td:nth-child(6) { width: 15%; } /* Role */

@@ -1,8 +1,9 @@
 <!-- navbar.php -->
 <?php
-    include '../config/database.php';
-    include '../scripts/authorize.php';
+include '../config/database.php';
+include '../scripts/authorize.php';
 ?>
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,6 @@
         </a>
     </div>
     <div class="navbar-links">
-            <a href="enclosure.php">Enclosures</a>
             <a href="animals-info.php">Animals</a>
             <a href="ticket.php">Tickets</a>
             <a href="about.php">About</a>
@@ -28,7 +28,7 @@
             </button>
             <div class="dropdown-content">
                 <?php
-                if($is_member) {
+                if ($is_member) {
                     echo '<a href="memberPortal.php">Member Portal</a>';
                     echo '<a href="../scripts/logout.php">Logout</a>';
                 } else {
@@ -36,7 +36,7 @@
                 }
                 ?>
             </div>
-        </div>  
+        </div>
     </div>
 </nav>
 <!-- Add Font Awesome for the user icon -->
@@ -55,13 +55,13 @@
 
     .navbar-logo {
         margin-right: auto;
-        
-    } 
+
+    }
 
     .navbar-logo img {
         max-height: 120px;
         width: auto;
-       
+
     }
 
     .navbar-links {
@@ -81,6 +81,7 @@
     .navbar-links a:hover {
         color: #2c5f2d;
     }
+
     .profile-dropdown {
         position: relative;
         display: inline-block;
@@ -107,7 +108,7 @@
         right: 0;
         background-color: white;
         min-width: 160px;
-        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
         z-index: 1;
         border-radius: 8px;
         overflow: hidden;

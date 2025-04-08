@@ -4,24 +4,63 @@
 <?php
 // Include database connection
 include '../config/database.php';  // Make sure the path is correct
+$query = "SELECT enclosure_name, status FROM enclosures";
+$result = $conn->query($query);
+
+// Initialize an array to store closed enclosures
+$closed_enclosures = [];
+
+if ($result->num_rows > 0) {
+    // Loop through the results and collect closed enclosures
+    while ($row = $result->fetch_assoc()) {
+        if ($row['status'] == 'closed') {
+            // Add closed enclosures to the array
+            $closed_enclosures[] = $row['enclosure_name'];
+        }
+    }
+}
+$result->close();
 
 // Fetch the upcoming events (you can adjust the query based on your database)
-$sqlForEvents = "SELECT event_id, event_name, event_date, description, picture FROM events ORDER BY event_date LIMIT 3";
+$sqlForEvents = "SELECT event_id, event_name, event_date, description, picture 
+                 FROM events 
+                 WHERE event_date >= NOW() 
+                 ORDER BY event_date ASC 
+                 LIMIT 3";
+
 $resultForEvents = $conn->query($sqlForEvents);
 
-// Check if there are any events in the result
-if ($resultForEvents->num_rows > 0) {
-    // Loop through the results and display each event
+// If we don't have 3 upcoming events, get some recent past events
+if ($resultForEvents->num_rows < 3) {
+    $remaining = 3 - $resultForEvents->num_rows;
+    $sqlForPastEvents = "SELECT event_id, event_name, event_date, description, picture 
+                        FROM events 
+                        WHERE event_date < NOW() 
+                        ORDER BY event_date DESC 
+                        LIMIT ?";
+    
+    $stmt = $conn->prepare($sqlForPastEvents);
+    $stmt->bind_param("i", $remaining);
+    $stmt->execute();
+    $pastEvents = $stmt->get_result();
+    
+    // Combine upcoming and past events
     $events = [];
     while ($row = $resultForEvents->fetch_assoc()) {
         $events[] = $row;
     }
+    while ($row = $pastEvents->fetch_assoc()) {
+        $events[] = $row;
+    }
 } else {
-    // Handle the case if no events are found
+    // Just get the upcoming events
     $events = [];
+    while ($row = $resultForEvents->fetch_assoc()) {
+        $events[] = $row;
+    }
 }
 
-$sqlForAnimals = "SELECT animal_id, animal_name, animal_description, image FROM animals ORDER BY animal_id LIMIT 3";
+$sqlForAnimals = "SELECT species_id, species_name, description, img FROM species ORDER BY species_id LIMIT 3";
 $resultForAnimals = $conn->query($sqlForAnimals);
 
 // Check if there are any animals in the result
@@ -42,6 +81,17 @@ $conn->close();
 
 <div class='container'>
     <?php include('../includes/navbar.php'); ?>
+    <div id="popup-message" class="popup-message">
+        <?php
+        if (count($closed_enclosures) > 0) {
+            // Display the closed enclosures message
+            echo "<strong>Closed Enclosures: </strong>";
+            foreach ($closed_enclosures as $enclosure) {
+                echo $enclosure . " ";
+            }
+        }
+        ?>
+    </div>
     <div class='homePage'>
         <div class='frontPage'>
             <div class='frontPage-text'>
@@ -53,23 +103,22 @@ $conn->close();
             </div>
         </div>
         <div class='homePageInfo'>
-
             <div class='featured'>
                 <h1 class='featureIntro'>MEET <br> OUR <br>FEATURED <br>ANIMALS</h1>
                 <?php
                 // Loop through animals and display them
                 foreach ($animals as $animal) {
-                    $animal_id = $animal['animal_id'];
-                    $animal_name = $animal['animal_name'];
-                    $animal_description = $animal['animal_description'];
-                    $animal_image = $animal['image'];
+                    $species_id = $animal['species_id'];
+                    $species_name = $animal['species_name'];
+                    $description = $animal['description'];
+                    $img = $animal['img'];
 
                     // Display 3 animals
                     echo "
                             <div class='feature'>
-                                <img class='featureimage' src='{$animal_image}' />
-                                <h1 class='featuretitle'>{$animal_name}</h1>
-                                <span class='featuredescription'>{$animal_description}</span>
+                                <img class='featureimage' src='{$img}' />
+                                <h1 class='featuretitle'>{$species_name}</h1>
+                                <span class='featuredescription'>{$description}</span>
                             </div>
                         ";
                 }
@@ -144,3 +193,14 @@ $conn->close();
     </div>
     <?php include('../includes/footer.php'); ?>
 </div>
+<script>
+    // JavaScript to show the popup message if there are closed enclosures
+    window.onload = function() {
+        var popupMessage = document.getElementById("popup-message");
+
+        <?php if (count($closed_enclosures) > 0): ?>
+            // If there are closed enclosures, show the message box
+            popupMessage.classList.add("show");
+        <?php endif; ?>
+    };
+</script>

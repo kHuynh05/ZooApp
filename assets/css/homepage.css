@@ -5,7 +5,7 @@
     padding: 0px;
 }
 .homePage{
-    padding:0px 0px 20px 0px;
+    margin-bottom: 100px;
 }
 .frontPage {
     background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.3)), url('../img/frontPage.jpg');
@@ -228,4 +228,12 @@
 }
 .event-home-desc{
     text-align: right;
+}
+.popup-message{
+    background-color: rgba(0, 255, 0, 0.4);
+    text-align: center;
+    padding:5px 0px;
+    font-size:large;
+    color:black;
+    display:none;
 }

@@ -13,13 +13,13 @@
     if (($_SERVER["REQUEST_METHOD"] == "POST") && isset($_POST["enclosureType"]) && $_POST["enclosureType"] != "") {
         $selectedEnclosureID = $_POST["enclosureType"];
 
-        $sqlForAnimals = "SELECT species_id, species_name, img FROM species WHERE enclosure_id = ?;";
+        $sqlForAnimals = "SELECT species_id, species_name, img FROM species WHERE enclosure_id = ? AND deleted = 0";
         $stmt = $conn->prepare($sqlForAnimals);
-        $stmt->bind_param("i", $selectedEnclosureID); // "i" for integer
+        $stmt->bind_param("i", $selectedEnclosureID);
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
-        $sqlForAnimals = "SELECT species_id, species_name, img FROM species";
+        $sqlForAnimals = "SELECT animal_id, animal_name, image FROM animals";
         $result = $conn->query($sqlForAnimals);
     }
 
