@@ -285,7 +285,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php
                     $sql = "SELECT s.*, e.enclosure_name 
                             FROM species s 
-                            JOIN enclosures e ON s.enclosure_id = e.enclosure_id";
+                            JOIN enclosures e ON s.enclosure_id = e.enclosure_id AND s.deleted = 0";
                     $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
@@ -327,7 +327,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php
                     $sql = "SELECT a.*, s.species_name 
                             FROM animals a 
-                            JOIN species s ON a.species_id = s.species_id";
+                            JOIN species s ON a.species_id = s.species_id AND a.deleted = 0";
                     $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
