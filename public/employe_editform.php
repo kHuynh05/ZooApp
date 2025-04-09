@@ -1,5 +1,4 @@
 <?php
-session_start();
 include '../config/database.php';
 
 if (!isset($_SESSION['emp_id'])) {
@@ -24,9 +23,8 @@ $conn->close();
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Edit My Info</title>
     <style>
-        .container {
+        .edit-container {
             max-width: 500px;
             margin: 50px auto;
             padding: 20px;
@@ -73,12 +71,19 @@ $conn->close();
         input[type="submit"]:hover {
             background-color: #0056b3;
         }
+        #password-match-message {
+            font-size: 14px;
+            margin-top: -10px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
+    <div class="edit-header">
+        <h1>Edit my info</h1>
+    </div>
 
-    <div class="container">
-        <h2>Edit My Info</h2>
+    <div class="edit-container">
 
         <?php if ($message): ?>
             <p class="message <?php echo strpos($message, 'Error') !== false ? 'error' : ''; ?>">
@@ -86,7 +91,7 @@ $conn->close();
             </p>
         <?php endif; ?>
 
-        <form method="POST" action="../scripts/edit_employee.php">
+        <form method="POST" id="registration-form" action="../scripts/edit_employee.php">
             <div>
                 <label for="email">Email:</label>
                 <input type="email" id="email" name="emp_email" 
@@ -98,9 +103,50 @@ $conn->close();
                 <input type="password" id="password" name="emp_password" required>
             </div>
 
+            <div>
+                <label for="confirm-password">Confirm Password:</label>
+                <input type="password" id="confirm_password" name="confirm_password" required>
+            </div>
+
+            <p id="password-match-message"></p>
+
             <input type="submit" value="Update Info">
         </form>
     </div>
 
+    <script>
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const message = document.getElementById('password-match-message');
+        const form = document.getElementById('registration-form');
+
+        function checkPasswordsMatch() {
+            const password = passwordInput.value;
+            const confirmPassword = confirmPasswordInput.value;
+
+            if (password === '' || confirmPassword === '') {
+                message.textContent = '';
+                return;
+            }
+
+            if (password === confirmPassword) {
+                message.textContent = 'Passwords match';
+                message.style.color = 'green';
+            } else {
+                message.textContent = 'Passwords do not match';
+                message.style.color = 'red';
+            }
+        }
+
+        passwordInput.addEventListener('input', checkPasswordsMatch);
+        confirmPasswordInput.addEventListener('input', checkPasswordsMatch);
+
+        form.addEventListener('submit', function(event) {
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                event.preventDefault();
+                alert("Passwords do not match!");
+            }
+        });
+    </script>
 </body>
 </html>

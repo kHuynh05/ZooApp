@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     $_SESSION['message'] = $message;
-    header("Location: ../public/employe_editform.php");
+    header("Location: ../public/employeeLogin.php");
     exit();
 }
 
