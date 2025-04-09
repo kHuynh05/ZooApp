@@ -19,7 +19,7 @@
         $stmt->execute();
         $result = $stmt->get_result();
     } else {
-        $sqlForAnimals = "SELECT animal_id, animal_name, image FROM animals";
+        $sqlForAnimals = "SELECT species_id, species_name, img FROM species";
         $result = $conn->query($sqlForAnimals);
     }
 
