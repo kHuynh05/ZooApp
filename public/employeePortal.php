@@ -36,6 +36,7 @@ include '../scripts/employeeRole.php';
             "view_transaction_report" => ["title" => "Transaction Report", "id" => "transaction_report"],
             "view_contact_concerns" => ["title" => "View Customer concerns", "id" => "view_concerns"],
             "view_employees" => ["title" => "View Employees", "id" => "view_employees"],
+            "view_reports" => ["title" => "View Reports", "id" => "view_reports"],
             "update_animals" => ["title" => "Update Animals", "id" => "update_animals"],
             "assign_care" => ["title" => "Assign Care", "id" => "assign_care"],
             "process_transactions" => ["title" => "Process Transactions", "id" => "process_transactions"],
