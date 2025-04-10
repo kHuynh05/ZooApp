@@ -1,3 +1,6 @@
+
+
+
 #transactionReport {
     padding: 20px;
     width: 100%;
@@ -86,38 +89,88 @@
 /* Summary container styling */
 .summary-container {
     display: flex;
-    justify-content: space-around;
-    gap: 15px;
+    justify-content: space-around; /* Keep space around the two main boxes */
+    gap: 20px; /* Increase gap between the two boxes */
     margin-top: 20px;
     padding: 15px;
     background-color: #e9ecef;
     border-radius: 6px;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
-/* Individual summary box styling */
+/* Individual summary box styling (Counts and Amounts boxes) */
 .summary-box {
     background-color: #ffffff;
     padding: 15px 20px;
     border-radius: 6px;
-    text-align: center;
+    /* text-align: center; remove this */
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-    flex: 1; /* Allow boxes to grow and shrink */
-    min-width: 120px;
+    flex: 1; /* Allow boxes to grow */
+    min-width: 250px; /* Minimum width before wrapping */
+    display: flex; /* Use flexbox for internal layout */
+    flex-direction: column; /* Stack title and items vertically */
+    gap: 10px; /* Space between title and items */
 }
 
 .summary-box h4 {
-    margin: 0 0 8px 0;
-    font-size: 0.9em;
+    margin: 0 0 5px 0; /* Adjust bottom margin */
+    font-size: 1em; /* Slightly larger title */
     color: #4a5568;
-    font-weight: 500;
+    font-weight: 600; /* Bolder title */
+    text-align: center; /* Center the title */
+    border-bottom: 1px solid #e2e8f0; /* Add a separator line */
+    padding-bottom: 8px; /* Space below separator */
 }
 
-.summary-box p {
-    margin: 0;
-    font-size: 1.2em;
-    font-weight: 600;
+/* Container for the individual items */
+.summary-details {
+    flex-grow: 1; /* Allow details to take up available space */
+}
+
+/* Style for each line item within a summary box */
+.summary-item {
+    display: flex;
+    justify-content: space-between; /* Pushes label and value apart */
+    font-size: 0.95em;
+    padding: 2px 5px; /* Add slight padding */
+}
+
+.summary-item span:first-child { /* Style for the label (e.g., "Registrations:") */
+    color: #555;
+}
+
+.summary-item span:last-child { /* Style for the value (count or amount) */
+    font-weight: 500;
     color: #2c3e50;
+    min-width: 60px; /* Ensure space for value */
+    text-align: right; /* Align value to the right */
+}
+
+/* Make amount values use monospace font */
+#summary-amounts .summary-item span:last-child,
+#summary-amounts .summary-total span:last-child { /* Apply to total amount as well */
+    font-family: monospace;
+    font-size: 1em;
+}
+
+/* Style for the total section at the bottom of a summary box */
+.summary-total {
+    border-top: 1px solid #e2e8f0; /* Separator line above total */
+    margin-top: 10px; /* Space above the total line */
+    padding-top: 10px; /* Space below the total line */
+    display: flex;
+    justify-content: space-between;
+    font-size: 1em; /* Make total font slightly larger */
+}
+
+.summary-total span:first-child { /* "Total Count:", "Total Amount:" */
+    color: #333;
+}
+
+.summary-total span:last-child { /* The actual total value */
+    color: #2c3e50;
+    min-width: 60px;
+    text-align: right;
 }
 
 
@@ -127,7 +180,9 @@
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     overflow: auto;
-     max-height: calc(100vh - 415px); 
+     /* Adjust height calculation based on new summary box height */
+     /* This is an estimate, might need tweaking after seeing the result */
+     max-height: calc(100vh - 450px); /* Adjusted slightly from previous */
 }
 
 /* Table styling */
@@ -158,6 +213,7 @@ td {
     padding: 12px 16px;
     border-bottom: 1px solid #e2e8f0;
     color: #2d3748;
+    vertical-align: top; /* Align content to top */
 }
 
 /* Row hover effect */
@@ -165,10 +221,39 @@ tbody tr:hover {
     background-color: #f7fafc;
 }
 
+/* Amount column alignment */
+td:nth-child(4) { /* 4th column (Amount) */
+    text-align: left; /* Align amounts to the left */
+    font-family: monospace; /* Use monospace font for amounts */
+}
+
+/* Transaction type styling */
+td:nth-child(5) { /* 5th column (Type) */
+    text-transform: capitalize;
+    text-align: left; /* Ensure type column is left-aligned */
+}
+
+/* Transaction number styling */
+td:first-child { /* First column (Transaction Number) */
+    font-family: monospace;
+}
+
 /* Responsive design */
 @media (max-width: 992px) { /* Adjust breakpoint if needed */
     .filter-group {
         min-width: calc(50% - 10px); /* Two columns */
+    }
+    .summary-container {
+        flex-direction: column; /* Stack summary boxes vertically */
+        align-items: stretch;
+    }
+    .summary-box {
+        min-width: 100%; /* Full width */
+    }
+    .table-container {
+         /* Adjust height again for stacked summary */
+         /* Height depends more on filter/summary height now */
+         max-height: calc(100vh - 500px); /* Adjust as needed */
     }
 }
 
@@ -191,11 +276,24 @@ tbody tr:hover {
     }
 
     .summary-container {
-        justify-content: center;
+        gap: 15px;
     }
+
     .summary-box {
-        min-width: calc(50% - 10px); /* Two columns for summary boxes */
-        margin-bottom: 10px;
+         padding: 12px 15px;
+    }
+     .summary-item {
+         font-size: 0.9em;
+     }
+     .summary-total {
+         font-size: 0.95em; /* Adjust total font size */
+         padding-top: 8px;
+         margin-top: 8px;
+     }
+
+    .table-container {
+         /* Adjust height again */
+         max-height: calc(100vh - 530px); /* Adjust as needed */
     }
 
     table {
@@ -208,12 +306,18 @@ tbody tr:hover {
 }
 
 @media (max-width: 480px) {
-     .summary-box {
-        min-width: 100%; /* Full width for summary boxes */
-    }
-    th, td {
-        padding: 8px 10px;
-    }
+     .summary-box h4 {
+        font-size: 0.95em;
+     }
+     .summary-item {
+         font-size: 0.85em;
+     }
+     .summary-total {
+         font-size: 0.9em;
+     }
+     th, td {
+         padding: 8px 10px;
+     }
 }
 
 
@@ -235,20 +339,4 @@ tbody tr:hover {
 
 .table-container::-webkit-scrollbar-thumb:hover {
     background: #555;
-}
-
-/* Amount column alignment */
-td:nth-child(4) { /* 4th column (Amount) */
-    text-align: left; /* Align amounts to the right */
-    font-family: monospace; /* Use monospace font for amounts */
-}
-
-/* Transaction type styling */
-td:last-child { /* Last column (Type) */
-    text-transform: capitalize;
-}
-
-/* Transaction number styling */
-td:first-child { /* First column (Transaction Number) */
-    font-family: monospace;
 }
