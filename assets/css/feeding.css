@@ -1,0 +1,230 @@
+/* Base styles */
+.content-section {
+    width: 80vw;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f6fa;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.content-section h2 {
+    text-align: center;
+    color: #2c3e50;
+    margin: 30px 0;
+    font-size: 60px;
+    font-weight: bold;
+}
+
+.content-section h3 {
+    color: #2c3e50;
+    font-size: 40px;
+    margin-bottom: 1.5rem;
+    border-bottom: 3px solid seagreen;
+    padding-bottom: 10px;
+}
+
+/* Assigned Enclosures Section */
+.assigned-enclosures {
+    background-color: seagreen;
+    padding: 40px 50px;
+    margin: 0;
+    text-align: center;
+}
+
+.enclosure-list {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.enclosure-list li {
+    background-color: rgba(0, 0, 0, 0.3);
+    color: white;
+    padding: 20px;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    min-width: 200px;
+    transition: all 0.3s ease;
+}
+
+.enclosure-list li:hover {
+    background-color: rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
+}
+
+/* Feeding Form */
+.feeding-form {
+    background-color: white;
+    margin: 30px 50px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
+                -5px -5px 10px rgba(255, 255, 255, 0.8);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    color: seagreen;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.form-group select,
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #495057;
+    transition: all 0.3s ease;
+}
+
+.form-group select:focus,
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: seagreen;
+    box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.btn {
+    background-color: seagreen;
+    color: white;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 50px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 20px;
+}
+
+.btn:hover {
+    background-color: darkseagreen;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(46, 139, 87, 0.3);
+}
+
+/* Feeding History Table */
+.feeding-history {
+    background-color: white;
+    margin: 30px 50px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
+                -5px -5px 10px rgba(255, 255, 255, 0.8);
+}
+
+.feeding-history table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-top: 20px;
+}
+
+.feeding-history th {
+    background-color: seagreen;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+}
+
+.feeding-history td {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    color: #495057;
+}
+
+.feeding-history tr:last-child td {
+    border-bottom: none;
+}
+
+.feeding-history tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Warning Messages */
+.warning {
+    background-color: #fff3f3;
+    color: #dc3545;
+    padding: 20px;
+    border-radius: 10px;
+    border: 2px solid #ffcdd2;
+    text-align: center;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .content-section h2 {
+        font-size: 40px;
+    }
+
+    .content-section h3 {
+        font-size: 32px;
+    }
+
+    .feeding-form,
+    .feeding-history {
+        margin: 20px;
+        padding: 20px;
+    }
+
+    .assigned-enclosures {
+        padding: 20px;
+    }
+
+    .enclosure-list {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .enclosure-list li {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .feeding-history table {
+        display: block;
+        overflow-x: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-section h2 {
+        font-size: 32px;
+    }
+
+    .content-section h3 {
+        font-size: 24px;
+    }
+
+    .form-group select,
+    .form-group input,
+    .form-group textarea {
+        font-size: 16px;
+    }
+} 

@@ -1,0 +1,172 @@
+#transactionReport {
+    padding: 20px;
+    width: 100%;
+    height: 100%;
+    background-color: #f8f9fa;
+}
+
+/* Title styling */
+#transactionReport h1 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2em;
+}
+
+/* Filter container styling */
+.filter-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.date-filters {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Input and select styling */
+.filter-group label {
+    font-weight: 500;
+    color: #4a5568;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 14px;
+    min-width: 200px;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* Filter button styling */
+.filter-container button {
+    padding: 8px 16px;
+    background-color: rgb(46, 170, 100);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    height: 35px;
+    transition: background-color 0.2s;
+}
+
+.filter-container button:hover {
+    background-color: seagreen;
+}
+
+/* Table container styling */
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: auto;
+    max-height: calc(80vh - 220px);
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: #f8fafc;
+    z-index: 1;
+}
+
+th {
+    padding: 12px 16px;
+    text-align: left;
+    color: #4a5568;
+    font-weight: 600;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #2d3748;
+}
+
+/* Row hover effect */
+tbody tr:hover {
+    background-color: #f7fafc;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .date-filters {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+        min-width: 100%;
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 8px 12px;
+    }
+}
+
+/* Scrollbar styling */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+/* Amount column alignment */
+td:nth-child(4) {
+    text-align: left;
+}
+
+/* Transaction type styling */
+td:last-child {
+    text-transform: capitalize;
+}
+
+/* Donation transaction number styling */
+td:first-child {
+    font-family: monospace;
+}

@@ -1,7 +1,5 @@
 {
-    "workbench.colorTheme": "Visual Studio Light",
-    "workbench.preferredHighContrastColorTheme": "Visual Studio 2017 Light - C++",
-    "workbench.preferredDarkColorTheme": "Visual Studio 2017 Light - C++",
-    "workbench.preferredLightColorTheme": "Visual Studio 2017 Light - C++",
-    "workbench.statusBar.visible": true
+    "files.associations": {
+        "iostream": "cpp"
+    }
 }
