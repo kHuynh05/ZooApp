@@ -33,15 +33,15 @@ if ($employees_result->num_rows > 0) {
 }
 
 // Fetch summarized health status data
-$summarySql = "SELECT health_status, COUNT(*) as count 
-               FROM animal_conditions 
-               GROUP BY health_status";
+$summarySql = "SELECT status, COUNT(*) as count 
+               FROM animals 
+               GROUP BY status";
 $summaryResult = $conn->query($summarySql);
 
 $summaryData = [];
 if ($summaryResult->num_rows > 0) {
     while ($row = $summaryResult->fetch_assoc()) {
-        $summaryData[$row['health_status']] = $row['count'];
+        $summaryData[$row['status']] = $row['count'];
     }
 }
 ?>
