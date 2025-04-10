@@ -202,7 +202,12 @@ $result = $stmt->get_result();
                 <?php while ($row = $result->fetch_assoc()): ?>
                     <tr class="employee-row" data-emp-id="<?php echo htmlspecialchars($row['emp_id']); ?>">
                         <td>
-                            <i class="fas fa-trash-alt delete-icon" title="Delete employee"></i>
+                        <?php 
+                            // Add this condition: Only show the delete icon if it's not the admin user (ID 4)
+                            if (!($row['emp_id'] == 4 && $row['emp_name'] === 'admin')) { 
+                                echo '<i class="fas fa-trash-alt delete-icon" title="Delete employee"></i>';
+                            } 
+                            ?>
                         </td>
                         <td><?php echo htmlspecialchars($row['emp_id']); ?></td>
                         <td><?php echo htmlspecialchars($row['emp_name']); ?></td>

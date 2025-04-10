@@ -108,7 +108,9 @@ if ($employees_result->num_rows > 0) {
             background-color: #3498db;
             color: white;
             border: none;
-            padding: 8px 15px;
+            height: 40px;
+            width: 400px;
+            padding: 8px 4px;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
