@@ -26,8 +26,8 @@ $permissions = [
     ],
     "vet" => [
         "edit_employee",
-        "provide_medical_assistance",
-        "maintain_medical_records",
+        "medical_assistance",
+        "medical_records",
         "logout"
     ],
     "care" => [
