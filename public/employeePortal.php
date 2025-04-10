@@ -30,6 +30,7 @@ include '../scripts/employeeRole.php';
         <?php
         $tabs = [
             "create_employees" => ["title" => "Create Employees", "id" => "create_employees"],
+            "edit_employee" => ["title" => "Edit Employee", "id" => "employe_editform"],
             "remove_employee" => ["title" => "Remove Employee", "id" => "remove_employee"],
             "create_events" => ["title" => "Create Events", "id" => "create_events"],
             "view_events" => ["title" => "View Events", "id" => "view_events"],

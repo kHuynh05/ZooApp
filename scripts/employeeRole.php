@@ -11,6 +11,7 @@ $permissions = [
         "logout"
     ],
     "manager" => [
+        "edit_employee",
         "view_employees",
         "view_reports",
         "update_animals",
@@ -18,16 +19,19 @@ $permissions = [
         "logout"
     ],
     "shop" => [
+        "edit_employee",
         "process_transactions",
         "generate_sales_reports",
         "logout"
     ],
     "vet" => [
+        "edit_employee",
         "provide_medical_assistance",
         "maintain_medical_records",
         "logout"
     ],
     "care" => [
+        "edit_employee",
         "maintain_medical_records",
         "feed_animals",
         "maintain_enclosures",
