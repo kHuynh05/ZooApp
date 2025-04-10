@@ -165,14 +165,18 @@ $conn->close();
                             <th>Transaction Time</th>
                             <th>Transaction Type</th>
                             <th>Total Profit</th>
-                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="ordersTableBody">
                     </tbody>
                 </table>
             </div>
-
+            <div id="summary" class="summary" style="display: none;">
+                <h2>Summary of Ticket Purchases</h2>
+                <p id="totalTickets">Total Tickets Purchased: 0</p>
+                <p id="totalSpent">Total Money Spent: $0.00</p>
+                <p id="ticketDetails">Tickets Bought: None</p>
+            </div>
         </div>
         <div class="tab-content" id="4">
             <form id="profileForm">
@@ -335,10 +339,6 @@ $conn->close();
         }, 3000);
     }
 
-
-
-
-
     function showTab(step) {
         const tabContents = document.querySelectorAll('.tab-content');
         const tabs = document.querySelectorAll('.tab');
@@ -411,7 +411,10 @@ $conn->close();
     function update() {
         let time = document.getElementById("time").value;
         let orderType = document.getElementById("type").value;
-        let ordersTableBody = document.getElementById("ordersTableBody"); // Change this to tbody
+        let ordersTableBody = document.getElementById("ordersTableBody");
+        let totalTickets = 0;
+        let totalSpent = 0;
+        let ticketDetails = [];
 
         let dataToSend = {
             time: time,
@@ -434,13 +437,6 @@ $conn->close();
                     // Check if orders data is available and is an array
                     if (Array.isArray(data.transactions) && data.transactions.length > 0) {
                         data.transactions.forEach(transaction => {
-                            let actionButton = "";
-
-                            // If transaction type is "tickets", add a "View Tickets" button
-                            if (transaction.transaction_type === "tickets") {
-                                actionButton = `<button onclick="">View Tickets</button>`;
-                            }
-
                             // Add a new row to the table
                             let row = `
                         <tr>
@@ -449,14 +445,39 @@ $conn->close();
                             <td>${transaction.transaction_time}</td>
                             <td>${transaction.transaction_type}</td>
                             <td>${transaction.total_profit}</td>
-                            <td>${actionButton}</td>
                         </tr>
                     `;
                             ordersTableBody.innerHTML += row;
+
+                            // Summarize ticket purchases only if the order type is "tickets"
+                            if (orderType === "tickets" && transaction.transaction_type === "tickets") {
+                                totalTickets += transaction.ticket_count; // Assuming ticket_count is available
+                                totalSpent += transaction.total_profit; // Assuming total_profit is the amount spent
+                                ticketDetails.push(transaction.ticket_name); // Assuming ticket_name is available
+                            }
                         });
+
+                        // Update summary only if the order type is "tickets"
+                        if (orderType === "tickets") {
+                            document.getElementById("totalTickets").innerText = `Total Tickets Purchased: ${totalTickets}`;
+                            document.getElementById("totalSpent").innerText = `Total Money Spent: $${totalSpent.toFixed(2)}`;
+                            document.getElementById("ticketDetails").innerText = `Tickets Bought: ${ticketDetails.join(", ") || "None"}`;
+                            document.getElementById("summary").style.display = "block"; // Show summary
+                        } else {
+                            // Reset summary if the order type is not "tickets"
+                            document.getElementById("totalTickets").innerText = `Total Tickets Purchased: 0`;
+                            document.getElementById("totalSpent").innerText = `Total Money Spent: $0.00`;
+                            document.getElementById("ticketDetails").innerText = `Tickets Bought: None`;
+                            document.getElementById("summary").style.display = "none"; // Hide summary
+                        }
                     } else {
                         // If no orders are found, display this message
-                        ordersTableBody.innerHTML = "<tr><td colspan='6'>No transactions found.</td></tr>";
+                        ordersTableBody.innerHTML = "<tr><td colspan='5'>No transactions found.</td></tr>";
+                        // Reset summary
+                        document.getElementById("totalTickets").innerText = `Total Tickets Purchased: 0`;
+                        document.getElementById("totalSpent").innerText = `Total Money Spent: $0.00`;
+                        document.getElementById("ticketDetails").innerText = `Tickets Bought: None`;
+                        document.getElementById("summary").style.display = "none"; // Hide summary
                     }
                 } else {
                     showError(data.error || "Error occurred while fetching orders.");

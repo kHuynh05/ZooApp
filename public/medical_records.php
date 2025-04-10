@@ -31,6 +31,19 @@ if ($employees_result->num_rows > 0) {
         $employees[] = $row;
     }
 }
+
+// Fetch summarized health status data
+$summarySql = "SELECT health_status, COUNT(*) as count 
+               FROM animal_conditions 
+               GROUP BY health_status";
+$summaryResult = $conn->query($summarySql);
+
+$summaryData = [];
+if ($summaryResult->num_rows > 0) {
+    while ($row = $summaryResult->fetch_assoc()) {
+        $summaryData[$row['health_status']] = $row['count'];
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -40,14 +53,13 @@ if ($employees_result->num_rows > 0) {
     <meta charset="UTF-8">
     <title>Animal Medical Records</title>
     <style>
+
         .filter-container {
-            background-color: #f4f4f4;
+            background-color: #ffffff;
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
-            position: sticky;
-            top: 0;
-            z-index: 10;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .filter-row {
@@ -59,15 +71,25 @@ if ($employees_result->num_rows > 0) {
         .filter-row select,
         .filter-row input {
             flex: 1;
-            padding: 8px;
-            border: 1px solid #ddd;
+            padding: 10px;
+            border: 1px solid #ccc;
             border-radius: 4px;
+            transition: border-color 0.3s;
+        }
+
+        .filter-row select:focus,
+        .filter-row input:focus {
+            border-color: #3498db;
+            outline: none;
         }
 
         .records-container {
             max-height: 530px;
             overflow-y: auto;
             border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         .records-table {
@@ -78,7 +100,8 @@ if ($employees_result->num_rows > 0) {
         .records-table th {
             position: sticky;
             top: 0;
-            background-color: #f2f2f2;
+            background-color: #3498db;
+            color: white;
             z-index: 5;
         }
 
@@ -90,11 +113,11 @@ if ($employees_result->num_rows > 0) {
         }
 
         .records-table tr:nth-child(even) {
-            background-color: #f9f9f9;
+            background-color: #f2f2f2;
         }
 
         .records-table tr:hover {
-            background-color: #f5f5f5;
+            background-color: #e1f5fe;
         }
 
         .no-records {
@@ -108,9 +131,7 @@ if ($employees_result->num_rows > 0) {
             background-color: #3498db;
             color: white;
             border: none;
-            height: 40px;
-            width: 400px;
-            padding: 8px 4px;
+            padding: 10px 15px;
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -118,6 +139,30 @@ if ($employees_result->num_rows > 0) {
 
         .btn-filter:hover {
             background-color: #2980b9;
+        }
+
+        .summary-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            margin-top: 20px;
+        }
+
+        .summary-container h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .summary-container ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .summary-container li {
+            padding: 5px 0;
+            font-size: 16px;
+            color: #555;
         }
     </style>
 </head>
@@ -171,6 +216,15 @@ if ($employees_result->num_rows > 0) {
                 <!-- Records will be loaded dynamically -->
             </tbody>
         </table>
+    </div>
+
+    <div class="summary-container">
+        <h2>Animal Health Status Summary</h2>
+        <ul>
+            <li>Well: <?php echo $summaryData['well'] ?? 0; ?></li>
+            <li>Sick: <?php echo $summaryData['sick'] ?? 0; ?></li>
+            <li>Recovering: <?php echo $summaryData['recovering'] ?? 0; ?></li>
+        </ul>
     </div>
 
     <script>
