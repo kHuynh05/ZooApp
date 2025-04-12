@@ -14,6 +14,45 @@ $item_prices = [
 // Fetch unique items for the filter dropdown
 $item_query = "SELECT DISTINCT item_name FROM shop_items ORDER BY item_name";
 $item_result = $conn->query($item_query);
+
+// Fetch summary data for all items
+$summarySql = "SELECT 
+    item_name,
+    SUM(quantity) as total_quantity,
+    SUM(quantity * price) as total_revenue
+    FROM shop_items 
+    GROUP BY item_name
+    ORDER BY total_quantity DESC";
+
+$summaryResult = $conn->query($summarySql);
+$summaryData = [];
+$totalRevenue = 0;
+$totalItems = 0;
+
+while ($row = $summaryResult->fetch_assoc()) {
+    $summaryData[] = $row;
+    $totalRevenue += $row['total_revenue'];
+    $totalItems += $row['total_quantity'];
+}
+
+// Get most and least popular items
+$mostPopular = $summaryData[0] ?? null;
+$leastPopular = end($summaryData) ?? null;
+
+// Fetch transaction summary data
+$transactionSql = "SELECT 
+    COUNT(DISTINCT t.transaction_number) as total_transactions,
+    AVG(si.quantity) as avg_items_per_transaction,
+    MAX(t.transaction_date) as last_transaction_date,
+    (SELECT COUNT(DISTINCT t2.transaction_number) 
+     FROM transactions t2
+     JOIN shop_items si2 ON t2.transaction_number = si2.transaction_id
+     WHERE t2.transaction_date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY)) as weekly_transactions
+    FROM transactions t
+    JOIN shop_items si ON t.transaction_number = si.transaction_id";
+
+$transactionResult = $conn->query($transactionSql);
+$transactionData = $transactionResult->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html>
@@ -111,12 +150,58 @@ $item_result = $conn->query($item_query);
             z-index: 10;
         }
 
-        .summary-card {
+        .summary-container {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px;
             background-color: #f4f4f4;
             border: 1px solid #ddd;
             border-radius: 5px;
-            padding: 20px;
-            margin-top: 20px;
+        }
+
+        .summary-section {
+            flex: 1;
+            padding: 0 20px;
+            border-right: 1px solid #ddd;
+        }
+
+        .summary-section:last-child {
+            border-right: none;
+        }
+
+        .summary-section h3 {
+            margin: 0 0 15px 0;
+            color: #333;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        .summary-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .summary-section li {
+            margin-bottom: 10px;
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        #item-breakdown {
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+
+        #item-breakdown li {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        #item-breakdown li:last-child {
+            border-bottom: none;
         }
 
         #transaction-id-search {
@@ -188,6 +273,34 @@ $item_result = $conn->query($item_query);
         </div>
 
         <div class="main-content">
+            <div class="summary-container">
+                <div class="summary-section">
+                    <h3>Overall Sales Summary</h3>
+                    <ul>
+                        <li>Total Revenue: $<span id="total-revenue"><?php echo number_format($totalRevenue, 2); ?></span></li>
+                        <li>Total Items Sold: <span id="total-items"><?php echo $totalItems; ?></span></li>
+                        <li>Most Popular Item: <span id="most-popular"><?php echo $mostPopular ? htmlspecialchars($mostPopular['item_name']) . " (Sold: " . $mostPopular['total_quantity'] . ")" : "N/A"; ?></span></li>
+                        <li>Least Popular Item: <span id="least-popular"><?php echo $leastPopular ? htmlspecialchars($leastPopular['item_name']) . " (Sold: " . $leastPopular['total_quantity'] . ")" : "N/A"; ?></span></li>
+                    </ul>
+                </div>
+
+                <div class="summary-section">
+                    <h3>Transaction Summary</h3>
+                    <ul>
+                        <li>Total Transactions: <span id="total-transactions"><?php echo $transactionData['total_transactions']; ?></span></li>
+                        <li>Average Items per Transaction: <span id="avg-items"><?php echo number_format($transactionData['avg_items_per_transaction'], 1); ?></span></li>
+                        <li>Transactions This Week: <span id="weekly-transactions"><?php echo $transactionData['weekly_transactions']; ?></span></li>
+                        <li>Last Transaction Date: <span id="last-transaction"><?php echo $transactionData['last_transaction_date']; ?></span></li>
+                    </ul>
+                </div>
+
+                <div class="summary-section">
+                    <h3>Item Breakdown</h3>
+                    <ul id="item-breakdown">
+                        <!-- Will be populated by JavaScript -->
+                    </ul>
+                </div>
+            </div>
             <!-- Results Table -->
             <table class="table">
                 <thead>
@@ -204,14 +317,6 @@ $item_result = $conn->query($item_query);
                     <!-- Results will be loaded dynamically -->
                 </tbody>
             </table>
-
-            <!-- Summary Section -->
-            <div class="summary-card" id="summary-section">
-                <h5>Report Summary</h5>
-                <p>Total Transactions: <span id="total-transactions">0</span></p>
-                <p>Total Revenue: $<span id="total-revenue">0.00</span></p>
-                <p>Total Items Sold: <span id="total-items-sold">0</span></p>
-            </div>
         </div>
     </div>
 
@@ -279,22 +384,102 @@ $item_result = $conn->query($item_query);
 
             // Fetch data from PHP script
             fetch('../scripts/get_transactions.php', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    renderTransactions(data.transactions);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    resultsBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Error loading data. Please try again.</td></tr>';
+                });
+        }
+
+        function calculateSummaries(transactions) {
+            // Calculate overall totals
+            let totalRevenue = 0;
+            let totalItems = 0;
+            const itemCounts = {};
+            const itemRevenue = {};
+            const uniqueTransactions = new Set();
+            const weeklyTransactions = new Set();
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+            transactions.forEach(transaction => {
+                totalRevenue += transaction.total;
+                totalItems += transaction.quantity;
+                uniqueTransactions.add(transaction.transaction_number);
+                
+                // Track weekly transactions
+                const transactionDate = new Date(transaction.transaction_date);
+                if (transactionDate >= oneWeekAgo) {
+                    weeklyTransactions.add(transaction.transaction_number);
                 }
-                return response.json();
-            })
-            .then(data => {
-                renderTransactions(data.transactions);
-            })
-            .catch(error => {
-                console.error('Error fetching data:', error);
-                resultsBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Error loading data. Please try again.</td></tr>';
+                
+                // Track item counts and revenue
+                if (!itemCounts[transaction.item_name]) {
+                    itemCounts[transaction.item_name] = 0;
+                    itemRevenue[transaction.item_name] = 0;
+                }
+                itemCounts[transaction.item_name] += transaction.quantity;
+                itemRevenue[transaction.item_name] += transaction.total;
             });
+
+            // Find most and least popular items
+            let mostPopular = { name: '', count: 0 };
+            let leastPopular = { name: '', count: Infinity };
+            
+            Object.entries(itemCounts).forEach(([name, count]) => {
+                if (count > mostPopular.count) {
+                    mostPopular = { name, count };
+                }
+                if (count < leastPopular.count) {
+                    leastPopular = { name, count };
+                }
+            });
+
+            // Update the item breakdown list
+            const breakdownList = document.getElementById('item-breakdown');
+            breakdownList.innerHTML = '';
+            
+            Object.entries(itemCounts).forEach(([name, count]) => {
+                const li = document.createElement('li');
+                li.innerHTML = `${name}: ${count} sold ($${itemRevenue[name].toFixed(2)})`;
+                breakdownList.appendChild(li);
+            });
+
+            return {
+                totalRevenue,
+                totalItems,
+                mostPopular,
+                leastPopular,
+                itemCounts,
+                itemRevenue,
+                totalTransactions: uniqueTransactions.size,
+                weeklyTransactions: weeklyTransactions.size,
+                avgItemsPerTransaction: totalItems / uniqueTransactions.size
+            };
+        }
+
+        function updateSummaryDisplay(summaries) {
+            // Update overall summary
+            document.getElementById('total-revenue').textContent = summaries.totalRevenue.toFixed(2);
+            document.getElementById('total-items').textContent = summaries.totalItems;
+            document.getElementById('most-popular').textContent = `${summaries.mostPopular.name} (Sold: ${summaries.mostPopular.count})`;
+            document.getElementById('least-popular').textContent = `${summaries.leastPopular.name} (Sold: ${summaries.leastPopular.count})`;
+
+            // Update transaction summary
+            document.getElementById('total-transactions').textContent = summaries.totalTransactions;
+            document.getElementById('avg-items').textContent = summaries.avgItemsPerTransaction.toFixed(1);
+            document.getElementById('weekly-transactions').textContent = summaries.weeklyTransactions;
         }
 
         function renderTransactions(transactions) {
@@ -328,10 +513,9 @@ $item_result = $conn->query($item_query);
                 uniqueTransactions.add(transaction.transaction_number);
             });
 
-            // Update summary section
-            document.getElementById('total-transactions').textContent = uniqueTransactions.size;
-            document.getElementById('total-revenue').textContent = totalRevenue.toFixed(2);
-            document.getElementById('total-items-sold').textContent = totalItemsSold;
+            // Calculate and update summaries
+            const summaries = calculateSummaries(transactions);
+            updateSummaryDisplay(summaries);
         }
 
         // Add multiple select functionality hint
