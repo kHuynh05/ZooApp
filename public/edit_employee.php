@@ -178,7 +178,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
 
 <div class="form-container">
  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <h1>Edit Profile</h1>
+    
 
     <?php // Display initial load errors (e.g., failed to fetch email) ?>
     <?php if (!empty($message)) : ?>
@@ -186,36 +186,39 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
     <?php endif; ?>
 
     <?php // Placeholder for AJAX messages ?>
-    <div id="editProfileMessage" class="message" style="display: none;"></div>
+    <div class = "form-inner-wrapper">
+        <h1>Edit Profile</h1>
+        <div id="editProfileMessage" class="message" style="display: none;"></div>
 
-    <form id="editProfileForm" method="POST" action="edit_employee.php"> <?php /* Action points to self, but JS will intercept */ ?>
-        <div class="form-group">
-            <label for="email">Email Address</label>
-            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($current_email ?? ''); ?>" required>
-        </div>
-
-        <hr style="margin: 20px 0;">
-
-        <div class="form-group">
-            <label for="new_password">New Password</label>
-            <div class="password-input-group">
-                <input type="password" id="new_password" name="new_password">
-                 <i class="fas fa-eye password-toggle" onclick="togglePassword('new_password')"></i>
+        <form id="editProfileForm" method="POST" action="edit_employee.php"> <?php /* Action points to self, but JS will intercept */ ?>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($current_email ?? ''); ?>" required>
             </div>
-            <small>Leave blank to keep current password. (Min. 6 characters)</small>
-        </div>
 
-        <div class="form-group">
-            <label for="confirm_password">Confirm New Password</label>
-             <div class="password-input-group">
-                <input type="password" id="confirm_password" name="confirm_password">
-                <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm_password')"></i>
+            <hr style="margin: 20px 0;">
+
+            <div class="form-group">
+                <label for="new_password">New Password</label>
+                <div class="password-input-group">
+                    <input type="password" id="new_password" name="new_password">
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('new_password')"></i>
+                </div>
+                <small>Leave blank to keep current password. (Min. 6 characters)</small>
             </div>
-            <small>Required if entering a new password.</small>
-        </div>
 
-        <button type="submit">Update Profile</button>
-    </form>
+            <div class="form-group">
+                <label for="confirm_password">Confirm New Password</label>
+                <div class="password-input-group">
+                    <input type="password" id="confirm_password" name="confirm_password">
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm_password')"></i>
+                </div>
+                <small>Required if entering a new password.</small>
+            </div>
+
+            <button type="submit">Update Profile</button>
+        </form>
+    </div>
 </div>
 
 <?php /* JavaScript for AJAX submission and UI updates */ ?>
@@ -237,6 +240,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
             }
         }
     }
+
 
     const editForm = document.getElementById('editProfileForm');
     const messageDiv = document.getElementById('editProfileMessage');
@@ -320,6 +324,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
 </script>
 <style>
     /* --- General Container Styling --- */
+
+.form-inner-wrapper{
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+}
+
+#editProfileMessage{
+    margin-bottom: 20px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .form-container {
     max-width: 500px; /* Or adjust as needed */
     margin: 20px auto; /* Center the form */
@@ -336,6 +354,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
     margin-bottom: 25px;
     color: #333;
     font-size: 1.8em;
+    padding-left: 5px;
 }
 
 /* --- Form Group Styling --- */
