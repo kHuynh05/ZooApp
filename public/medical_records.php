@@ -33,17 +33,60 @@ if ($employees_result->num_rows > 0) {
 }
 
 // Fetch summarized health status data
-$summarySql = "SELECT health_status, COUNT(*) as count 
-               FROM animal_conditions 
-               GROUP BY health_status";
+$summarySql = "SELECT status, COUNT(*) as count 
+               FROM animals 
+               GROUP BY status";
 $summaryResult = $conn->query($summarySql);
 
 $summaryData = [];
 if ($summaryResult->num_rows > 0) {
     while ($row = $summaryResult->fetch_assoc()) {
-        $summaryData[$row['health_status']] = $row['count'];
+        $summaryData[$row['status']] = $row['count'];
     }
 }
+
+// Fetch summarized data for the selected animal
+$animalSummarySql = "SELECT 
+    COUNT(CASE WHEN health_status = 'sick' THEN 1 END) as sick_count,
+    COUNT(CASE WHEN health_status = 'well' THEN 1 END) as well_count,
+    COUNT(CASE WHEN health_status = 'recovering' THEN 1 END) as recovering_count,
+    MAX(CASE WHEN health_status = 'sick' THEN recorded_at END) as last_sick_date,
+    (SELECT emp_name FROM employees WHERE emp_id = (SELECT emp_id FROM animal_conditions WHERE animal_id = ? ORDER BY recorded_at DESC LIMIT 1)) as last_vet
+    FROM animal_conditions 
+    WHERE animal_id = ?";
+
+$stmt = $conn->prepare($animalSummarySql);
+$stmt->bind_param("ii", $animalId, $animalId);
+$stmt->execute();
+$animalSummaryResult = $stmt->get_result();
+$animalSummaryData = $animalSummaryResult->fetch_assoc();
+$stmt->close();
+
+// Fetch summarized data for the selected veterinarian
+$vetSummarySql = "SELECT 
+    COUNT(*) as total_reports,
+    MAX(recorded_at) as last_report_date,
+    (SELECT animal_name FROM animals WHERE animal_id = (SELECT animal_id FROM animal_conditions WHERE emp_id = ? ORDER BY recorded_at DESC LIMIT 1)) as last_animal
+    FROM animal_conditions 
+    WHERE emp_id = ?";
+
+$stmt = $conn->prepare($vetSummarySql);
+$stmt->bind_param("ii", $vetId, $vetId);
+$stmt->execute();
+$vetSummaryResult = $stmt->get_result();
+$vetSummaryData = $vetSummaryResult->fetch_assoc();
+$stmt->close();
+
+// Fetch current health status counts from animals table
+$healthStatusSql = "SELECT 
+    COUNT(CASE WHEN status = 'well' THEN 1 END) as well_count,
+    COUNT(CASE WHEN status = 'sick' THEN 1 END) as sick_count,
+    COUNT(CASE WHEN status = 'recovering' THEN 1 END) as recovering_count
+    FROM animals 
+    WHERE deleted = 0";
+
+$healthStatusResult = $conn->query($healthStatusSql);
+$healthStatusData = $healthStatusResult->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
@@ -57,7 +100,7 @@ if ($summaryResult->num_rows > 0) {
         .filter-container {
             background-color: #ffffff;
             padding: 20px;
-            margin-bottom: 20px;
+            margin: 20px 0px;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
@@ -143,8 +186,10 @@ if ($summaryResult->num_rows > 0) {
 
         .summary-container {
             background-color: #ffffff;
-            padding: 20px;
+            padding: 0px 20px;
             border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             margin-top: 20px;
         }
@@ -164,11 +209,46 @@ if ($summaryResult->num_rows > 0) {
             font-size: 16px;
             color: #555;
         }
+
+        .summary-section {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
 <body>
     <h1>Animal Medical Records</h1>
+
+    <div class="summary-container">
+        <div class="summary-section">
+            <h3>Current Animal Health Status</h3>
+            <ul>
+                <li>Well: <span id="well-count"><?php echo $healthStatusData['well_count']; ?></span></li>
+                <li>Sick: <span id="sick-count"><?php echo $healthStatusData['sick_count']; ?></span></li>
+                <li>Recovering: <span id="recovering-count"><?php echo $healthStatusData['recovering_count']; ?></span></li>
+            </ul>
+        </div>
+
+        <div class="summary-section">
+            <h3>Selected Animal Summary (Last 7 Days)</h3>
+            <ul>
+                <li>Times Sick: <span id="animal-sick-count">0</span></li>
+                <li>Times Well: <span id="animal-well-count">0</span></li>
+                <li>Times Recovering: <span id="animal-recovering-count">0</span></li>
+                <li>Last Sick Date: <span id="last-sick-date">Never</span></li>
+                <li>Last Vet: <span id="last-vet">None</span></li>
+            </ul>
+        </div>
+
+        <div class="summary-section">
+            <h3>Selected Veterinarian Summary (Last 7 Days)</h3>
+            <ul>
+                <li>Total Reports: <span id="total-reports">0</span></li>
+                <li>Last Report Date: <span id="last-report-date">Never</span></li>
+                <li>Last Animal Reviewed: <span id="last-animal">None</span></li>
+            </ul>
+        </div>
+    </div>
 
     <div class="filter-container">
         <div class="filter-row">
@@ -218,16 +298,81 @@ if ($summaryResult->num_rows > 0) {
         </table>
     </div>
 
-    <div class="summary-container">
-        <h2>Animal Health Status Summary</h2>
-        <ul>
-            <li>Well: <?php echo $summaryData['well'] ?? 0; ?></li>
-            <li>Sick: <?php echo $summaryData['sick'] ?? 0; ?></li>
-            <li>Recovering: <?php echo $summaryData['recovering'] ?? 0; ?></li>
-        </ul>
-    </div>
-
     <script>
+        function calculateSummaries(records) {
+            // Get the date 7 days ago
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+            // Filter records from the last week
+            const lastWeekRecords = records.filter(record => {
+                const recordDate = new Date(record.recorded_at);
+                return recordDate >= oneWeekAgo;
+            });
+
+            // Get selected animal and vet from filters
+            const selectedAnimalId = document.getElementById('animal-filter').value;
+            const selectedVetId = document.getElementById('vet-filter').value;
+
+            // Calculate selected animal summary for the last week
+            let animalSummary = {
+                sick_count: 0,
+                well_count: 0,
+                recovering_count: 0,
+                last_sick_date: null,
+                last_vet: null
+            };
+
+            // Calculate selected vet summary for the last week
+            let vetSummary = {
+                total_reports: 0,
+                last_report_date: null,
+                last_animal: null
+            };
+
+            if (selectedAnimalId) {
+                const animalRecords = lastWeekRecords.filter(r => r.animal_id == selectedAnimalId);
+                animalSummary = {
+                    sick_count: animalRecords.filter(r => r.health_status === 'sick').length,
+                    well_count: animalRecords.filter(r => r.health_status === 'well').length,
+                    recovering_count: animalRecords.filter(r => r.health_status === 'recovering').length,
+                    last_sick_date: animalRecords
+                        .filter(r => r.health_status === 'sick')
+                        .sort((a, b) => new Date(b.recorded_at) - new Date(a.recorded_at))[0]?.recorded_at || null,
+                    last_vet: animalRecords[0]?.emp_name || null
+                };
+            }
+
+            if (selectedVetId) {
+                const vetRecords = lastWeekRecords.filter(r => r.emp_id == selectedVetId);
+                vetSummary = {
+                    total_reports: vetRecords.length,
+                    last_report_date: vetRecords
+                        .sort((a, b) => new Date(b.recorded_at) - new Date(a.recorded_at))[0]?.recorded_at || null,
+                    last_animal: vetRecords[0]?.animal_name || null
+                };
+            }
+
+            return {
+                animalSummary,
+                vetSummary
+            };
+        }
+
+        function updateSummaryDisplay(summaries) {
+            // Update selected animal summary
+            document.getElementById('animal-sick-count').textContent = summaries.animalSummary.sick_count;
+            document.getElementById('animal-well-count').textContent = summaries.animalSummary.well_count;
+            document.getElementById('animal-recovering-count').textContent = summaries.animalSummary.recovering_count;
+            document.getElementById('last-sick-date').textContent = summaries.animalSummary.last_sick_date || 'Never';
+            document.getElementById('last-vet').textContent = summaries.animalSummary.last_vet || 'None';
+
+            // Update selected vet summary
+            document.getElementById('total-reports').textContent = summaries.vetSummary.total_reports;
+            document.getElementById('last-report-date').textContent = summaries.vetSummary.last_report_date || 'Never';
+            document.getElementById('last-animal').textContent = summaries.vetSummary.last_animal || 'None';
+        }
+
         function applyFilters() {
             const animalId = document.getElementById('animal-filter').value;
             const vetId = document.getElementById('vet-filter').value;
@@ -264,6 +409,9 @@ if ($summaryResult->num_rows > 0) {
                 })
                 .then(data => {
                     renderRecords(data.records);
+                    // Calculate and update summaries based on the records
+                    const summaries = calculateSummaries(data.records);
+                    updateSummaryDisplay(summaries);
                 })
                 .catch(error => {
                     console.error('Error fetching data:', error);
