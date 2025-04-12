@@ -28,6 +28,7 @@ $emp_id = $_SESSION['emp_id'];
 $message = ""; // For non-AJAX messages (primarily initial load errors)
 $messageClass = "";
 $current_email = ''; // Initialize
+$current_empname = '';
 
 // --- Handle AJAX POST Request ---
 if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
@@ -37,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
 
     try {
         $new_email = trim($_POST['email'] ?? '');
+        $new_empname = trim($_POST['emp_name'] ?? '');
         $new_password = $_POST['new_password'] ?? ''; // Use null coalescing
         $confirm_password = $_POST['confirm_password'] ?? '';
 
@@ -46,14 +48,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
         $errors = [];
 
         // 1. Fetch current email (Needed for comparison)
-        $stmt_fetch = $conn->prepare("SELECT emp_email FROM employees WHERE emp_id = ?");
+        $stmt_fetch = $conn->prepare("SELECT emp_email, emp_name FROM employees WHERE emp_id = ?");
         if (!$stmt_fetch) throw new Exception("Database error preparing to fetch current data.");
         $stmt_fetch->bind_param("i", $emp_id);
         $stmt_fetch->execute();
-        $stmt_fetch->bind_result($current_email_db);
+        $stmt_fetch->bind_result($current_email_db, $current_empname_db);
         if (!$stmt_fetch->fetch()) throw new Exception("Could not find employee data.");
         $stmt_fetch->close();
         $current_email = $current_email_db; // Assign for logic below
+        $current_empname = $current_empname_db;
+
 
         // 2. Validate Email
         if (!empty($new_email) && $new_email !== $current_email) {
@@ -76,7 +80,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
                 $stmt_check->close();
             }
         } elseif (empty($new_email)) {
-             $errors[] = "Email address cannot be empty."; // Add check for empty email
+            $new_email = $current_email;
+             //$errors[] = "Email address cannot be empty."; // Add check for empty email
         }
 
 
@@ -97,6 +102,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
         } elseif (!empty($confirm_password) && empty($new_password)) {
              // If confirm is filled but new is not
              $errors[] = "Please enter the new password if you wish to change it.";
+        }
+
+        //Validate employee name
+        if (!empty($new_empname)) {
+            if (strlen($new_empname) < 2) {
+                $errors[] = "Name must be at least 2 characters.";
+            } else {
+                $update_fields[] = "emp_name = ?";
+                $bind_params[] = $new_empname;
+                $bind_types .= "s";
+            }
+        } else {
+            $new_empname = $current_empname;
+            //$errors[] = "Employee name cannot be empty.";
         }
 
         // 4. Check for Errors
@@ -153,14 +172,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
 } else {
     // --- GET Request (Initial Page Load): Fetch current email for the form ---
     // Moved this fetch outside the POST block
-    $stmt_fetch = $conn->prepare("SELECT emp_email FROM employees WHERE emp_id = ?");
+    $stmt_fetch = $conn->prepare("SELECT emp_email, emp_name FROM employees WHERE emp_id = ?");
     if ($stmt_fetch) {
         $stmt_fetch->bind_param("i", $emp_id);
         $stmt_fetch->execute();
-        $stmt_fetch->bind_result($current_email_db);
+        $stmt_fetch->bind_result($current_email_db, $current_empname_db);
         $stmt_fetch->fetch();
         $stmt_fetch->close();
         $current_email = $current_email_db; // Assign to variable used in form value
+        $current_empname = $current_empname_db;
     } else {
         $message = "Error fetching current user data."; // Display error on page load if needed
         $messageClass = "error";
@@ -193,10 +213,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && !empty($_SERVER['HTTP_X_REQUESTED_WI
         <form id="editProfileForm" method="POST" action="edit_employee.php"> <?php /* Action points to self, but JS will intercept */ ?>
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($current_email ?? ''); ?>" required>
+                <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($current_email ?? ''); ?>">
             </div>
 
             <hr style="margin: 20px 0;">
+
+            <div class="form-group">
+                <label for="new_empname">New Name</label>
+                <input type="text" id="emp_name" name="emp_name" value="<?php echo htmlspecialchars($current_empname ?? ''); ?>">
+            </div>
 
             <div class="form-group">
                 <label for="new_password">New Password</label>
