@@ -72,7 +72,7 @@ foreach ($animals as $animal) {
                 </label>
                 <div class="dropdown-content">
                     <span class="close-btn" onclick="document.getElementById('toggle-<?php echo $index; ?>').checked = false;">×</span>
-                    <p><?php echo $animal['desc']; ?></p>
+                    <p>Plushie included only in Guardian and Protector package</p>
                     <img class="plush-image" src="<?php echo $animal['plush']; ?>" alt="<?php echo $animal['species_name']; ?>">
                 </div>
             </div>
@@ -83,10 +83,10 @@ foreach ($animals as $animal) {
             ?>
 
             <div class = "dropdown-content">
-                <a href="adopt.php" class = "close-btn">x</a>
+                <a href="adopt.php" class = "close-btn">x</a>  
                 <div class = "dropdown-body">
                     <p>Plush included in Guardians and Protectors package</p>       
-                      <img src = "<?php echo htmlspecialchars($image); ?>" class = "dropdown-img">
+                    <img src = "<?php echo htmlspecialchars($image); ?>" class = "dropdown-img">
                </div>
               </div>
         <div class = "packet-title">
