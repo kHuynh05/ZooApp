@@ -14,11 +14,11 @@ $amount = isset($_GET['amount']) ? htmlspecialchars($_GET['amount']) : '';
 
 // Define packet descriptions
 $packet_descriptions = array(
-    'Friends' => 'Basic membership package including: Zoo newsletter subscription, 2 free admission tickets, and a thank you certificate.',
-    'Guardians' => 'Enhanced membership package including: All Friends benefits, 4 free admission tickets, exclusive behind-the-scenes tour, and a personalized thank you plaque.',
-    'Protectors' => 'Premium membership package including: All Guardians benefits, 6 free admission tickets, VIP animal encounter, and a custom engraved plaque.',
-    'Classroom' => 'Educational package including: 20 student admission tickets, guided educational tour, teacher resource materials, and a classroom thank you certificate.',
-    'Birthday' => 'Special birthday package including: 10 admission tickets, private birthday party room, animal encounter, and a personalized birthday certificate.'
+    'Friends' => 'Adoption Certificate, Animal Fact Sheet, 5x7 Photo of Adopted Animal Zootopia E-Newsletter',
+    'Guardians' => 'Adoption Certificate, Animal Fact Sheet, 5x7 Photo of Adopted Animal, Zootopia E-Newsletter, Animal Plush Toy',
+    'Protectors' => 'Adoption Certificate, Animal Fact Sheet, 5x7 Photo of Adopted Animal, Zootopia E-Newsletter, Animal Plush Toy, Two Zootopia Day Passes',
+    'Classroom' => '25 Adoption Certificate, 25 Animal Fact Sheet, 5x7 Photo of Adopted Animal, Zootopia E-Newsletter, Animal Plush Toy',
+    'Birthday' => 'Adoption Certificate, Animal Fact Sheet, 5x7 Photo of Adopted Animal, Zootopia E-Newsletter, Animal Plush Toy, 4 Zootopia Day Passes, Zootopia Birthday Button, Personalized Birthday Video'
 );
 ?>
 
@@ -180,7 +180,7 @@ $packet_descriptions = array(
                 <p>This receipt serves as proof of your donation for tax purposes.</p>
                 <div class="receipt-footer-buttons">
                     <button class="print-button" onclick="window.print()">Print Receipt</button>
-                    <a href="index.php" class="back-button">Return to Home</a>
+                    <a href="homepage.php" class="back-button">Return to Home</a>
                 </div>
             </div>
         </div>

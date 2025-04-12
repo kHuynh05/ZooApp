@@ -27,7 +27,7 @@
     align-items: center;
 }
 
-.form-group{
+.form-group, .form-customer{
     text-align: left;
     align-items: left;
 }
@@ -47,7 +47,8 @@
     gap: 15px;
 }
 
-.form-address, .form-address1, .form-address2, form-packet{
+
+.form-address, .form-address1, .form-address2, .form-packet, .inner_customer{
     display: flex;
     gap: 15px;
 }
