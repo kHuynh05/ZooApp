@@ -171,6 +171,7 @@ $conn->close();
                     </tbody>
                 </table>
             </div>
+            
         </div>
         <div class="tab-content" id="4">
             <form id="profileForm">
@@ -406,9 +407,6 @@ $conn->close();
         let time = document.getElementById("time").value;
         let orderType = document.getElementById("type").value;
         let ordersTableBody = document.getElementById("ordersTableBody");
-        let totalTickets = 0;
-        let totalSpent = 0;
-        let ticketDetails = [];
 
         let dataToSend = {
             time: time,
@@ -442,36 +440,10 @@ $conn->close();
                         </tr>
                     `;
                             ordersTableBody.innerHTML += row;
-
-                            // Summarize ticket purchases only if the order type is "tickets"
-                            if (orderType === "tickets" && transaction.transaction_type === "tickets") {
-                                totalTickets += transaction.ticket_count; // Assuming ticket_count is available
-                                totalSpent += transaction.total_profit; // Assuming total_profit is the amount spent
-                                ticketDetails.push(transaction.ticket_name); // Assuming ticket_name is available
-                            }
                         });
-
-                        // Update summary only if the order type is "tickets"
-                        if (orderType === "tickets") {
-                            document.getElementById("totalTickets").innerText = `Total Tickets Purchased: ${totalTickets}`;
-                            document.getElementById("totalSpent").innerText = `Total Money Spent: $${totalSpent.toFixed(2)}`;
-                            document.getElementById("ticketDetails").innerText = `Tickets Bought: ${ticketDetails.join(", ") || "None"}`;
-                            document.getElementById("summary").style.display = "block"; // Show summary
-                        } else {
-                            // Reset summary if the order type is not "tickets"
-                            document.getElementById("totalTickets").innerText = `Total Tickets Purchased: 0`;
-                            document.getElementById("totalSpent").innerText = `Total Money Spent: $0.00`;
-                            document.getElementById("ticketDetails").innerText = `Tickets Bought: None`;
-                            document.getElementById("summary").style.display = "none"; // Hide summary
-                        }
                     } else {
                         // If no orders are found, display this message
                         ordersTableBody.innerHTML = "<tr><td colspan='5'>No transactions found.</td></tr>";
-                        // Reset summary
-                        document.getElementById("totalTickets").innerText = `Total Tickets Purchased: 0`;
-                        document.getElementById("totalSpent").innerText = `Total Money Spent: $0.00`;
-                        document.getElementById("ticketDetails").innerText = `Tickets Bought: None`;
-                        document.getElementById("summary").style.display = "none"; // Hide summary
                     }
                 } else {
                     showError(data.error || "Error occurred while fetching orders.");
