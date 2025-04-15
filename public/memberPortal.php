@@ -171,12 +171,6 @@ $conn->close();
                     </tbody>
                 </table>
             </div>
-            <div id="summary" class="summary" style="display: none;">
-                <h2>Summary of Ticket Purchases</h2>
-                <p id="totalTickets">Total Tickets Purchased: 0</p>
-                <p id="totalSpent">Total Money Spent: $0.00</p>
-                <p id="ticketDetails">Tickets Bought: None</p>
-            </div>
         </div>
         <div class="tab-content" id="4">
             <form id="profileForm">
