@@ -64,8 +64,8 @@
         <h1>Our Animals</h1>
 
         <div class="filter-container">
-            <form method="POST">
-                <select name="enclosureType" onchange="this.form.submit()">
+            <form method="POST" id="enclosureForm">
+                <select name="enclosureType" id="enclosureSelect">
                     <option value="">All Enclosures</option>
                     <?php foreach ($enclosures as $enclosure):
                         if ($enclosure['enclosure_id'] != null): ?>
@@ -99,3 +99,15 @@
 </body>
 
 </html>
+
+<script>
+    document.getElementById('enclosureSelect').addEventListener('change', function () {
+        if (this.value === "") {
+            // Redirect to your "All Enclosures" page
+            window.location.href = "animals-info.php";
+        } else {
+            // Submit the form normally
+            document.getElementById('enclosureForm').submit();
+        }
+    });
+</script>

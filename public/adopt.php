@@ -5,6 +5,27 @@
 //Include the database connection
 include '../config/database.php';
 
+$sql = "SELECT species_name, img, plush FROM species";
+$result = $conn->query($sql);
+$animals = [];
+
+if ($result->num_rows > 0) {
+    while($row = $result->fetch_assoc()) {
+        $animals[] = $row;
+    }
+}
+
+$animals_info = [];
+
+foreach ($animals as $animal) {
+    $name = $animal['species_name'];
+    $animals_info[$name] = [
+        'name' => $animal['species_name'],
+        'image' => $animal['img'],
+        'species_plush' => $animal['plush']
+    ];
+}
+
 ?>
 
 <div class = "container">
@@ -12,6 +33,14 @@ include '../config/database.php';
     <div class = "homepage">
         <div class = "frontpage">
             <div class = "frontpage-content">
+                <?php
+                $species_name = $animal['species_name'];
+                $default_image = '../assets/images/default-enclosure.jpg';
+                $default_plush = 'A specially designed habitat providing a natural environment for our animals.';
+
+                $image = isset($animals_info[$species_name]) ? $animals_info[$species_name]['image'] : $default_img;
+                $plush = isset($animals_info[$species_name]) ? $animals_info[$species_name]['plush'] : $default_plush;
+                ?>
                 <h1 class = "frontpage-main"><b>Adopt an Animal at Zootopia!</b></h1>
                 <span class = "adopt-info">At <b>Zootopia</b>, we believe that every animal deserves love, care, and a thriving habitat. 
                 By adopting an animal, you are directly contributing to their well-being, helping us provide nutritious food, 
@@ -33,51 +62,33 @@ include '../config/database.php';
         </div>
         <div class = "animals">
             <?php
-                $animals = [
-                    ['name' => 'Lion', 'image' => '../assets/img/lion-animal.jpg', 'desc' => 'Plush for Guardian, Protector and Classroom levels:', 'image1' => '../assets/img/lion-plush.png'],
-                    ['name' => 'Sea Turtle', 'image' => '../assets/img/seaturtle-animal.jpg', 'desc' => 'Plush for Guardian, Protector and Classroom levels:', 'image1' => '../assets/img/seaturtle-plush.png'],
-                    ['name' => 'Chimpanzee', 'image' => '../assets/img/chimp-animal.jpg', 'desc' => 'Plush for Guardian, Protector and Classroom levels:', 'image1' => '../assets/img/chimpanzee-plush.avif'],
-                ];
             ?>
             <?php foreach ($animals as $index => $animal): ?>
             <div class="animal-card">
                 <input type="radio" name="animal-toggle" id="toggle-<?php echo $index; ?>">
                 <label for="toggle-<?php echo $index; ?>">
-                    <img class="responsive-circle" src="<?php echo $animal['image']; ?>" alt="<?php echo $animal['name']; ?>">
-                    <span class = "animal-label"><?php echo $animal['name'];?></span>
+                    <img class="responsive-circle" src="<?php echo $animal['img']; ?>" alt="<?php echo $animal['species_name']; ?>">
+                    <span class = "animal-label"><?php echo $animal['species_name'];?></span>
                 </label>
                 <div class="dropdown-content">
                     <span class="close-btn" onclick="document.getElementById('toggle-<?php echo $index; ?>').checked = false;">×</span>
-                    <p><?php echo $animal['desc']; ?></p>
-                    <img class="plush-image" src="<?php echo $animal['image1']; ?>" alt="<?php echo $animal['name']; ?>">
+                    <p>Plushie included only in Guardian and Protector package</p>
+                    <img class="plush-image" src="<?php echo $animal['plush']; ?>" alt="<?php echo $animal['species_name']; ?>">
                 </div>
             </div>
             <?php endforeach; ?>
 
             <?php
-            if (isset($_GET['animals'])){
-                $selectedAnimal = $_GET['animals'];
-                $desc = '';
-                $image1 = '';
+            $desc = "Plush included in Guardians and Protectors package";
+            ?>
 
-                foreach($animals as $animal){
-                    if ($animal['name'] === $selectedAnimal){
-                        $desc = $animal['desc'];
-                        $image1 = $animal['image1'];
-                        break;
-                    }
-                }
-
-                    if($desc): ?>
-                        <div class = "dropdown-content">
-                            <a href="adopt.php" class = "close-btn">x</a>
-                            <div class = "dropdown-body">
-                                <p><?php echo htmlspecialchars($desc); ?></p>
-                                <img src = "<?php echo htmlspecialchars($image); ?>" class = "dropdown-img">
-                            </div>
-                        </div>
-            <?php endif; } ?>
-        </div>
+            <div class = "dropdown-content">
+                <a href="adopt.php" class = "close-btn">x</a>  
+                <div class = "dropdown-body">
+                    <p>Plush included in Guardians and Protectors package</p>       
+                    <img src = "<?php echo htmlspecialchars($image); ?>" class = "dropdown-img">
+               </div>
+              </div>
         <div class = "packet-title">
             <span class = "packet-head">FIVE LEVELS TO CHOOSE FROM</span>
         </div>

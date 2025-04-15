@@ -6,6 +6,25 @@
 // Include database connection
 include '../config/database.php';
 
+$speciesSQL = "SELECT species_name FROM species";
+$speciesResult = $conn->query($speciesSQL);
+$species_names = [];
+
+if ($speciesResult && $speciesResult->num_rows > 0) {
+    while ($row = $speciesResult->fetch_assoc()) {
+        $species_names[] = $row['species_name'];
+    }
+}
+
+$animals_info = [];
+
+foreach ($animals as $animal) {
+    $name = $animal['species_name'];
+    $animals_info[$name] = [
+        'name' => $animal['species_name'],
+    ];
+}
+
 // Define packet prices at the top of the file
 $packet_prices = array(
     'Friends' => 25,
@@ -20,6 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $first_name     = trim($_POST['fname']);
     $last_name      = trim($_POST['lname']);
     $email          = trim($_POST['cust_email']); // Changed to match form field name
+    $dob            = trim($_POST['date_of_birth']);
+    $sex            = trim($_POST['sex']);
     $address_line1  = trim($_POST['addr1']);
     $address_line2  = trim($_POST['addr2']) ?? '';
     $city           = trim($_POST['city']);
@@ -50,11 +71,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($result->num_rows === 0) {
             // Customer doesn't exist, insert new customer
-            $sql = "INSERT INTO customers (cust_email, first_name, last_name) 
-                   VALUES (?, ?, ?)";
+            $sql = "INSERT INTO customers (cust_email, date_of_birth, sex, first_name, last_name) 
+                   VALUES (?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("sss", 
+            $stmt->bind_param("sssss", 
                 $email,
+                $dob,
+                $sex,
                 $first_name,
                 $last_name
             );
@@ -152,6 +175,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <input type="text" name="lname" placeholder="Last Name" required>
                         <input type="email" name="cust_email" placeholder="Email" required>
                     </div>
+                    <div class = "form-customer">
+                        <div class="inner-customer">
+                            <label for = "dob">Date of Birth</label>
+                            <input type = "date" name = "date_of_birth" max = "<?php echo date('Y-m-d'); ?>" required>
+                        </div>
+                        <div class = "inner-customer">
+                            <label for = "gender">Gender</label>
+                            <select name = "sex" required>
+                                <option value = "">Select gender</option>
+                                <option value = "M">Male</option>
+                                <option value = "F">Female</option>
+                                <option value = "O">Other</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Address -->
@@ -220,9 +258,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label>Animal</label>
                     <select name="animal" required>
                         <option value="" disabled selected>Select an Animal</option>
-                        <option value="Lion">Lion</option>
-                        <option value="Seaturtle">Sea Turtle</option>
-                        <option value="Chimp">Chimpanzee</option>
+                        <?php
+                        foreach ($species_names as $name) {
+                            echo "<option value=\"" . htmlspecialchars($name) . "\">" . htmlspecialchars($name) . "</option>";
+                        }
+                        ?>
                     </select>
                 </div>
 
