@@ -1,0 +1,342 @@
+
+
+
+#transactionReport {
+    padding: 20px;
+    width: 100%;
+    min-height: 100vh; /* Ensure it takes full viewport height */
+    background-color: #f8f9fa;
+    box-sizing: border-box; /* Include padding in width/height calculation */
+}
+
+/* Title styling */
+#transactionReport h1 {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    font-size: 2em;
+    text-align: center; /* Center title */
+}
+
+/* Filter container styling */
+.filter-container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+
+.date-filters {
+    display: flex;
+    gap: 20px;
+    align-items: flex-end; /* Align items to the bottom */
+    flex-wrap: wrap;
+    margin-bottom: 20px; /* Space between filters and summary */
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1; /* Allow groups to grow */
+    min-width: 180px; /* Minimum width before wrapping */
+}
+
+/* Input and select styling */
+.filter-group label {
+    font-weight: 500;
+    color: #4a5568;
+    font-size: 0.9em;
+}
+
+.filter-group input,
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%; /* Make inputs take full width of their group */
+    box-sizing: border-box;
+    height: 35px; /* Consistent height */
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+/* Filter button styling */
+.filter-container button {
+    padding: 0 16px; /* Adjust padding */
+    background-color: rgb(46, 170, 100);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    height: 35px; /* Match input height */
+    line-height: 35px; /* Vertically center text */
+    transition: background-color 0.2s;
+    white-space: nowrap; /* Prevent button text wrapping */
+}
+
+.filter-container button:hover {
+    background-color: seagreen;
+}
+
+/* Summary container styling */
+.summary-container {
+    display: flex;
+    justify-content: space-around; /* Keep space around the two main boxes */
+    gap: 20px; /* Increase gap between the two boxes */
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #e9ecef;
+    border-radius: 6px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+/* Individual summary box styling (Counts and Amounts boxes) */
+.summary-box {
+    background-color: #ffffff;
+    padding: 15px 20px;
+    border-radius: 6px;
+    /* text-align: center; remove this */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    flex: 1; /* Allow boxes to grow */
+    min-width: 250px; /* Minimum width before wrapping */
+    display: flex; /* Use flexbox for internal layout */
+    flex-direction: column; /* Stack title and items vertically */
+    gap: 10px; /* Space between title and items */
+}
+
+.summary-box h4 {
+    margin: 0 0 5px 0; /* Adjust bottom margin */
+    font-size: 1em; /* Slightly larger title */
+    color: #4a5568;
+    font-weight: 600; /* Bolder title */
+    text-align: center; /* Center the title */
+    border-bottom: 1px solid #e2e8f0; /* Add a separator line */
+    padding-bottom: 8px; /* Space below separator */
+}
+
+/* Container for the individual items */
+.summary-details {
+    flex-grow: 1; /* Allow details to take up available space */
+}
+
+/* Style for each line item within a summary box */
+.summary-item {
+    display: flex;
+    justify-content: space-between; /* Pushes label and value apart */
+    font-size: 0.95em;
+    padding: 2px 5px; /* Add slight padding */
+}
+
+.summary-item span:first-child { /* Style for the label (e.g., "Registrations:") */
+    color: #555;
+}
+
+.summary-item span:last-child { /* Style for the value (count or amount) */
+    font-weight: 500;
+    color: #2c3e50;
+    min-width: 60px; /* Ensure space for value */
+    text-align: right; /* Align value to the right */
+}
+
+/* Make amount values use monospace font */
+#summary-amounts .summary-item span:last-child,
+#summary-amounts .summary-total span:last-child { /* Apply to total amount as well */
+    font-family: monospace;
+    font-size: 1em;
+}
+
+/* Style for the total section at the bottom of a summary box */
+.summary-total {
+    border-top: 1px solid #e2e8f0; /* Separator line above total */
+    margin-top: 10px; /* Space above the total line */
+    padding-top: 10px; /* Space below the total line */
+    display: flex;
+    justify-content: space-between;
+    font-size: 1em; /* Make total font slightly larger */
+}
+
+.summary-total span:first-child { /* "Total Count:", "Total Amount:" */
+    color: #333;
+}
+
+.summary-total span:last-child { /* The actual total value */
+    color: #2c3e50;
+    min-width: 60px;
+    text-align: right;
+}
+
+
+/* Table container styling */
+.table-container {
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: auto;
+     /* Adjust height calculation based on new summary box height */
+     /* This is an estimate, might need tweaking after seeing the result */
+     max-height: calc(100vh - 450px); /* Adjusted slightly from previous */
+}
+
+/* Table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    table-layout: auto; /* Allow table to adjust column widths */
+}
+
+thead {
+    position: sticky;
+    top: 0;
+    background-color: #f8fafc;
+    z-index: 1;
+}
+
+th {
+    padding: 12px 16px;
+    text-align: left;
+    color: #4a5568;
+    font-weight: 600;
+    border-bottom: 2px solid #e2e8f0;
+    white-space: nowrap; /* Prevent header text wrapping */
+}
+
+td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #2d3748;
+    vertical-align: top; /* Align content to top */
+}
+
+/* Row hover effect */
+tbody tr:hover {
+    background-color: #f7fafc;
+}
+
+/* Amount column alignment */
+td:nth-child(4) { /* 4th column (Amount) */
+    text-align: left; /* Align amounts to the left */
+    font-family: monospace; /* Use monospace font for amounts */
+}
+
+/* Transaction type styling */
+td:nth-child(5) { /* 5th column (Type) */
+    text-transform: capitalize;
+    text-align: left; /* Ensure type column is left-aligned */
+}
+
+/* Transaction number styling */
+td:first-child { /* First column (Transaction Number) */
+    font-family: monospace;
+}
+
+/* Responsive design */
+@media (max-width: 992px) { /* Adjust breakpoint if needed */
+    .filter-group {
+        min-width: calc(50% - 10px); /* Two columns */
+    }
+    .summary-container {
+        flex-direction: column; /* Stack summary boxes vertically */
+        align-items: stretch;
+    }
+    .summary-box {
+        min-width: 100%; /* Full width */
+    }
+    .table-container {
+         /* Adjust height again for stacked summary */
+         /* Height depends more on filter/summary height now */
+         max-height: calc(100vh - 500px); /* Adjust as needed */
+    }
+}
+
+@media (max-width: 768px) {
+    #transactionReport h1 {
+        font-size: 1.8em;
+    }
+    .date-filters {
+        flex-direction: column;
+        align-items: stretch; /* Stretch items full width */
+        gap: 15px;
+    }
+
+    .filter-group {
+        min-width: 100%; /* Full width on smaller screens */
+    }
+
+    .filter-container button {
+        width: 100%; /* Full width button */
+    }
+
+    .summary-container {
+        gap: 15px;
+    }
+
+    .summary-box {
+         padding: 12px 15px;
+    }
+     .summary-item {
+         font-size: 0.9em;
+     }
+     .summary-total {
+         font-size: 0.95em; /* Adjust total font size */
+         padding-top: 8px;
+         margin-top: 8px;
+     }
+
+    .table-container {
+         /* Adjust height again */
+         max-height: calc(100vh - 530px); /* Adjust as needed */
+    }
+
+    table {
+        font-size: 13px;
+    }
+
+    th, td {
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 480px) {
+     .summary-box h4 {
+        font-size: 0.95em;
+     }
+     .summary-item {
+         font-size: 0.85em;
+     }
+     .summary-total {
+         font-size: 0.9em;
+     }
+     th, td {
+         padding: 8px 10px;
+     }
+}
+
+
+/* Scrollbar styling */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}

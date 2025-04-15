@@ -1,0 +1,81 @@
+/* Base reset and font */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+}
+
+/* Container for form */
+.insert-form {
+    max-width: 700px;
+    margin: 40px auto;
+    padding: 40px;
+    background-color: white;
+    border-radius: 20px;
+    box-shadow:
+        5px 5px 15px rgba(0, 0, 0, 0.1),
+        -5px -5px 15px rgba(255, 255, 255, 0.7);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Form title */
+.insert-form h2 {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+/* Labels and inputs */
+.insert-form label {
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.insert-form input[type="text"],
+.insert-form input[type="date"],
+.insert-form input[type="datetime-local"],
+.insert-form input[type="file"],
+.insert-form select,
+.insert-form textarea {
+    padding: 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 10px;
+    background-color: #ecf0f1;
+    box-shadow: inset 2px 2px 5px rgba(0,0,0,0.05),
+                inset -2px -2px 5px rgba(255,255,255,0.6);
+    width: 100%;
+}
+
+/* Submit button */
+.insert-form button[type="submit"] {
+    padding: 15px;
+    background-color: seagreen;
+    color: white;
+    font-weight: bold;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.insert-form button[type="submit"]:hover {
+    background-color: rgb(46, 170, 100);
+}
+
+/* Responsive for mobile */
+@media (max-width: 600px) {
+    .insert-form {
+        padding: 20px;
+    }
+
+    .insert-form h2 {
+        font-size: 30px;
+    }
+}

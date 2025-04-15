@@ -32,11 +32,13 @@ try {
     $stmt = $conn->prepare("
         SELECT transaction_number, transaction_date, transaction_time, transaction_type, total_profit 
         FROM transactions 
-        WHERE transaction_type = ? 
+        WHERE 
+        cust_id = ? AND
+        transaction_type = ? 
         AND transaction_date >= NOW() - " . $timeMap[$time]
     );
 
-    $stmt->bind_param("s", $orderType);
+    $stmt->bind_param("is", $user_id, $orderType);
     $stmt->execute();
     $result = $stmt->get_result();
 

@@ -1,0 +1,149 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.main-container {
+    min-height: 100vh;
+    padding: 80px 20px 40px;
+}
+
+.content-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #2c5f2d;
+    margin-bottom: 40px;
+}
+
+.contact-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 40px;
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.contact-form-section {
+    padding-right: 30px;
+    border-right: 1px solid #eee;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+}
+
+input, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+input:focus, textarea:focus {
+    border-color: #2c5f2d;
+    outline: none;
+}
+
+.submit-btn {
+    background-color: #2c5f2d;
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.submit-btn:hover {
+    background-color: #234824;
+}
+
+.contact-info-section {
+    padding: 20px;
+}
+
+.contact-info-section h2 {
+    color: #2c5f2d;
+    margin-bottom: 30px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    gap: 15px;
+}
+
+.info-item i {
+    color: #2c5f2d;
+    font-size: 20px;
+    width: 24px;
+}
+
+.info-item p {
+    margin: 0;
+    color: #555;
+}
+
+/* Error and success messages */
+.error-message, .success-message {
+    padding: 15px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.error-message {
+    background-color: #fee;
+    color: #c00;
+    border: 1px solid #fcc;
+}
+
+.success-message {
+    background-color: #efe;
+    color: #2c5f2d;
+    border: 1px solid #cfc;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .contact-container {
+        grid-template-columns: 1fr;
+    }
+
+    .contact-form-section {
+        padding-right: 0;
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 30px;
+    }
+
+    .contact-info-section {
+        padding-top: 30px;
+    }
+}
