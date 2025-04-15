@@ -2,20 +2,6 @@
 if (session_status() == PHP_SESSION_NONE) {
     session_start(); // Ensure session is started only once
 }
-require_once __DIR__ . '/../vendor/autoload.php';
-
-// Initialize dotenv
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
-$dotenv->load();
-
-// Validate required variables
-$dotenv->required([
-    'DB_HOST',
-    'DB_NAME',
-    'DB_USER',
-    'DB_PASS',
-    'SECRET_KEY'
-])->notEmpty();
 
 // Get database credentials using $_ENV
 $dbHost = $_ENV['DB_HOST'];
