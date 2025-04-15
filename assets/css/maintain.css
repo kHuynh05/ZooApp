@@ -262,25 +262,6 @@
     background-color: #7f8c8d;
 }
 
-/* Toggle Button */
-.btn-toggle {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.btn-toggle:hover {
-    background-color: rgba(0, 0, 0, 0.4);
-    transform: translateY(-2px);
-}
-
 /* Update Button */
 .btn-update {
     background-color: seagreen;

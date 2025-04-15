@@ -27,11 +27,6 @@ include '../scripts/employeeRole.php';
                 echo "<div class='enclosure-card' data-enclosure-id='{$row['enclosure_id']}'>";
                 echo "<h4>" . htmlspecialchars($row['enclosure_name']) . "</h4>";
                 echo "<p class='status {$statusClass}'>Status: " . ucfirst(htmlspecialchars($row['status'])) . "</p>";
-                echo "<div class='action-buttons'>";
-                echo "<button onclick='toggleEnclosureStatus({$row['enclosure_id']}, \"{$row['status']}\")' class='btn-toggle'>";
-                echo $row['status'] == 'closed' ? 'Open Enclosure' : 'Close Enclosure';
-                echo "</button>";
-                echo "</div>";
                 echo "</div>";
             }
             echo "</div>";
@@ -131,44 +126,6 @@ include '../scripts/employeeRole.php';
 </div>
 
 <script>
-    function toggleEnclosureStatus(enclosureId, currentStatus) {
-        const newStatus = currentStatus === 'closed' ? 'open' : 'closed';
-
-        fetch('../scripts/toggle_enclosure_status.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `enclosure_id=${enclosureId}&new_status=${newStatus}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update the enclosure card instead of reloading
-                    const card = document.querySelector(`[data-enclosure-id="${enclosureId}"]`);
-                    if (card) {
-                        const statusElement = card.querySelector('.status');
-                        const buttonElement = card.querySelector('.btn-toggle');
-
-                        // Update status class and text
-                        statusElement.className = `status status-${newStatus}`;
-                        statusElement.textContent = `Status: ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`;
-
-                        // Update button text
-                        buttonElement.textContent = newStatus === 'closed' ? 'Open Enclosure' : 'Close Enclosure';
-                    }
-                    // Refresh the reports list to show the new status change report
-                    loadMaintenanceReports();
-                } else {
-                    alert(data.message || 'Failed to update status');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while updating the status');
-            });
-    }
-
     function loadMaintenanceReports() {
         fetch('../scripts/get_maintenance_reports.php')
             .then(response => response.json())
@@ -244,8 +201,6 @@ include '../scripts/employeeRole.php';
                 }
             });
     });
-
-    // Remove the updateAnimalCondition function since caretakers can't update conditions
 
     // Load reports when page loads
     document.addEventListener('DOMContentLoaded', loadMaintenanceReports);
