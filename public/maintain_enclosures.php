@@ -36,65 +36,6 @@ include '../scripts/employeeRole.php';
         ?>
     </div>
 
-    <!-- Animal Conditions Section -->
-    <div class="animal-conditions-section">
-        <h3>Animal Health & Mood Status</h3>
-        <?php
-        // Get animals and their conditions from assigned enclosures
-        $sql = "SELECT a.animal_id, a.animal_name, s.species_name, ac.mood, ac.health_status, ac.recorded_at
-                FROM animals a
-                JOIN species s ON a.species_id = s.species_id
-                JOIN enclosures e ON s.enclosure_id = e.enclosure_id
-                JOIN caretaker c ON e.enclosure_id = c.enclosure_id
-                LEFT JOIN (
-                    SELECT ac1.*
-                    FROM animal_conditions ac1
-                    INNER JOIN (
-                        SELECT animal_id, MAX(recorded_at) as max_date
-                        FROM animal_conditions
-                        GROUP BY animal_id
-                    ) ac2 ON ac1.animal_id = ac2.animal_id AND ac1.recorded_at = ac2.max_date
-                ) ac ON a.animal_id = ac.animal_id
-                WHERE c.emp_id = ?
-                ORDER BY e.enclosure_name, a.animal_name";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $emp_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            echo "<div class='animal-conditions-table'>";
-            echo "<table>";
-            echo "<thead><tr>";
-            echo "<th>Animal</th>";
-            echo "<th>Species</th>";
-            echo "<th>Mood</th>";
-            echo "<th>Health Status</th>";
-            echo "<th>Last Updated</th>";
-            echo "</tr></thead><tbody>";
-
-            while ($row = $result->fetch_assoc()) {
-                $moodClass = 'mood-' . strtolower($row['mood'] ?? 'unknown');
-                $healthClass = 'health-' . strtolower($row['health_status'] ?? 'unknown');
-
-                echo "<tr>";
-                echo "<td>" . htmlspecialchars($row['animal_name']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['species_name']) . "</td>";
-                echo "<td class='{$moodClass}'>" . htmlspecialchars($row['mood'] ?? 'Not recorded') . "</td>";
-                echo "<td class='{$healthClass}'>" . htmlspecialchars($row['health_status'] ?? 'Not recorded') . "</td>";
-                echo "<td>" . htmlspecialchars($row['recorded_at'] ?? 'Never') . "</td>";
-                echo "</tr>";
-            }
-
-            echo "</tbody></table>";
-            echo "</div>";
-        } else {
-            echo "<p class='warning'>No animals found in your assigned enclosures.</p>";
-        }
-        ?>
-    </div>
-
     <!-- Maintenance Reports Section -->
     <div class="maintenance-reports-section">
         <h3>Maintenance Reports</h3>
