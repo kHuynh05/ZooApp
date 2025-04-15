@@ -1,5 +1,6 @@
 <?php
 include '../scripts/employeeRole.php';
+include '../config/database.php';  // Add database connection
 
 // Check if user has permission to assign care
 if (!in_array('assign_care', $allowed_actions)) {
@@ -14,17 +15,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $emp_id = $_POST['emp_id'];
         $enclosure_id = $_POST['enclosure_id'];
 
-        $sql = "DELETE FROM caretaker WHERE emp_id = ? AND enclosure_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("ii", $emp_id, $enclosure_id);
+        // Delete the assignment
+        $remove_sql = "DELETE FROM caretaker WHERE emp_id = ? AND enclosure_id = ?";
+        $remove_stmt = $conn->prepare($remove_sql);
+        $remove_stmt->bind_param("ii", $emp_id, $enclosure_id);
 
-        if ($stmt->execute()) {
+        if ($remove_stmt->execute()) {
             $message = "Caretaker assignment removed successfully!";
             $messageClass = "success";
         } else {
-            $message = "Error removing caretaker assignment: " . $stmt->error;
+            $message = "Error removing caretaker assignment: " . $remove_stmt->error;
             $messageClass = "error";
         }
+        $remove_stmt->close();
     } else {
         // Handle assignment
         $emp_id = $_POST['employee_id'];
@@ -87,14 +90,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <div class="content-section">
     <h2>Assign Caretakers to Enclosures</h2>
 
-    <?php if (isset($message)): ?>
-        <div class="message <?php echo $messageClass; ?>">
-            <?php echo htmlspecialchars($message); ?>
-        </div>
-    <?php endif; ?>
+    <div id="message-container" class="message-container"></div>
 
     <div class="assignment-form">
-        <form method="POST" action="">
+        <form id="assignForm" method="POST">
             <div class="form-group">
                 <label for="employee_id">Select Caretaker:</label>
                 <select name="employee_id" id="employee_id" required>
@@ -134,39 +133,79 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Current Assignments Table -->
     <div class="assignments-table">
         <h3>Current Caretaker Assignments</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Caretaker</th>
-                    <th>Enclosure</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                // Get current caretaker assignments
-                $sql = "SELECT c.emp_id, c.enclosure_id, e.emp_name, enc.enclosure_name
-                        FROM caretaker c
-                        JOIN employees e ON c.emp_id = e.emp_id
-                        JOIN enclosures enc ON c.enclosure_id = enc.enclosure_id
-                        ORDER BY e.emp_name";
-                $result = $conn->query($sql);
-                while ($row = $result->fetch_assoc()) {
-                    echo "<tr>";
-                    echo "<td>" . htmlspecialchars($row['emp_name']) . "</td>";
-                    echo "<td>" . htmlspecialchars($row['enclosure_name']) . "</td>";
-                    echo "<td>
-                            <form method='POST' action='' style='display:inline;'>
-                                <input type='hidden' name='action' value='remove'>
-                                <input type='hidden' name='emp_id' value='" . $row['emp_id'] . "'>
-                                <input type='hidden' name='enclosure_id' value='" . $row['enclosure_id'] . "'>
-                                <button type='submit' class='btn-cancel'>Remove</button>
-                            </form>
-                          </td>";
-                    echo "</tr>";
-                }
-                ?>
-            </tbody>
-        </table>
+        <div id="assignmentsTableContainer">
+            <?php include '../scripts/get_assignments.php'; ?>
+        </div>
     </div>
 </div>
+
+<script>
+    // Function to show message
+    function showMessage(message, isSuccess) {
+        const messageContainer = document.getElementById('message-container');
+        messageContainer.innerHTML = `
+            <div class="message ${isSuccess ? 'success' : 'error'}">
+                ${message}
+            </div>
+        `;
+        // Remove message after 5 seconds
+        setTimeout(() => {
+            messageContainer.innerHTML = '';
+        }, 5000);
+    }
+
+    // Function to refresh assignments table
+    function refreshAssignments() {
+        fetch('../scripts/get_assignments.php')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('assignmentsTableContainer').innerHTML = html;
+            });
+    }
+
+    // Handle assign form submission
+    document.getElementById('assignForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+
+        fetch('../scripts/handle_assign.php', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                showMessage(data.message, data.success);
+                if (data.success) {
+                    this.reset();
+                    refreshAssignments();
+                }
+            })
+            .catch(error => {
+                showMessage('An error occurred while processing your request.', false);
+            });
+    });
+
+    // Handle remove buttons
+    document.addEventListener('click', function(e) {
+        if (e.target.matches('.btn-cancel')) {
+            e.preventDefault();
+            const form = e.target.closest('form');
+            const formData = new FormData(form);
+
+            fetch('../scripts/handle_assign.php', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showMessage(data.message, data.success);
+                    if (data.success) {
+                        refreshAssignments();
+                    }
+                })
+                .catch(error => {
+                    showMessage('An error occurred while processing your request.', false);
+                });
+        }
+    });
+</script>

@@ -27,75 +27,11 @@ include '../scripts/employeeRole.php';
                 echo "<div class='enclosure-card' data-enclosure-id='{$row['enclosure_id']}'>";
                 echo "<h4>" . htmlspecialchars($row['enclosure_name']) . "</h4>";
                 echo "<p class='status {$statusClass}'>Status: " . ucfirst(htmlspecialchars($row['status'])) . "</p>";
-                echo "<div class='action-buttons'>";
-                echo "<button onclick='toggleEnclosureStatus({$row['enclosure_id']}, \"{$row['status']}\")' class='btn-toggle'>";
-                echo $row['status'] == 'closed' ? 'Open Enclosure' : 'Close Enclosure';
-                echo "</button>";
-                echo "</div>";
                 echo "</div>";
             }
             echo "</div>";
         } else {
             echo "<p class='warning'>You have no assigned enclosures. Please contact your supervisor.</p>";
-        }
-        ?>
-    </div>
-
-    <!-- Animal Conditions Section -->
-    <div class="animal-conditions-section">
-        <h3>Animal Health & Mood Status</h3>
-        <?php
-        // Get animals and their conditions from assigned enclosures
-        $sql = "SELECT a.animal_id, a.animal_name, s.species_name, ac.mood, ac.health_status, ac.recorded_at
-                FROM animals a
-                JOIN species s ON a.species_id = s.species_id
-                JOIN enclosures e ON s.enclosure_id = e.enclosure_id
-                JOIN caretaker c ON e.enclosure_id = c.enclosure_id
-                LEFT JOIN (
-                    SELECT ac1.*
-                    FROM animal_conditions ac1
-                    INNER JOIN (
-                        SELECT animal_id, MAX(recorded_at) as max_date
-                        FROM animal_conditions
-                        GROUP BY animal_id
-                    ) ac2 ON ac1.animal_id = ac2.animal_id AND ac1.recorded_at = ac2.max_date
-                ) ac ON a.animal_id = ac.animal_id
-                WHERE c.emp_id = ?
-                ORDER BY e.enclosure_name, a.animal_name";
-
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $emp_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
-        if ($result->num_rows > 0) {
-            echo "<div class='animal-conditions-table'>";
-            echo "<table>";
-            echo "<thead><tr>";
-            echo "<th>Animal</th>";
-            echo "<th>Species</th>";
-            echo "<th>Mood</th>";
-            echo "<th>Health Status</th>";
-            echo "<th>Last Updated</th>";
-            echo "</tr></thead><tbody>";
-
-            while ($row = $result->fetch_assoc()) {
-                $moodClass = 'mood-' . strtolower($row['mood'] ?? 'unknown');
-                $healthClass = 'health-' . strtolower($row['health_status'] ?? 'unknown');
-
-                echo "<tr>";
-                echo "<td>" . htmlspecialchars($row['animal_name']) . "</td>";
-                echo "<td>" . htmlspecialchars($row['species_name']) . "</td>";
-                echo "<td class='{$moodClass}'>" . htmlspecialchars($row['mood'] ?? 'Not recorded') . "</td>";
-                echo "<td class='{$healthClass}'>" . htmlspecialchars($row['health_status'] ?? 'Not recorded') . "</td>";
-                echo "<td>" . htmlspecialchars($row['recorded_at'] ?? 'Never') . "</td>";
-                echo "</tr>";
-            }
-
-            echo "</tbody></table>";
-            echo "</div>";
-        } else {
-            echo "<p class='warning'>No animals found in your assigned enclosures.</p>";
         }
         ?>
     </div>
@@ -131,44 +67,6 @@ include '../scripts/employeeRole.php';
 </div>
 
 <script>
-    function toggleEnclosureStatus(enclosureId, currentStatus) {
-        const newStatus = currentStatus === 'closed' ? 'open' : 'closed';
-
-        fetch('../scripts/toggle_enclosure_status.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                },
-                body: `enclosure_id=${enclosureId}&new_status=${newStatus}`
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Update the enclosure card instead of reloading
-                    const card = document.querySelector(`[data-enclosure-id="${enclosureId}"]`);
-                    if (card) {
-                        const statusElement = card.querySelector('.status');
-                        const buttonElement = card.querySelector('.btn-toggle');
-
-                        // Update status class and text
-                        statusElement.className = `status status-${newStatus}`;
-                        statusElement.textContent = `Status: ${newStatus.charAt(0).toUpperCase() + newStatus.slice(1)}`;
-
-                        // Update button text
-                        buttonElement.textContent = newStatus === 'closed' ? 'Open Enclosure' : 'Close Enclosure';
-                    }
-                    // Refresh the reports list to show the new status change report
-                    loadMaintenanceReports();
-                } else {
-                    alert(data.message || 'Failed to update status');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while updating the status');
-            });
-    }
-
     function loadMaintenanceReports() {
         fetch('../scripts/get_maintenance_reports.php')
             .then(response => response.json())
@@ -244,8 +142,6 @@ include '../scripts/employeeRole.php';
                 }
             });
     });
-
-    // Remove the updateAnimalCondition function since caretakers can't update conditions
 
     // Load reports when page loads
     document.addEventListener('DOMContentLoaded', loadMaintenanceReports);

@@ -34,11 +34,11 @@
                 -5px -5px 10px rgba(255, 255, 255, 0.8);
 }
 
-.form-group {
+.assignment-form .form-group {
     margin-bottom: 1.5rem;
 }
 
-.form-group label {
+.assignment-form .form-group label {
     display: block;
     color: seagreen;
     font-size: 1.2rem;
@@ -46,7 +46,7 @@
     font-weight: bold;
 }
 
-.form-group select {
+.assignment-form .form-group select {
     width: 100%;
     padding: 15px;
     border: 2px solid #e9ecef;
@@ -56,14 +56,14 @@
     transition: all 0.3s ease;
 }
 
-.form-group select:focus {
+.assignment-form .form-group select:focus {
     outline: none;
     border-color: seagreen;
     box-shadow: 0 0 0 3px rgba(46, 139, 87, 0.1);
 }
 
-/* Buttons */
-.btn-submit {
+/* Button Styles */
+.assignment-form .btn-submit {
     background-color: seagreen;
     color: white;
     padding: 15px 30px;
@@ -77,13 +77,13 @@
     margin-top: 20px;
 }
 
-.btn-submit:hover {
+.assignment-form .btn-submit:hover {
     background-color: darkseagreen;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(46, 139, 87, 0.3);
 }
 
-.btn-cancel {
+.assignments-table .btn-cancel {
     background-color: #95a5a6;
     color: white;
     padding: 10px 20px;
@@ -92,9 +92,13 @@
     font-size: 1rem;
     cursor: pointer;
     transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    min-width: 100px;
 }
 
-.btn-cancel:hover {
+.assignments-table .btn-cancel:hover {
     background-color: #7f8c8d;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
@@ -141,12 +145,16 @@
 }
 
 /* Message Styles */
-.message {
+.message-container {
     margin: 20px 50px;
+}
+
+.message {
     padding: 15px;
     border-radius: 10px;
     text-align: center;
     font-weight: bold;
+    margin-bottom: 20px;
 }
 
 .message.success {
@@ -191,7 +199,7 @@
         font-size: 24px;
     }
 
-    .form-group select {
+    .assignment-form .form-group select {
         font-size: 16px;
     }
 } 
