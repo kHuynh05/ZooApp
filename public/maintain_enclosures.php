@@ -235,10 +235,16 @@ include '../scripts/employeeRole.php';
             });
     });
 
-    // Add resolution form submission handler
+    // Update the resolution form submission handler in maintain_enclosures.php
     document.getElementById('reportResolutionForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const formData = new FormData(this);
+
+        // Log the data being sent (for debugging)
+        console.log('Submitting resolution:', {
+            report_id: formData.get('report_id'),
+            resolution_note: formData.get('resolution_note')
+        });
 
         fetch('../scripts/complete_report.php', {
                 method: 'POST',
