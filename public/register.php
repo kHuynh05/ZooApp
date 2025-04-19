@@ -95,7 +95,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($stmt_member = $conn->prepare($sql_member)) {
             // Bind parameters for member table
             $membership_status = 'active';
-            $reward_points = 500;
+            // Set reward points to 0 for free membership, 500 for paid memberships
+            $reward_points = ($membership_type === 'Free') ? 0 : 500;
             $stmt_member->bind_param(
                 "isssssi",
                 $cust_id,
@@ -103,7 +104,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $membership_start_date,
                 $membership_end_date,
                 $membership_type,
-                $membership_status, // Membership is active by default
+                $membership_status,
                 $reward_points
             );
 
@@ -112,18 +113,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Get the membership type and corresponding price
                 $membership_type = $_POST['membership_type'];
                 $basePrices = array(
+                    "Free" => 0,
                     "Standard" => 70,
                     "Premium" => 120,
                     "Vip" => 150
                 );
                 $amount = $basePrices[$membership_type];
-                
+
                 // Insert transaction record
                 $current_date = date('Y-m-d');
                 $current_time = date('H:i:s');
                 $type = "registration";
                 $sql_transaction = "INSERT INTO transactions (transaction_date, transaction_time, cust_id, total_profit, transaction_type) VALUES (?, ?, ?, ?, ?)";
-                
+
                 if ($stmt_transaction = $conn->prepare($sql_transaction)) {
                     $stmt_transaction->bind_param("ssids", $current_date, $current_time, $cust_id, $amount, $type);
                     $stmt_transaction->execute();
@@ -216,59 +218,59 @@ $conn->close();
                 <div class="form-group">
                     <label for="state">State</label>
                     <select id="state" name="state" required>
-        <option value="">Select State</option>
-        <option value="AL">Alabama</option>
-        <option value="AK">Alaska</option>
-        <option value="AZ">Arizona</option>
-        <option value="AR">Arkansas</option>
-        <option value="CA">California</option>
-        <option value="CO">Colorado</option>
-        <option value="CT">Connecticut</option>
-        <option value="DE">Delaware</option>
-        <option value="DC">District Of Columbia</option>
-        <option value="FL">Florida</option>
-        <option value="GA">Georgia</option>
-        <option value="HI">Hawaii</option>
-        <option value="ID">Idaho</option>
-        <option value="IL">Illinois</option>
-        <option value="IN">Indiana</option>
-        <option value="IA">Iowa</option>
-        <option value="KS">Kansas</option>
-        <option value="KY">Kentucky</option>
-        <option value="LA">Louisiana</option>
-        <option value="ME">Maine</option>
-        <option value="MD">Maryland</option>
-        <option value="MA">Massachusetts</option>
-        <option value="MI">Michigan</option>
-        <option value="MN">Minnesota</option>
-        <option value="MS">Mississippi</option>
-        <option value="MO">Missouri</option>
-        <option value="MT">Montana</option>
-        <option value="NE">Nebraska</option>
-        <option value="NV">Nevada</option>
-        <option value="NH">New Hampshire</option>
-        <option value="NJ">New Jersey</option>
-        <option value="NM">New Mexico</option>
-        <option value="NY">New York</option>
-        <option value="NC">North Carolina</option>
-        <option value="ND">North Dakota</option>
-        <option value="OH">Ohio</option>
-        <option value="OK">Oklahoma</option>
-        <option value="OR">Oregon</option>
-        <option value="PA">Pennsylvania</option>
-        <option value="RI">Rhode Island</option>
-        <option value="SC">South Carolina</option>
-        <option value="SD">South Dakota</option>
-        <option value="TN">Tennessee</option>
-        <option value="TX">Texas</option>
-        <option value="UT">Utah</option>
-        <option value="VT">Vermont</option>
-        <option value="VA">Virginia</option>
-        <option value="WA">Washington</option>
-        <option value="WV">West Virginia</option>
-        <option value="WI">Wisconsin</option>
-        <option value="WY">Wyoming</option>
-    </select>
+                        <option value="">Select State</option>
+                        <option value="AL">Alabama</option>
+                        <option value="AK">Alaska</option>
+                        <option value="AZ">Arizona</option>
+                        <option value="AR">Arkansas</option>
+                        <option value="CA">California</option>
+                        <option value="CO">Colorado</option>
+                        <option value="CT">Connecticut</option>
+                        <option value="DE">Delaware</option>
+                        <option value="DC">District Of Columbia</option>
+                        <option value="FL">Florida</option>
+                        <option value="GA">Georgia</option>
+                        <option value="HI">Hawaii</option>
+                        <option value="ID">Idaho</option>
+                        <option value="IL">Illinois</option>
+                        <option value="IN">Indiana</option>
+                        <option value="IA">Iowa</option>
+                        <option value="KS">Kansas</option>
+                        <option value="KY">Kentucky</option>
+                        <option value="LA">Louisiana</option>
+                        <option value="ME">Maine</option>
+                        <option value="MD">Maryland</option>
+                        <option value="MA">Massachusetts</option>
+                        <option value="MI">Michigan</option>
+                        <option value="MN">Minnesota</option>
+                        <option value="MS">Mississippi</option>
+                        <option value="MO">Missouri</option>
+                        <option value="MT">Montana</option>
+                        <option value="NE">Nebraska</option>
+                        <option value="NV">Nevada</option>
+                        <option value="NH">New Hampshire</option>
+                        <option value="NJ">New Jersey</option>
+                        <option value="NM">New Mexico</option>
+                        <option value="NY">New York</option>
+                        <option value="NC">North Carolina</option>
+                        <option value="ND">North Dakota</option>
+                        <option value="OH">Ohio</option>
+                        <option value="OK">Oklahoma</option>
+                        <option value="OR">Oregon</option>
+                        <option value="PA">Pennsylvania</option>
+                        <option value="RI">Rhode Island</option>
+                        <option value="SC">South Carolina</option>
+                        <option value="SD">South Dakota</option>
+                        <option value="TN">Tennessee</option>
+                        <option value="TX">Texas</option>
+                        <option value="UT">Utah</option>
+                        <option value="VT">Vermont</option>
+                        <option value="VA">Virginia</option>
+                        <option value="WA">Washington</option>
+                        <option value="WV">West Virginia</option>
+                        <option value="WI">Wisconsin</option>
+                        <option value="WY">Wyoming</option>
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="zip_code">Zip Code</label>
@@ -282,8 +284,8 @@ $conn->close();
             <div class="form-group">
                 <label for="dob">Date of Birth</label>
 
-                <input type="date" id="dob" name="date_of_birth" 
-                        max="<?php echo date('Y-m-d'); ?>" required>
+                <input type="date" id="dob" name="date_of_birth"
+                    max="<?php echo date('Y-m-d'); ?>" required>
             </div>
             <div class="form-group">
                 <label for="gender">Gender</label>
@@ -304,17 +306,17 @@ $conn->close();
             <div class="form-group">
                 <label for="password">Password</label>
                 <div class="password-input-group">
-                   <input type="password" id="password" name="cust_password" required>
-                   <i class="fas fa-eye password-toggle" onclick="togglePassword('password')"></i>
+                    <input type="password" id="password" name="cust_password" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('password')"></i>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="confirmpassword">Confirm Password</label>
                 <div class="password-input-group">
-                   <input type="password" id="confirmpassword" name="confirm_password" required>
-                   <i class="fas fa-eye password-toggle" onclick="togglePassword('confirmpassword')"></i> 
-               </div>
+                    <input type="password" id="confirmpassword" name="confirm_password" required>
+                    <i class="fas fa-eye password-toggle" onclick="togglePassword('confirmpassword')"></i>
+                </div>
             </div>
 
             <!-- Address Section -->
@@ -329,6 +331,7 @@ $conn->close();
                     <option value="Standard">Standard</option>
                     <option value="Premium">Premium</option>
                     <option value="Vip">VIP</option>
+                    <option value="Free">Free</option>
                 </select>
             </div>
             <div id="membershipInfo">
@@ -346,10 +349,10 @@ $conn->close();
             <div class="payment-summary">
                 <h3>Registration Summary:</h3>
                 <div class="membership-details">
-                    <p><strong>Membership Type:</strong> <span id="selected-type">Standard</span></p>
-                    <p><strong>Base Price:</strong> <span id="total-base-price">$70.00</span></p>
-                    <p><strong>Initial Registration Bonus:</strong> 500 points</p>
-                    <p><strong>Total Cost:</strong> <span id="total-cost">$70.00</span></p>
+                    <p><strong>Membership Type:</strong> <span id="selected-type">Free</span></p>
+                    <p><strong>Base Price:</strong> <span id="total-base-price">$0.00</span></p>
+                    <p><strong>Initial Registration Bonus:</strong> <span id="registration-bonus">0 points</span></p>
+                    <p><strong>Total Cost:</strong> <span id="total-cost">$0.00</span></p>
                 </div>
             </div>
             <button type="submit">Complete Registration</button>
@@ -514,7 +517,7 @@ $conn->close();
     function showTab(step) {
         // Get current active tab number
         var currentTab = document.querySelector('.tab.active').textContent.match(/\d+/)[0];
-        
+
         // If trying to go to next tab, validate current tab first
         if (step > currentTab && !canProceedToNextTab(currentTab)) {
             return;
@@ -529,7 +532,7 @@ $conn->close();
         // Show the selected tab content and add 'active' class to clicked tab
         document.getElementById('step' + step).classList.add('active');
         tabs[step - 1].classList.add('active');
-        
+
         hideError();
     }
 
@@ -537,75 +540,82 @@ $conn->close();
     document.getElementById("registration-form").onsubmit = validateForm;
 </script>
 <script>
-function togglePassword(inputId) {
-    const input = document.getElementById(inputId);
-    const icon = input.nextElementSibling;
-    
-    if (input.type === "password") {
-        input.type = "text";
-        icon.classList.remove("fa-eye");
-        icon.classList.add("fa-eye-slash");
-    } else {
-        input.type = "password";
-        icon.classList.remove("fa-eye-slash");
-        icon.classList.add("fa-eye");
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const icon = input.nextElementSibling;
+
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("fa-eye");
+            icon.classList.add("fa-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("fa-eye-slash");
+            icon.classList.add("fa-eye");
+        }
     }
-}
 </script>
 <script>
-function updateMembershipInfo() {
-    var select = document.getElementById("membership");
-    var div = document.getElementById("membershipInfo");
-    var selectedOption = select.value;
-    
-    // Base prices for each membership type
-    const basePrices = {
-        "Standard": 70,
-        "Premium": 120,
-        "Vip": 150
-    };
+    function updateMembershipInfo() {
+        var select = document.getElementById("membership");
+        var div = document.getElementById("membershipInfo");
+        var selectedOption = select.value;
 
-    // Update the display content
-    if (selectedOption === "Standard") {
-        div.innerHTML = "<h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a 15% discounted price. Applies to one person</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>";
-    } else if (selectedOption === "Premium") {
-        div.innerHTML = "<h3>Perfect for families! This membership includes a 25% discount, offering a cost-effective way to enjoy the zoo together.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
-    } else if (selectedOption === "Vip") {
-        div.innerHTML = "<h3>Experience the zoo like never before! VIP members get a 40% discount, access to exclusive events, behind-the-scenes tours, and discounts on tickets, food, and gift shop purchases.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
+        // Base prices for each membership type
+        const basePrices = {
+            "Standard": 70,
+            "Premium": 120,
+            "Vip": 150,
+            "Free": 0
+        };
+
+        // Update the display content
+        if (selectedOption === "Free") {
+            div.innerHTML = "<h3>Basic membership with access to purchase tickets at regular prices. No discounts or reward points available.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'></div>";
+        } else if (selectedOption === "Standard") {
+            div.innerHTML = "<h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a 15% discounted price. Applies to one person</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>";
+        } else if (selectedOption === "Premium") {
+            div.innerHTML = "<h3>Perfect for families! This membership includes a 25% discount, offering a cost-effective way to enjoy the zoo together.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
+        } else if (selectedOption === "Vip") {
+            div.innerHTML = "<h3>Experience the zoo like never before! VIP members get a 40% discount, access to exclusive events, behind-the-scenes tours, and discounts on tickets, food, and gift shop purchases.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='adult' src='../assets/img/adult.png' alt='adult' width='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
+        }
+
+        // Update both price displays
+        document.getElementById("base-price").textContent = `$${basePrices[selectedOption].toFixed(2)}`;
+        document.getElementById("selected-type").textContent = selectedOption;
+        document.getElementById("total-base-price").textContent = `$${basePrices[selectedOption].toFixed(2)}`;
+        document.getElementById("total-cost").textContent = `$${basePrices[selectedOption].toFixed(2)}`;
+
+        // Update registration bonus display
+        const registrationBonus = selectedOption === 'Free' ? '0 points' : '500 points';
+        document.getElementById("registration-bonus").textContent = registrationBonus;
     }
 
-    // Update both price displays
-    document.getElementById("base-price").textContent = `$${basePrices[selectedOption].toFixed(2)}`;
-    document.getElementById("selected-type").textContent = selectedOption;
-    document.getElementById("total-base-price").textContent = `$${basePrices[selectedOption].toFixed(2)}`;
-    document.getElementById("total-cost").textContent = `$${basePrices[selectedOption].toFixed(2)}`;
-}
-
-// Call updateMembershipInfo on page load to set initial values
-document.addEventListener('DOMContentLoaded', function() {
-    updateMembershipInfo();
-});
+    // Call updateMembershipInfo on page load to set initial values
+    document.addEventListener('DOMContentLoaded', function() {
+        updateMembershipInfo();
+    });
 </script>
 
 <style>
-.payment-summary {
-    background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    margin-top: 20px;
-}
+    .payment-summary {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-top: 20px;
+    }
 
-.membership-details {
-    margin-top: 15px;
-}
+    .membership-details {
+        margin-top: 15px;
+    }
 
-.membership-details p {
-    margin: 10px 0;
-    font-size: 16px;
-}
+    .membership-details p {
+        margin: 10px 0;
+        font-size: 16px;
+    }
 
-.membership-details strong {
-    display: inline-block;
-    width: 200px;
-}
+    .membership-details strong {
+        display: inline-block;
+        width: 200px;
+    }
 </style>

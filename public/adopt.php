@@ -39,7 +39,8 @@ foreach ($animals as $animal) {
                 $default_plush = 'A specially designed habitat providing a natural environment for our animals.';
 
                 $image = isset($animals_info[$species_name]) ? $animals_info[$species_name]['image'] : $default_img;
-                $plush = isset($animals_info[$species_name]) ? $animals_info[$species_name]['plush'] : $default_plush;
+            
+                $plush = isset($animals_info[$species_name]) ? $animals_info[$species_name]['species_plush'] : $default_plush;
                 ?>
                 <h1 class = "frontpage-main"><b>Adopt an Animal at Zootopia!</b></h1>
                 <span class = "adopt-info">At <b>Zootopia</b>, we believe that every animal deserves love, care, and a thriving habitat. 

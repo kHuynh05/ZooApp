@@ -1,0 +1,176 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Hero Section */
+.hero-section {
+    background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('../img/zoo-hero.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    text-align: center;
+    padding: 100px 20px;
+}
+
+.hero-section h1 {
+    font-size: 3em;
+    margin-bottom: 20px;
+}
+
+/* Section Styles */
+section {
+    margin: 60px 0;
+    padding: 40px 0;
+}
+
+section h2 {
+    text-align: center;
+    margin-bottom: 40px;
+    color: #333;
+}
+
+/* Membership Cards */
+.membership-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    padding: 20px;
+}
+
+.membership-card {
+    background: white;
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.membership-card:hover {
+    transform: translateY(-10px);
+}
+
+.membership-card.featured {
+    border: 2px solid #4CAF50;
+    position: relative;
+}
+
+.membership-card h3 {
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.price {
+    font-size: 1.8em;
+    color: #4CAF50;
+    margin: 20px 0;
+}
+
+.membership-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.membership-card ul li {
+    margin: 10px 0;
+    color: #666;
+}
+
+/* Donation Section */
+.donation-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.donation-card {
+    background: #f9f9f9;
+    padding: 30px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+/* Events Section */
+.events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+.event-card {
+    display: flex;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+}
+
+.event-date {
+    background: #4CAF50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.event-date .month {
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.event-date .day {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.event-details {
+    padding: 20px;
+}
+
+/* Buttons */
+.cta-button {
+    background: #4CAF50;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 15px;
+    transition: background 0.3s ease;
+}
+
+.cta-button:hover {
+    background: #45a049;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .membership-cards,
+    .donation-options,
+    .events-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .event-card {
+        flex-direction: column;
+    }
+
+    .event-date {
+        padding: 10px;
+    }
+}
