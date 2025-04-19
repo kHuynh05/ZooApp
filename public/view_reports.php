@@ -29,7 +29,7 @@ $reports_query = "SELECT
     LEFT JOIN employees e1 ON r.creator_id = e1.emp_id
     LEFT JOIN employees e2 ON r.assigned_id = e2.emp_id
     LEFT JOIN enclosures enc ON r.enclosure_id = enc.enclosure_id
-    LEFT JOIN manager_notifications mn ON r.report_id = mn.report_id
+    LEFT JOIN manager_notifications mn ON r.report_id = mn.report_id AND mn.handled = 0
     ORDER BY 
         CASE WHEN mn.handled = 0 THEN 0 ELSE 1 END,
         r.report_datetime DESC";

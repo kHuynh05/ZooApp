@@ -3,26 +3,46 @@ function checkNewNotifications() {
     fetch('../scripts/check_notifications.php')
         .then(response => response.json())
         .then(data => {
-            if (data.new_notifications) {
-                location.reload();
+            console.log('Notification check:', data); // Debug log
+            if (data.success && data.new_notifications) {
+                // If we have notifications, update the UI
+                if (data.notifications && data.notifications.length > 0) {
+                    // Refresh the page to show new notifications
+                    location.reload();
+                }
             }
+        })
+        .catch(error => {
+            console.error('Error checking notifications:', error);
         });
 }
 
 // Show assignment modal
 function showAssignmentModal(data) {
+    console.log('Assignment modal data:', data); // Debug log
+    
     document.getElementById('modalReportId').textContent = data.reportId;
     document.getElementById('modalEnclosureName').textContent = data.enclosureName;
     document.getElementById('reportId').value = data.reportId;
     document.getElementById('enclosureId').value = data.enclosureId;
     
-    loadCaretakersForEnclosure(data.enclosureId, data.suggestedId);
+    const suggestedSection = document.getElementById('suggestedCaretakerSection');
     
+    // Only show suggested section if we have a suggested ID
+    if (data.suggestedId) {
+        suggestedSection.style.display = 'block';
+    } else {
+        suggestedSection.style.display = 'none';
+    }
+    
+    loadCaretakersForEnclosure(data.enclosureId, data.suggestedId);
     document.getElementById('assignmentModal').style.display = 'block';
 }
 
 // Load caretakers for the enclosure
 function loadCaretakersForEnclosure(enclosureId, suggestedId) {
+    console.log('Loading caretakers:', { enclosureId, suggestedId }); // Debug log
+    
     fetch(`../scripts/get_enclosure_caretakers.php?enclosure_id=${enclosureId}`)
         .then(response => response.json())
         .then(caretakers => {
@@ -33,7 +53,9 @@ function loadCaretakersForEnclosure(enclosureId, suggestedId) {
                 const option = document.createElement('option');
                 option.value = caretaker.emp_id;
                 option.textContent = `${caretaker.emp_name} (${caretaker.ongoing_reports} ongoing reports)`;
-                if (caretaker.emp_id === suggestedId) {
+                
+                // Convert both to numbers for comparison
+                if (Number(caretaker.emp_id) === Number(suggestedId)) {
                     option.classList.add('suggested');
                     document.getElementById('suggestedCaretakerName').textContent = caretaker.emp_name;
                     document.getElementById('suggestedCaretakerWorkload').textContent = 
@@ -42,12 +64,14 @@ function loadCaretakersForEnclosure(enclosureId, suggestedId) {
                 select.appendChild(option);
             });
 
+            // Set the selected value if we have a suggested ID
             if (suggestedId) {
                 select.value = suggestedId;
                 document.getElementById('suggestedCaretakerSection').style.display = 'block';
-            } else {
-                document.getElementById('suggestedCaretakerSection').style.display = 'none';
             }
+        })
+        .catch(error => {
+            console.error('Error loading caretakers:', error);
         });
 }
 
