@@ -56,10 +56,11 @@ $new_end_date = date('Y-m-d', strtotime('+1 year'));
 
 // Check for discount based on the renewal status (on time renewal gets a discount)
 $current_date = new DateTime();  // Current date
-$discount = ($current_date <= new DateTime($membership_end_date)) ? 0.25 : 0;  // Apply 25% discount if renewing on time
+$discount = ($current_date <= new DateTime($membership_end_date) && $membership_type !== "Free") ? 0.25 : 0;
 
 // Define the base prices for each membership type
 $basePrices = array(
+    "Free"=>0,
     "Standard" => 70,
     "Premium" => 120,
     "Vip" => 150
@@ -68,8 +69,12 @@ $basePrices = array(
 // Calculate the renewal amount with discount applied
 $amount = $basePrices[$membership_type] * (1 - $discount);
 
-// Add 500 reward points for renewing the membership
-$new_points = $current_points + 500;
+// Add reward points only for paid memberships
+if ($membership_type !== "Free") {
+    $new_points = $current_points + 500;
+} else {
+    $new_points = 0;
+}
 
 // Update the membership details in the database
 $query = "UPDATE members 
