@@ -75,6 +75,9 @@ $reports_result = $conn->query($reports_query);
         <!-- Staff Reports Section (new section) -->
         <section class="reports-section">
             <h2>Staff Reports</h2>
+            <div class="report-actions">
+                <button onclick="showNewReportForm()" class="create-report-btn">Create New Report</button>
+            </div>
             <div class="reports-list">
                 <table class="reports-table">
                     <thead>
@@ -169,6 +172,50 @@ $reports_result = $conn->query($reports_query);
                 <div class="form-actions">
                     <button type="submit" class="btn-submit">Assign Report</button>
                     <button type="button" class="btn-cancel" onclick="hideAssignmentModal()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- New Report Modal -->
+    <div id="newReportModal" class="modal">
+        <div class="modal-content">
+            <h3>Create New Report</h3>
+            <form id="newReportForm">
+                <input type="hidden" name="creator_id" value="<?php echo $_SESSION['emp_id']; ?>">
+
+                <div class="form-group">
+                    <label for="reportEnclosure">Select Enclosure:</label>
+                    <select id="reportEnclosure" name="enclosure_id" required onchange="loadCaretakersForNewReport(this.value)">
+                        <option value="">Choose an enclosure...</option>
+                        <?php
+                        $enclosures_query = "SELECT enclosure_id, enclosure_name FROM enclosures ORDER BY enclosure_name";
+                        $enclosures_result = $conn->query($enclosures_query);
+                        while ($enclosure = $enclosures_result->fetch_assoc()) {
+                            echo "<option value='" . $enclosure['enclosure_id'] . "'>" .
+                                htmlspecialchars($enclosure['enclosure_name']) . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="reportCaretaker">Assign to Caretaker:</label>
+                    <select id="reportCaretaker" name="assigned_id" required>
+                        <option value="">First select an enclosure...</option>
+                    </select>
+                    <p class="workload-info" id="newReportCaretakerWorkload"></p>
+                </div>
+
+                <div class="form-group">
+                    <label for="reportDetails">Report Details:</label>
+                    <textarea id="reportDetails" name="report_details" rows="4" maxlength="200" required></textarea>
+                    <small class="char-count">0/200 characters</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-submit">Submit Report</button>
+                    <button type="button" class="btn-cancel" onclick="hideNewReportForm()">Cancel</button>
                 </div>
             </form>
         </div>
