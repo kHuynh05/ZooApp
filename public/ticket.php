@@ -103,7 +103,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                 ];
 
                                 foreach ($tickets_info as $type => $info):
-                                    $discounted_price = $is_member ? $info['price'] * (1 - $member_discount) : $info['price'];
+                                    // Only apply discount if member has paid membership
+                                    $discounted_price = ($is_member && $membership_type !== 'Free') ?
+                                        $info['price'] * (1 - $member_discount) :
+                                        $info['price'];
                                     $current_count = isset($ticket_counts[$type]) ? $ticket_counts[$type] : 0;
                                 ?>
                                     <div class='ticket-type'>

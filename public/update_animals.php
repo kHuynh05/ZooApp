@@ -77,7 +77,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $species_id = $_POST['species_id'];
 
                 // Check if there are any animals of this species
-                $check_sql = "SELECT COUNT(*) as count FROM animals WHERE species_id = ?";
+                $check_sql = "SELECT COUNT(*) as count FROM animals WHERE species_id = ? AND deleted = 0";
                 $check_stmt = $conn->prepare($check_sql);
                 $check_stmt->bind_param("i", $species_id);
                 $check_stmt->execute();
@@ -88,7 +88,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     $message = "Cannot remove species: There are still animals of this species in the zoo.";
                     $messageClass = "error";
                 } else {
-                    $sql = "DELETE FROM species WHERE species_id = ?";
+                    // Only proceed with deletion if no animals exist
+                    $sql = "UPDATE species SET deleted = 1 WHERE species_id = ?";
                     $stmt = $conn->prepare($sql);
                     $stmt->bind_param("i", $species_id);
 
@@ -100,6 +101,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $messageClass = "error";
                     }
                 }
+                $check_stmt->close();
                 break;
 
             case 'add_animal':
@@ -134,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $stmt->execute();
 
                 // Then delete the animal
-                $sql = "DELETE FROM animals WHERE animal_id = ?";
+                $sql = "UPDATE animals SET deleted = 1 WHERE animal_id = ?";
                 $stmt = $conn->prepare($sql);
                 $stmt->bind_param("i", $animal_id);
 
@@ -254,7 +256,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <select name="species_id" required>
                     <option value="">Select a species</option>
                     <?php
-                    $sql = "SELECT species_id, species_name FROM species";
+                    $sql = "SELECT species_id, species_name FROM species WHERE deleted = 0 ORDER BY species_name";
                     $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) {
                         echo "<option value='" . $row['species_id'] . "'>" .
@@ -285,7 +287,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php
                     $sql = "SELECT s.*, e.enclosure_name 
                             FROM species s 
-                            JOIN enclosures e ON s.enclosure_id = e.enclosure_id AND s.deleted = 0";
+                            JOIN enclosures e ON s.enclosure_id = e.enclosure_id AND s.deleted = 0
+                            ORDER BY s.species_name";
                     $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";
@@ -327,7 +330,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <?php
                     $sql = "SELECT a.*, s.species_name 
                             FROM animals a 
-                            JOIN species s ON a.species_id = s.species_id AND a.deleted = 0";
+                            JOIN species s ON a.species_id = s.species_id AND a.deleted = 0
+                            ORDER BY a.animal_name";
                     $result = $conn->query($sql);
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>";

@@ -12,18 +12,18 @@ include '../scripts/employeeRole.php';
         <?php
         // Get caretaker's assigned enclosures
         $emp_id = $_SESSION['emp_id'];
-        $sql = "SELECT e.enclosure_id, e.enclosure_name 
+        $enclosure_sql = "SELECT e.enclosure_id, e.enclosure_name 
                 FROM enclosures e 
                 JOIN caretaker c ON e.enclosure_id = c.enclosure_id 
                 WHERE c.emp_id = ?";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("i", $emp_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
+        $enclosure_stmt = $conn->prepare($enclosure_sql);
+        $enclosure_stmt->bind_param("i", $emp_id);
+        $enclosure_stmt->execute();
+        $enclosure_result = $enclosure_stmt->get_result();
 
-        if ($result->num_rows > 0) {
+        if ($enclosure_result->num_rows > 0) {
             echo "<ul class='enclosure-list'>";
-            while ($row = $result->fetch_assoc()) {
+            while ($row = $enclosure_result->fetch_assoc()) {
                 echo "<li>" . htmlspecialchars($row['enclosure_name']) . "</li>";
             }
             echo "</ul>";
@@ -33,12 +33,71 @@ include '../scripts/employeeRole.php';
         ?>
     </div>
 
+    <!-- Animal Conditions Section -->
+    <div class="animal-conditions-section">
+        <h3>Animal Health & Mood Status</h3>
+        <?php
+        // Get animals and their conditions from assigned enclosures
+        $mood_sql = "SELECT a.animal_id, a.animal_name, s.species_name, ac.mood, ac.health_status, ac.recorded_at
+                FROM animals a
+                JOIN species s ON a.species_id = s.species_id
+                JOIN enclosures e ON s.enclosure_id = e.enclosure_id
+                JOIN caretaker c ON e.enclosure_id = c.enclosure_id
+                LEFT JOIN (
+                    SELECT ac1.*
+                    FROM animal_conditions ac1
+                    INNER JOIN (
+                        SELECT animal_id, MAX(recorded_at) as max_date
+                        FROM animal_conditions
+                        GROUP BY animal_id
+                    ) ac2 ON ac1.animal_id = ac2.animal_id AND ac1.recorded_at = ac2.max_date
+                ) ac ON a.animal_id = ac.animal_id
+                WHERE c.emp_id = ?
+                ORDER BY e.enclosure_name, a.animal_name";
+
+        $mood_stmt = $conn->prepare($mood_sql);
+        $mood_stmt->bind_param("i", $emp_id);
+        $mood_stmt->execute();
+        $mood_result = $mood_stmt->get_result();
+
+        if ($mood_result->num_rows > 0) {
+            echo "<div class='animal-conditions-table'>";
+            echo "<table>";
+            echo "<thead><tr>";
+            echo "<th>Animal</th>";
+            echo "<th>Species</th>";
+            echo "<th>Mood</th>";
+            echo "<th>Health Status</th>";
+            echo "<th>Last Updated</th>";
+            echo "</tr></thead><tbody>";
+
+            while ($row = $mood_result->fetch_assoc()) {
+                $moodClass = 'mood-' . strtolower($row['mood'] ?? 'unknown');
+                $healthClass = 'health-' . strtolower($row['health_status'] ?? 'unknown');
+
+                echo "<tr>";
+                echo "<td>" . htmlspecialchars($row['animal_name']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['species_name']) . "</td>";
+                echo "<td class='{$moodClass}'>" . htmlspecialchars($row['mood'] ?? 'Not recorded') . "</td>";
+                echo "<td class='{$healthClass}'>" . htmlspecialchars($row['health_status'] ?? 'Not recorded') . "</td>";
+                echo "<td>" . htmlspecialchars($row['recorded_at'] ?? 'Never') . "</td>";
+                echo "</tr>";
+            }
+
+            echo "</tbody></table>";
+            echo "</div>";
+        } else {
+            echo "<p class='warning'>No animals found in your assigned enclosures.</p>";
+        }
+        ?>
+    </div>
+
     <!-- Feeding Form -->
     <div class="feeding-form">
         <h3>Record New Feeding</h3>
         <?php
         // Check if caretaker has any assignments
-        $has_assignments = $result->num_rows > 0;
+        $has_assignments = $enclosure_result->num_rows > 0;
         if ($has_assignments):
         ?>
             <form action="process_feeding.php" method="POST">
@@ -48,8 +107,8 @@ include '../scripts/employeeRole.php';
                         <option value="">Select an enclosure</option>
                         <?php
                         // Reset result pointer
-                        $result->data_seek(0);
-                        while ($row = $result->fetch_assoc()) {
+                        $enclosure_result->data_seek(0);
+                        while ($row = $enclosure_result->fetch_assoc()) {
                             echo "<option value='" . $row['enclosure_id'] . "'>" .
                                 htmlspecialchars($row['enclosure_name']) . "</option>";
                         }
@@ -107,7 +166,7 @@ include '../scripts/employeeRole.php';
             </thead>
             <tbody>
                 <?php
-                $sql = "SELECT f.*, a.animal_name, s.species_name, e.enclosure_name, f.kg_quantity 
+                $feeding_sql = "SELECT f.*, a.animal_name, s.species_name, e.enclosure_name, f.kg_quantity 
                         FROM feeding_records f 
                         JOIN animals a ON f.animal_id = a.animal_id 
                         JOIN species s ON a.species_id = s.species_id
@@ -115,12 +174,12 @@ include '../scripts/employeeRole.php';
                         JOIN caretaker c ON e.enclosure_id = c.enclosure_id 
                         WHERE c.emp_id = ? AND a.deleted = 0 AND s.deleted = 0
                         ORDER BY f.feeding_time DESC LIMIT 10";
-                $stmt = $conn->prepare($sql);
-                $stmt->bind_param("i", $emp_id);
-                $stmt->execute();
-                $result = $stmt->get_result();
+                $feeding_stmt = $conn->prepare($feeding_sql);
+                $feeding_stmt->bind_param("i", $emp_id);
+                $feeding_stmt->execute();
+                $feeding_result = $feeding_stmt->get_result();
 
-                while ($row = $result->fetch_assoc()) {
+                while ($row = $feeding_result->fetch_assoc()) {
                     echo "<tr>";
                     echo "<td>" . htmlspecialchars($row['enclosure_name']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['animal_name']) . " (" . htmlspecialchars($row['species_name']) . ")</td>";

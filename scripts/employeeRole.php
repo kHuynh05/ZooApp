@@ -1,13 +1,13 @@
 <?php
 include '../config/database.php';
 $permissions = [
+
     "admin" => [
         "create_employees",
         "remove_employee",
         "create_events",
         "view_events",
         "view_transaction_report",
-        "view_reports",
         "logout"
     ],
     "manager" => [
