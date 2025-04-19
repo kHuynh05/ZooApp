@@ -51,8 +51,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Commit the transaction
         $conn->commit();
-        // Redirect or show success message
-        echo json_encode(['status' => 'success', 'message' => 'Transaction processed successfully!']);
+        
+        // Redirect to employee portal
+        header("Location: ../public/employeePortal.php");
+        exit();
+        
     } catch (Exception $e) {
         // Rollback the transaction in case of error
         $conn->rollback();
@@ -66,7 +69,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Close statements and connection
         if (isset($stmt_transaction)) $stmt_transaction->close();
         if (isset($stmt_items)) $stmt_items->close();
-        header("Location: employeePortal.php");
         $conn->close();
     }
 }
