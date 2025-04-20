@@ -115,7 +115,7 @@ include '../scripts/employeeRole.php';
             "create_events" => ["title" => "Create Events", "id" => "create_events"],
             "view_events" => ["title" => "View Events", "id" => "view_events"],
             "view_transaction_report" => ["title" => "Transaction Report", "id" => "transaction_report"],
-            "view_contact_concerns" => ["title" => "View Customer concerns", "id" => "view_concerns"],
+            "view_reports" => ["title" => "View Reports", "id" => "view_reports"],
             "view_employees" => ["title" => "View Employees", "id" => "view_employees"],
             "view_reports" => ["title" => "View Reports", "id" => "view_reports"],
             "update_animals" => ["title" => "Update Animals", "id" => "update_animals"],

@@ -177,6 +177,66 @@
     margin: 20px 0;
 }
 
+/* Animal Conditions Section */
+.animal-conditions-section {
+    background-color: white;
+    margin: 30px 50px;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2),
+                -5px -5px 10px rgba(255, 255, 255, 0.8);
+}
+
+.animal-conditions-table {
+    width: 100%;
+    margin-top: 20px;
+}
+
+.animal-conditions-table table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.animal-conditions-table th {
+    background-color: seagreen;
+    color: white;
+    padding: 15px;
+    text-align: left;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+}
+
+.animal-conditions-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e9ecef;
+    color: #495057;
+}
+
+.animal-conditions-table tr:last-child td {
+    border-bottom: none;
+}
+
+.animal-conditions-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+/* Health and Mood Status Colors */
+.mood-happy, .health-good {
+    color: #4CAF50;
+    font-weight: bold;
+}
+
+.mood-neutral, .health-fair {
+    color: #FFC107;
+    font-weight: bold;
+}
+
+.mood-unhappy, .health-poor {
+    color: #F44336;
+    font-weight: bold;
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .content-section h2 {

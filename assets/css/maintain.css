@@ -262,25 +262,6 @@
     background-color: #7f8c8d;
 }
 
-/* Toggle Button */
-.btn-toggle {
-    background-color: rgba(0, 0, 0, 0.3);
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 100%;
-}
-
-.btn-toggle:hover {
-    background-color: rgba(0, 0, 0, 0.4);
-    transform: translateY(-2px);
-}
-
 /* Update Button */
 .btn-update {
     background-color: seagreen;
@@ -441,4 +422,73 @@
 .details-column {
     max-width: 500px;
     line-height: 1.5;
+}
+
+/* Add to existing CSS */
+.resolution-note {
+    color: #666;
+    font-style: italic;
+    display: block;
+    margin-top: 5px;
+}
+
+.status-completed {
+    background-color: #4CAF50;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.status-ongoing {
+    background-color: #FFA500;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.btn-complete {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-complete:hover {
+    background-color: #45a049;
+}
+
+#resolutionForm {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+
+#resolutionForm textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    resize: vertical;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    margin: 20px 0;
+    border: 1px dashed #ccc;
+}
+
+.empty-state p {
+    margin: 10px 0;
+    color: #666;
+}
+
+.empty-state-hint {
+    font-style: italic;
+    font-size: 0.9em;
 } 
