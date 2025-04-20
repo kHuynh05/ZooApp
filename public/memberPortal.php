@@ -123,6 +123,7 @@ $conn->close();
                         <option value="Standard">Standard</option>
                         <option value="Premium">Premium</option>
                         <option value="Vip">VIP</option>
+                        <option value="Free">Free</option>
                     </select>
                 </div>
 
@@ -171,7 +172,7 @@ $conn->close();
                     </tbody>
                 </table>
             </div>
-            
+
         </div>
         <div class="tab-content" id="4">
             <form id="profileForm">
@@ -362,7 +363,9 @@ $conn->close();
         var div = document.getElementById("membershipInfo");
         var selectedOption = select.value;
 
-        if (selectedOption === "Standard") {
+        if (selectedOption === "Free") {
+            div.innerHTML = "<h3>Basic membership with access to purchase tickets at regular prices. No discounts or reward points available.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'></div>";
+        } else if (selectedOption === "Standard") {
             div.innerHTML = "<h3>Enjoy general admission to the zoo during regular hours, giving you access to all exhibits and daily shows for a 15% discounted price. Applies to one person</h3> <div class='renew-img'><img class = 'renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img src='../assets/img/adult.png' alt='adult' width='300'></div>";
         } else if (selectedOption === "Premium") {
             div.innerHTML = "<h3>Perfect for families! This membership includes a 25% discount, offering a cost-effective way to enjoy the zoo together.</h3> <div class='renew-img'><img class='renew-ticket' src='../assets/img/ticket.png' alt='Ticket' width='400'><img class='adult' src='../assets/img/adult.png' alt='adult' width='300' height='500'> <img class='adult' src='../assets/img/adult.png' alt='adult' height='300'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'> <img class='child' src='../assets/img/child.png' alt='child' width='100'></div>";
@@ -392,12 +395,13 @@ $conn->close();
 
     function updatePaymentAmount(membershipType) {
         const basePrices = {
+            Free: 0,
             Standard: 70,
             Premium: 120,
             Vip: 150
         };
 
-        var discount = 0.25;
+        var discount = membershipType === 'Free' ? 0 : 0.25;
         var price = basePrices[membershipType] * (1 - discount);
 
         document.getElementById('payment-amount').textContent = "$" + price.toFixed(2);
