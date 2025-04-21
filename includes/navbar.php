@@ -21,7 +21,11 @@ include '../scripts/authorize.php';
             <a href="animals-info.php">Animals</a>
            <!-- <a href="ticket.php">Tickets</a> -->
             <a href="event_viewer.php">Events</a>
-            <a href="contact.php">Contact</a> 
+            <?php
+            if ($is_member) {
+                echo '<a href="contact.php">Contact</a>';
+            }
+            ?>
             <!-- Profile Dropdown options -->
             <div class="profile-dropdown"> 
             <button class="profile-icon">
